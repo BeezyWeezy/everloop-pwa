@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 export function PwaForm() {
     const [title, setTitle] = useState('Win ৳25,000 Now!');
@@ -18,7 +19,7 @@ export function PwaForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-xl shadow">
+        <form onSubmit={handleSubmit} className="space-y-4 bg-brand-light p-6 rounded-xl shadow">
             <div>
                 <label className="block mb-1 font-medium">Title</label>
                 <input
@@ -52,12 +53,9 @@ export function PwaForm() {
                     onChange={(e) => setPushMessages(e.target.value)}
                 />
             </div>
-            <button
-                type="submit"
-                className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
-            >
-                Generate PWA Config
-            </button>
+            <Button type="button" variant="brand" onClick={() => console.log('Download PWA Config')}>
+                Download PWA Config
+            </Button>
         </form>
     );
 }

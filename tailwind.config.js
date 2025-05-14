@@ -1,10 +1,23 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    content: [
-        "./src/**/*.{js,ts,jsx,tsx}"
-    ],
+    darkMode: 'class',
+    content: ['./src/**/*.{js,ts,jsx,tsx}'],
     theme: {
-        extend: {},
+        extend: {
+            colors: {
+                brand: {
+                    primary: '#F5BE37',
+                    black: '#111111',
+                    gray: '#565656',
+                    light: '#ECE7E3',
+                    red: '#FF5353',
+                    green: '#BBFF9B',
+                },
+            },
+            fontFamily: {
+                sans: ['Space Grotesk', 'sans-serif'],
+            },
+        },
     },
     plugins: [],
 }
