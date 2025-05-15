@@ -8,7 +8,7 @@ export function MobileSidebar({ open, onClose }: { open: boolean; onClose: () =>
             onClick={onClose}
         >
             <div
-                className="absolute left-0 top-0 h-full w-64 bg-brand-light p-6 shadow-lg"
+                className="absolute left-0 top-0 h-full w-64 bg-brand-light dark:bg-brand-dark text-brand-black dark:text-white p-6 shadow-lg"
                 onClick={(e) => e.stopPropagation()}
             >
                 <button className="absolute top-4 right-4 text-brand-black" onClick={onClose}>

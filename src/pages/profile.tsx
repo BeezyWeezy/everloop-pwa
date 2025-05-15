@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 export default function ProfilePage() {
     return (
         <Layout>
-            <div className="max-w-2xl mx-auto bg-brand-light rounded-xl p-4 sm:p-6 shadow space-y-6">
+            <div className="max-w-2xl mx-auto bg-brand-light dark:bg-brand-dark rounded-xl p-4 sm:p-6 shadow space-y-6">
                 <h2 className="text-xl font-semibold text-brand-black">My Profile</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">

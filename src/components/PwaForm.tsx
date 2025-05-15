@@ -19,7 +19,7 @@ export function PwaForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 bg-brand-light p-6 rounded-xl shadow">
+        <form onSubmit={handleSubmit} className="space-y-4 bg-brand-light dark:bg-brand-dark text-brand-black dark:text-white p-6 rounded-xl shadow">
             <div>
                 <label className="block mb-1 font-medium">Title</label>
                 <input

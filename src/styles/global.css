@@ -9,9 +9,9 @@ body {
 }
 
 html.dark body {
-    @apply bg-brand-black text-white;
+    @apply bg-brand-dark text-white;
 }
 
 input, textarea {
-    @apply bg-white dark:bg-brand-black text-black dark:text-white border-brand-gray dark:border-white;
+    @apply bg-white dark:bg-brand-dark text-black dark:text-white border-brand-gray dark:border-white;
 }
