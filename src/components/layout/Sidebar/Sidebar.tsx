@@ -23,8 +23,15 @@ import {
     SidebarGroup,
     SidebarFooter
 } from "@/components/ui/sidebar"
+import { supabase } from "@/lib/supabaseClient"
+import { useUserStore } from "@/store/useUserStore"
 
 export default function AppSidebar({ collapsed }: { collapsed: boolean }) {
+
+    function handleLogout() {
+        supabase.auth.signOut()
+        useUserStore.getState().setUser(null)
+    }
 
     return (
         <Sidebar
@@ -66,7 +73,9 @@ export default function AppSidebar({ collapsed }: { collapsed: boolean }) {
                             <DropdownMenuItem><User className="w-4 h-4 mr-2" /> Account</DropdownMenuItem>
                             <DropdownMenuItem><CreditCard className="w-4 h-4 mr-2" /> Billing</DropdownMenuItem>
                             <DropdownMenuItem><Bell className="w-4 h-4 mr-2" /> Notifications</DropdownMenuItem>
-                            <DropdownMenuItem><LogOut className="w-4 h-4 mr-2" /> Log out</DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleLogout}>
+                                <LogOut className="w-4 h-4 mr-2" /> Выйти
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                     )}
                 </DropdownMenu>
