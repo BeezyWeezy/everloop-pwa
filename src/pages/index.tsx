@@ -8,9 +8,7 @@ export default function Home() {
             <Head>
                 <title>Everloop</title>
             </Head>
-            <Layout>
-                <DashboardPage />
-            </Layout>
+            <DashboardPage />
         </>
     );
 }

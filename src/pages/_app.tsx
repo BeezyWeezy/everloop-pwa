@@ -1,7 +1,8 @@
-import '@/styles/global.css'
-import type { AppProps } from 'next/app'
-import { ThemeProvider } from 'next-themes'
-import { useEffect, useState } from 'react'
+import '@/styles/global.css';
+import type { AppProps } from 'next/app';
+import { ThemeProvider } from 'next-themes';
+import { useEffect, useState } from 'react';
+import { Layout } from "@/components/layout/Layout";
 
 export default function App({ Component, pageProps }: AppProps) {
     const [mounted, setMounted] = useState(false);
@@ -12,7 +13,9 @@ export default function App({ Component, pageProps }: AppProps) {
     return (
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <main className="min-h-screen bg-white text-brand-black dark:bg-brand-dark dark:text-white transition-colors duration-300">
-                <Component {...pageProps} />
+                <Layout>
+                    <Component {...pageProps} />
+                </Layout>
             </main>
         </ThemeProvider>
     )
