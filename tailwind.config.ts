@@ -6,6 +6,20 @@ const config: Config = {
     content: ['./src/**/*.{js,ts,jsx,tsx}'],
     theme: {
         extend: {
+            keyframes: {
+                float: {
+                    '0%, 100%': { transform: 'translateY(0px)' },
+                    '50%': { transform: 'translateY(-30px)' }
+                },
+                spinSlow: {
+                    '0%': { transform: 'rotate(0deg)' },
+                    '100%': { transform: 'rotate(360deg)' }
+                }
+            },
+            animation: {
+                float: 'float 8s ease-in-out infinite',
+                spinSlow: 'spinSlow 60s linear infinite'
+            },
             borderRadius: {
                 lg: "0.5rem",
                 md: "0.375rem",
@@ -29,17 +43,18 @@ const config: Config = {
                     DEFAULT: "hsl(var(--accent))",
                     foreground: "hsl(var(--accent-foreground))",
                 },
+                brand: {
+                    dark: "#111111",
+                    yellow: "#F5BE37",
+                    gray: "#B2B2B2",
+                },
             },
             fontFamily: {
-                sans: ["var(--font-sans)", ...fontFamily.sans],
+                sans: ["'Space Grotesk'", ...fontFamily.sans],
             },
         },
     },
     plugins: [require("tailwindcss-animate")],
 }
 
-export default config
-
-
-// content: ['./src/**/*.{js,ts,jsx,tsx}'],
-// primary: '#F5BE37',
+export default config;

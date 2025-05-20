@@ -24,4 +24,13 @@ const CardContent = ({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
 )
 CardContent.displayName = "CardContent"
 
-export { Card, CardHeader, CardTitle, CardContent }
+const CardDescription = ({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => {
+    return (
+        <p
+            className={cn("text-sm text-muted-foreground", className)}
+            {...props}
+        />
+    )
+}
+
+export { Card, CardHeader, CardTitle, CardContent, CardDescription };
