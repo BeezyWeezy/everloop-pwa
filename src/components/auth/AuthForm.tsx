@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { supabase } from '@/lib/supabaseClient'
@@ -159,6 +160,23 @@ export function AuthForm({ className, mode, ...props }: AuthFormProps) {
                             >
                                 {loading ? 'Загрузка...' : isRegister ? 'Зарегистрироваться' : 'Войти'}
                             </Button>
+                            <div className="mt-4 text-center text-sm text-muted-foreground">
+                                {isRegister ? (
+                                    <p>
+                                        Уже есть аккаунт?{' '}
+                                        <Link href="/signin" className="text-primary hover:underline font-medium">
+                                            Войти
+                                        </Link>
+                                    </p>
+                                ) : (
+                                    <p>
+                                        Нет аккаунта?{' '}
+                                        <Link href="/signup" className="text-primary hover:underline font-medium">
+                                            Зарегистрироваться
+                                        </Link>
+                                    </p>
+                                )}
+                            </div>
                         </div>
                     </form>
                 </CardContent>
