@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { GoogleIcon } from '@/components/icons'
 
 interface AuthFormProps extends React.ComponentPropsWithoutRef<'div'> {
     mode: 'login' | 'register'
@@ -78,6 +79,23 @@ export function AuthForm({ className, mode, ...props }: AuthFormProps) {
         }
     }
 
+    const handleGoogleSignIn = async () => {
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: `${window.location.origin}/auth/callback`
+                }
+            })
+
+            if (error) {
+                setError(error.message);
+            }
+        } catch (err) {
+            setError('Ошибка при авторизации через Google');
+        }
+    }
+
     return (
         <div className={cn('flex flex-col gap-6 min-h-screen items-center justify-center px-4', className)} {...props}>
             <Card className="w-full max-w-md bg-background border border-border shadow-xl rounded-xl">
@@ -98,13 +116,23 @@ export function AuthForm({ className, mode, ...props }: AuthFormProps) {
                             </Alert>
                         )}
                         <div className="flex flex-col gap-4">
-                            <Button variant="outline" className="w-full">
-                                {isRegister ? 'Регистрация через Telegram' : 'Login with Telegram'}
-                            </Button>
-                            <Button variant="outline" className="w-full">
-                                {isRegister ? 'Регистрация через Google' : 'Login with Google'}
-                            </Button>
-                        </div>
+                        <Button
+                            variant="outline"
+                            className="w-full hover:bg-primary/10 hover:text-primary transition-colors"
+                        >
+                            {isRegister ? 'Регистрация через Telegram' : 'Войти через Telegram'}
+                        </Button>
+                        <Button
+                            variant="outline"
+                            className="w-full hover:bg-primary/10 hover:text-primary transition-colors flex items-center gap-2"
+                            onClick={handleGoogleSignIn}
+                        >
+                            <GoogleIcon className="h-5 w-5" />
+                            <span>
+                                {isRegister ? 'Регистрация через Google' : 'Войти через Google'}
+                            </span>
+                        </Button>
+        </div>
                         <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
               <span className="relative z-10 bg-background px-2 text-muted-foreground">
                 Или с помощью email
