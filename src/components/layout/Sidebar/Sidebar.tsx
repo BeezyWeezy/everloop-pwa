@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/sidebar"
 import { supabase } from "@/lib/supabaseClient"
 import { useUserStore } from "@/store/useUserStore"
+import Link from "next/link";
 
 export default function AppSidebar({ collapsed }: { collapsed: boolean }) {
 
@@ -70,7 +71,13 @@ export default function AppSidebar({ collapsed }: { collapsed: boolean }) {
                     {!collapsed && (
                         <DropdownMenuContent align="start" className="w-56">
                             <DropdownMenuItem><Star className="w-4 h-4 mr-2" /> Upgrade to Pro</DropdownMenuItem>
-                            <DropdownMenuItem><User className="w-4 h-4 mr-2" /> Account</DropdownMenuItem>
+                            <Link href="/profile" passHref>
+                                <DropdownMenuItem asChild>
+                                    <div className="flex items-center">
+                                        <User className="w-4 h-4 mr-2" /> Профиль
+                                    </div>
+                                </DropdownMenuItem>
+                            </Link>
                             <DropdownMenuItem><CreditCard className="w-4 h-4 mr-2" /> Billing</DropdownMenuItem>
                             <DropdownMenuItem><Bell className="w-4 h-4 mr-2" /> Notifications</DropdownMenuItem>
                             <DropdownMenuItem onClick={handleLogout}>

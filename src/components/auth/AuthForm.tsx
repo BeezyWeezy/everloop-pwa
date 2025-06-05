@@ -125,7 +125,10 @@ export function AuthForm({ className, mode, ...props }: AuthFormProps) {
                         <Button
                             variant="outline"
                             className="w-full hover:bg-primary/10 hover:text-primary transition-colors flex items-center gap-2"
-                            onClick={handleGoogleSignIn}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleGoogleSignIn();
+                            }}
                         >
                             <GoogleIcon className="h-5 w-5" />
                             <span>
@@ -168,6 +171,16 @@ export function AuthForm({ className, mode, ...props }: AuthFormProps) {
                                     required
                                 />
                             </div>
+                            {!isRegister && (
+                                <div className="text-left text-xs">
+                                    <Link
+                                        href="/forgot-password"
+                                        className="text-primary hover:underline"
+                                    >
+                                        Забыли пароль?
+                                    </Link>
+                                </div>
+                            )}
                             {isRegister && (
                                 <div className="grid gap-2">
                                     <Label htmlFor="confirmPassword">Подтвердите пароль</Label>

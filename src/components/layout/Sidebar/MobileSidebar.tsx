@@ -35,7 +35,7 @@ export function MobileSidebar({ open, onClose }: { open: boolean; onClose: () =>
                         </Link>
                     </li>
                     <li className="hover:text-brand-black">
-                        <Link href="/profile" className="flex items-center gap-2" onClick={onClose}>
+                        <Link href="/" className="flex items-center gap-2" onClick={onClose}>
                             <User size={20} />
                             <span>Profile</span>
                         </Link>
