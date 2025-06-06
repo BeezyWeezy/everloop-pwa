@@ -10,6 +10,7 @@ import {
     DropdownMenuContent,
     DropdownMenuItem
 } from "@/components/ui/dropdown-menu"
+import { LanguageSwitcher } from "@/i18n/LanguageSwitcher";
 
 export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
     const [showMobileMenu, setShowMobileMenu] = useState(false)
@@ -61,25 +62,26 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
 
                 <div className="flex items-center gap-4 whitespace-nowrap">
                     <ThemeToggle />
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <div className="flex items-center gap-2 cursor-pointer rounded-md hover:bg-muted px-2 py-1 transition">
-                                <img
-                                    src="https://github.com/shadcn.png"
-                                    alt="avatar"
-                                    width={32}
-                                    height={32}
-                                    className="rounded-full"
-                                />
-                            </div>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-56">
-                            <DropdownMenuItem><User className="w-4 h-4 mr-2" /> Профиль</DropdownMenuItem>
-                            <DropdownMenuItem><CreditCard className="w-4 h-4 mr-2" /> Подписка</DropdownMenuItem>
-                            <DropdownMenuItem><Bell className="w-4 h-4 mr-2" /> Уведомления</DropdownMenuItem>
-                            <DropdownMenuItem><LogOut className="w-4 h-4 mr-2" /> Выйти</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    <LanguageSwitcher />
+                    {/*<DropdownMenu>*/}
+                    {/*    <DropdownMenuTrigger asChild>*/}
+                    {/*        <div className="flex items-center gap-2 cursor-pointer rounded-md hover:bg-muted px-2 py-1 transition">*/}
+                    {/*            <img*/}
+                    {/*                src="https://github.com/shadcn.png"*/}
+                    {/*                alt="avatar"*/}
+                    {/*                width={32}*/}
+                    {/*                height={32}*/}
+                    {/*                className="rounded-full"*/}
+                    {/*            />*/}
+                    {/*        </div>*/}
+                    {/*    </DropdownMenuTrigger>*/}
+                    {/*    <DropdownMenuContent align="end" className="w-56">*/}
+                    {/*        <DropdownMenuItem><User className="w-4 h-4 mr-2" /> Профиль</DropdownMenuItem>*/}
+                    {/*        <DropdownMenuItem><CreditCard className="w-4 h-4 mr-2" /> Подписка</DropdownMenuItem>*/}
+                    {/*        <DropdownMenuItem><Bell className="w-4 h-4 mr-2" /> Уведомления</DropdownMenuItem>*/}
+                    {/*        <DropdownMenuItem><LogOut className="w-4 h-4 mr-2" /> Выйти</DropdownMenuItem>*/}
+                    {/*    </DropdownMenuContent>*/}
+                    {/*</DropdownMenu>*/}
                 </div>
             </header>
             <MobileSidebar open={showMobileMenu} onClose={() => setShowMobileMenu(false)} />

@@ -3,15 +3,18 @@ import { ProfileDetails, UserProfile } from "@/components/profile/ProfileDetails
 import { ChangePasswordForm } from "@/components/profile/ChangePasswordForm"
 import { SubscriptionSection } from "@/components/profile/SubscriptionSection"
 import { TwoFactorAuthSetup } from "@/components/profile/TwoFactorAuthSetup"
-
-const tabs = [
-    { id: "details", label: "Информация профиля", component: "details" },
-    { id: "password", label: "Сменить пароль", component: "password" },
-    { id: "subscription", label: "Подписка", component: "subscription" },
-    { id: "2fa", label: "Двухфакторная аутентификация", component: "2fa" },
-]
+import { useTranslation } from "react-i18next";
 
 export default function ProfilePage() {
+    const { t } = useTranslation();
+
+    const tabs = [
+        { id: "details", label: `${t("profileInfo")}`, component: "details" },
+        { id: "password", label: `${t("changePassword")}`, component: "password" },
+        { id: "subscription", label: "Подписка", component: "subscription" },
+        { id: "2fa", label: "Двухфакторная аутентификация", component: "2fa" },
+    ]
+
     const [activeTab, setActiveTab] = useState("details")
     const [user, setUser] = useState<UserProfile | null>(null) // Данные пользователя
     const [isLoading, setIsLoading] = useState(true) // Состояние загрузки

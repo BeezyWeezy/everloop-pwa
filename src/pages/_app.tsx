@@ -6,6 +6,7 @@ import { useUserStore } from "@/store/useUserStore";
 import { Layout } from "@/components/layout/Layout";
 import { ThemeProvider } from "@/components/theme-provider";
 import "@/styles/globals.css";
+import "@/i18n/i18n";
 
 export default function App({ Component, pageProps }: AppProps) {
     const [loading, setLoading] = useState(true); // Лоадер пока данные загружаются

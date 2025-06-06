@@ -2,6 +2,7 @@ import React from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useTranslation } from "react-i18next";
 
 // Интерфейс для исходных данных
 export interface UserProfile {
@@ -19,13 +20,15 @@ interface ProfileDetailsProps {
 }
 
 export const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user, onEdit }) => {
+    const { t } = useTranslation();
+
     return (
         <Card className="p-6">
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
-                    <CardTitle className="text-2xl font-bold">Информация профиля</CardTitle>
+                    <CardTitle className="text-2xl font-bold">{t("profileInfo")}</CardTitle>
                     <p className="text-sm text-muted-foreground">
-                        Основная информация о вашем аккаунте
+                        {t("mainProfileInfo")}
                     </p>
                 </div>
                 {/* Кнопка редактирования профиля */}
@@ -35,7 +38,7 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user, onEdit }) 
                         size="sm"
                         onClick={onEdit}
                     >
-                        Редактировать
+                        {t("edit")}
                     </Button>
                 )}
             </CardHeader>
@@ -56,15 +59,16 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user, onEdit }) 
                 {/* Информация о пользователе */}
                 <div className="mt-4 lg:mt-0 flex-1 space-y-4 text-sm">
                     <p>
-                        <strong>Имя:</strong> {user.name}
+                        <strong>{t("name")}:</strong> {user.name}
                     </p>
                     <p>
-                        <strong>Email:</strong> {user.email}
+                        <strong>{t("email")}:</strong> {user.email}
                     </p>
                     <p>
                         <strong>Дата регистрации:</strong> {new Date(user.registeredAt).toLocaleDateString()}
                     </p>
                     {user.lastLoginAt ? (
+                        //TODO: перевести если нужны будут данные
                         <p>
                             <strong>Последний вход:</strong> {new Date(user.lastLoginAt).toLocaleDateString()}
                         </p>
