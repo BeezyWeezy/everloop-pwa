@@ -26,8 +26,10 @@ import {
 import { supabase } from "@/lib/supabaseClient"
 import { useUserStore } from "@/store/useUserStore"
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 export default function AppSidebar({ collapsed }: { collapsed: boolean }) {
+    const { t } = useTranslation();
 
     function handleLogout() {
         supabase.auth.signOut()
@@ -43,10 +45,10 @@ export default function AppSidebar({ collapsed }: { collapsed: boolean }) {
             </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarItem icon={LayoutDashboard} href="/" label="Dashboard" collapsed={collapsed} />
-                    <SidebarItem icon={Globe} href="/pwa" label="Мои PWAs" collapsed={collapsed} />
-                    <SidebarItem icon={MonitorPlay} href="/spy" label="Spy Креативы" collapsed={collapsed} />
-                    <SidebarItem icon={LinkIcon} href="/linked" label="Связки" collapsed={collapsed} />
+                    <SidebarItem icon={LayoutDashboard} href="/" label={t("dashboard")} collapsed={collapsed} />
+                    <SidebarItem icon={Globe} href="/pwa" label={t("myPwa")} collapsed={collapsed} />
+                    <SidebarItem icon={MonitorPlay} href="/spy" label={t("spyCreo")} collapsed={collapsed} />
+                    <SidebarItem icon={LinkIcon} href="/linked" label={t("bundles")} collapsed={collapsed} />
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter>
@@ -70,18 +72,18 @@ export default function AppSidebar({ collapsed }: { collapsed: boolean }) {
                     </DropdownMenuTrigger>
                     {!collapsed && (
                         <DropdownMenuContent align="start" className="w-56">
-                            <DropdownMenuItem><Star className="w-4 h-4 mr-2" /> Upgrade to Pro</DropdownMenuItem>
+                            <DropdownMenuItem><Star className="w-4 h-4 mr-2" /> {t("upgradeToPro")}</DropdownMenuItem>
                             <Link href="/profile" passHref>
                                 <DropdownMenuItem asChild>
                                     <div className="flex items-center">
-                                        <User className="w-4 h-4 mr-2" /> Профиль
+                                        <User className="w-4 h-4 mr-2" /> {t("profile")}
                                     </div>
                                 </DropdownMenuItem>
                             </Link>
-                            <DropdownMenuItem><CreditCard className="w-4 h-4 mr-2" /> Billing</DropdownMenuItem>
-                            <DropdownMenuItem><Bell className="w-4 h-4 mr-2" /> Notifications</DropdownMenuItem>
+                            <DropdownMenuItem><CreditCard className="w-4 h-4 mr-2" /> {t("billing")}</DropdownMenuItem>
+                            <DropdownMenuItem><Bell className="w-4 h-4 mr-2" /> {t("notifications")}</DropdownMenuItem>
                             <DropdownMenuItem onClick={handleLogout}>
-                                <LogOut className="w-4 h-4 mr-2" /> Выйти
+                                <LogOut className="w-4 h-4 mr-2" /> {t("logout")}
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     )}

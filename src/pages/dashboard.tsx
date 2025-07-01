@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import Link from "next/link"
 import Head from "next/head"
+import { useTranslation } from "react-i18next";
 
 export default function DashboardPage() {
+    const { t } = useTranslation()
     const topLinked = linkedSets[0]
     const topPwa = pwas.find((p) => p.id === topLinked.pwaId)
     const topCreative = creatives.find((c) => c.id === topLinked.creativeIds[0])
@@ -26,19 +28,19 @@ export default function DashboardPage() {
                 {/* Статистика */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <Card>
-                        <CardHeader><CardTitle>Мои PWAs</CardTitle></CardHeader>
+                        <CardHeader><CardTitle>{t("myPwa")}</CardTitle></CardHeader>
                         <CardContent><p className="text-2xl font-bold">{pwas.length}</p></CardContent>
                     </Card>
                     <Card>
-                        <CardHeader><CardTitle>Креативов</CardTitle></CardHeader>
+                        <CardHeader><CardTitle>{t("creativesInUse")}</CardTitle></CardHeader>
                         <CardContent><p className="text-2xl font-bold">{creatives.length}</p></CardContent>
                     </Card>
                     <Card>
-                        <CardHeader><CardTitle>Связки</CardTitle></CardHeader>
+                        <CardHeader><CardTitle>{t("bundles")}</CardTitle></CardHeader>
                         <CardContent><p className="text-2xl font-bold">{linkedSets.length}</p></CardContent>
                     </Card>
                     <Card>
-                        <CardHeader><CardTitle>Средний CR</CardTitle></CardHeader>
+                        <CardHeader><CardTitle>{t("avgCr")}</CardTitle></CardHeader>
                         <CardContent>
                             <p className="text-2xl font-bold text-green-600">
                                 {avgCr.toFixed(1)}%
@@ -49,16 +51,16 @@ export default function DashboardPage() {
 
                 {/* Быстрые действия */}
                 <div className="flex flex-wrap gap-4 mt-6">
-                    <Link href="/pwa"><Button>Создать PWA</Button></Link>
-                    <Link href="/spy"><Button variant="outline">Найти Креатив</Button></Link>
-                    <Link href="/linked"><Button variant="brand">Мои Связки</Button></Link>
+                    <Link href="/pwa"><Button>{t("createPwa")}</Button></Link>
+                    <Link href="/spy"><Button variant="outline">{t("spyCreo")}</Button></Link>
+                    <Link href="/linked"><Button variant="brand">{t("myBundles")}</Button></Link>
                 </div>
 
                 {/* Топ связка */}
                 {topPwa && topCreative && (
                     <div className="mt-8">
                         <Card>
-                            <CardHeader><CardTitle>🔥 Топ связка недели</CardTitle></CardHeader>
+                            <CardHeader><CardTitle>🔥 {t("topBundleOfTheWeek")}</CardTitle></CardHeader>
                             <CardContent>
                                 <p className="text-sm text-muted-foreground mb-2">
                                     {topPwa.name} + {topCreative.text.slice(0, 40)}

@@ -11,8 +11,11 @@ import {
     DropdownMenuItem
 } from "@/components/ui/dropdown-menu"
 import { LanguageSwitcher } from "@/i18n/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
+    const { t } = useTranslation();
+
     const [showMobileMenu, setShowMobileMenu] = useState(false)
     const router = useRouter()
 
@@ -42,7 +45,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
                         <Menu className="w-5 h-5" />
                     </button>
                     <nav className="flex items-center gap-1 text-sm text-muted-foreground">
-                        <Link href="/" className="hover:underline">Dashboard</Link>
+                        <Link href="/" className="hover:underline">{t("dashboard")}</Link>
                         {breadcrumbs.map((crumb, idx) => (
                             <span key={crumb.href} className="flex items-center gap-1">
                 <ChevronRight className="w-4 h-4" />

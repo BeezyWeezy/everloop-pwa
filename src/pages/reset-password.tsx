@@ -1,8 +1,10 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import { useTranslation } from "react-i18next";
 
 export default function ResetPasswordPage() {
+    const { t } = useTranslation()
     const router = useRouter();
     const { access_token, type } = router.query; // Получаем токены из URL
     const [password, setPassword] = useState("");
@@ -35,7 +37,7 @@ export default function ResetPasswordPage() {
             setSuccess(true);
             setTimeout(() => router.push("/signin"), 2000); // Редирект на страницу входа
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Произошла ошибка.");
+            setError(err instanceof Error ? err.message : `${t("anErrorOccurred")}`);
         } finally {
             setLoading(false);
         }
@@ -46,10 +48,10 @@ export default function ResetPasswordPage() {
             {access_token && type === "recovery" ? (
                 <>
                     <h1 className="text-2xl font-semibold text-primary mb-4">
-                        Сброс пароля
+                        {t("passwordReset")}
                     </h1>
                     <p className="text-center text-muted-foreground mb-6">
-                        Введите новый пароль для восстановления доступа к вашему аккаунту.
+                        {t("enterNewPasswordForRecover")}
                     </p>
                     <form
                         onSubmit={handlePasswordReset}
@@ -59,7 +61,7 @@ export default function ResetPasswordPage() {
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Введите новый пароль"
+                            placeholder={t("enterNewPassword")}
                             className="w-full p-2 border border-border rounded-md focus:outline-primary"
                             required
                         />
@@ -68,7 +70,7 @@ export default function ResetPasswordPage() {
                         )}
                         {success && (
                             <p className="text-green-500 text-sm text-center">
-                                Пароль успешно изменён! Вы будете перенаправлены на страницу входа.
+                                {t("passwordChangeSuccess")}
                             </p>
                         )}
                         <button
@@ -76,13 +78,13 @@ export default function ResetPasswordPage() {
                             disabled={loading}
                             className="w-full p-2 bg-primary text-white rounded-md hover:bg-primary/90 disabled:opacity-50"
                         >
-                            {loading ? "Смена пароля..." : "Изменить пароль"}
+                            {loading ? `${t("passwordChangeInProgress")}...` : `${t("changePassword")}`}
                         </button>
                     </form>
                 </>
             ) : (
                 <p className="text-lg text-center text-red-500">
-                    Недопустимый запрос. Пожалуйста, проверьте правильность ссылки.
+                    {t("invalidRecoveryLink")}
                 </p>
             )}
         </div>
