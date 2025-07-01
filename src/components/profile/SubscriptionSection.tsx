@@ -1,6 +1,7 @@
 import React from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { useTranslation } from "react-i18next";
 
 // Пропсы компонента
 interface SubscriptionSectionProps {
@@ -14,10 +15,13 @@ export const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({
                                                                             expiresAt,
                                                                             onUpgrade,
                                                                         }) => {
+
+    const { t } = useTranslation();
+
     return (
         <Card className="p-6">
             <CardHeader>
-                <CardTitle className="text-2xl font-bold">Управление подпиской</CardTitle>
+                <CardTitle className="text-2xl font-bold">{t("subscriptionManagement")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
 
@@ -25,23 +29,23 @@ export const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({
                 {subscriptionType ? (
                     <div>
                         <p className="text-sm">
-                            <strong>Текущая подписка:</strong> {subscriptionType}
+                            <strong>{t("currentSubscription")}:</strong> {subscriptionType}
                         </p>
                         {expiresAt && (
                             <p className="text-sm text-muted-foreground">
-                                Активна до: {new Date(expiresAt).toLocaleDateString()}
+                                {t("activeUntil")}: {new Date(expiresAt).toLocaleDateString()}
                             </p>
                         )}
                     </div>
                 ) : (
                     <p className="text-sm text-muted-foreground">
-                        У вас нет активной подписки.
+                        {t("dontHaveActiveSubscription")}.
                     </p>
                 )}
 
                 {/* Кнопка для обновления/оформления */}
                 <Button onClick={onUpgrade} className="w-full">
-                    {subscriptionType ? "Обновить подписку" : "Оформить подписку"}
+                    {subscriptionType ? `${t("renewSubscription")}` : `${t("subscribe")}`}
                 </Button>
             </CardContent>
         </Card>

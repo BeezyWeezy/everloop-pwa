@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { useTranslation } from "react-i18next";
 
 interface TwoFactorAuthSetupProps {
     qrCodeUrl?: string | null // URL для отображения QR-кода
@@ -31,10 +32,12 @@ export const TwoFactorAuthSetup: React.FC<TwoFactorAuthSetupProps> = ({
         onActivate(otpCode) // Передача введённого кода
     }
 
+    const { t } = useTranslation();
+
     return (
         <Card className="p-6 space-y-6">
             <CardHeader>
-                <CardTitle className="text-2xl font-bold">Настройка двухфакторной аутентификации</CardTitle>
+                <CardTitle className="text-2xl font-bold">{t("twofasetup")}</CardTitle>
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -44,29 +47,28 @@ export const TwoFactorAuthSetup: React.FC<TwoFactorAuthSetupProps> = ({
                         <div className="text-center">
                             <img
                                 src={qrCodeUrl}
-                                alt="QR-код для настройки двухфакторной аутентификации"
+                                alt={t("qrcodesetup")}
                                 className="mx-auto mb-4 w-48 h-48"
                             />
                             <p className="text-sm text-muted-foreground">
-                                Отсканируйте QR-код с помощью приложения для двухфакторной аутентификации (например, Google Authenticator).
-                            </p>
+                                {t("scanqr2fa")}                            </p>
                         </div>
                     ) : (
                         <p className="text-sm text-muted-foreground">
-                            Ссылка для настройки двухфакторной аутентификации пока недоступна.
+                            {t("notlink2fa")}
                         </p>
                     )}
 
                     {/* Поле ввода OTP */}
                     <div>
                         <label htmlFor="otpCode" className="block text-sm font-medium">
-                            Введите код из приложения
+                            {t("qrcodefromapp")}
                         </label>
                         <Input
                             id="otpCode"
                             name="otpCode"
                             type="text"
-                            placeholder="6-значный код"
+                            placeholder={t("sixDigitCode")}
                             value={otpCode}
                             onChange={handleChange}
                             required
@@ -81,7 +83,7 @@ export const TwoFactorAuthSetup: React.FC<TwoFactorAuthSetupProps> = ({
                     {/* Кнопки */}
                     <div className="flex gap-4">
                         <Button type="submit" className="w-full" disabled={isLoading}>
-                            {isLoading ? "Активируем..." : "Активировать"}
+                            {isLoading ? `${t("activating2fa")}` : `${t("activate2fa")}`}
                         </Button>
                         {onCancel && (
                             <Button

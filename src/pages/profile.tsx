@@ -11,8 +11,8 @@ export default function ProfilePage() {
     const tabs = [
         { id: "details", label: `${t("profileInfo")}`, component: "details" },
         { id: "password", label: `${t("changePassword")}`, component: "password" },
-        { id: "subscription", label: "Подписка", component: "subscription" },
-        { id: "2fa", label: "Двухфакторная аутентификация", component: "2fa" },
+        { id: "subscription", label: `${t("subscription")}`, component: "subscription" },
+        { id: "2fa", label: `${t("twofa")}`, component: "2fa" },
     ]
 
     const [activeTab, setActiveTab] = useState("details")

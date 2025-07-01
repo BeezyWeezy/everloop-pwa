@@ -65,7 +65,7 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user, onEdit }) 
                         <strong>{t("email")}:</strong> {user.email}
                     </p>
                     <p>
-                        <strong>Дата регистрации:</strong> {new Date(user.registeredAt).toLocaleDateString()}
+                        <strong>{t("registrationDate")}:</strong> {new Date(user.registeredAt).toLocaleDateString()}
                     </p>
                     {user.lastLoginAt ? (
                         //TODO: перевести если нужны будут данные
