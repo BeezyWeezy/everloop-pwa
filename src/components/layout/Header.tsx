@@ -23,7 +23,21 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
         const pathSegments = router.pathname.split("/").filter(Boolean)
         const breadcrumbs = pathSegments.map((segment, index) => {
             const href = "/" + pathSegments.slice(0, index + 1).join("/")
-            const label = decodeURIComponent(segment.charAt(0).toUpperCase() + segment.slice(1))
+            // Translate segment labels
+            let label = segment.charAt(0).toUpperCase() + segment.slice(1);
+            
+            // Map specific segments to translations
+            switch(segment.toLowerCase()) {
+                case 'pwa': label = t('myPwa'); break;
+                case 'create': label = t('createPwa'); break;
+                case 'spy': label = t('spyCreo'); break;
+                case 'linked': label = t('bundles'); break;
+                case 'profile': label = t('profile'); break;
+                case 'analytics': label = t('analytics'); break;
+                case 'settings': label = t('settings'); break;
+                default: label = decodeURIComponent(label);
+            }
+            
             return { label, href }
         })
         return breadcrumbs
@@ -33,58 +47,65 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
 
     return (
         <>
-            <header className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 bg-white dark:bg-brand-dark shadow gap-2">
-                <div className="flex items-center gap-4 w-full">
-                    <button
-                        className="block md:hidden"
-                        onClick={() => setShowMobileMenu(true)}
-                    >
-                        <Menu size={24} />
-                    </button>
-                    <button onClick={toggleSidebar} className="rounded p-2 hover:bg-muted transition">
-                        <Menu className="w-5 h-5" />
-                    </button>
-                    <nav className="flex items-center gap-1 text-sm text-muted-foreground">
-                        <Link href="/" className="hover:underline">{t("dashboard")}</Link>
-                        {breadcrumbs.map((crumb, idx) => (
-                            <span key={crumb.href} className="flex items-center gap-1">
-                <ChevronRight className="w-4 h-4" />
-                <Link href={crumb.href} className="hover:underline">
-                  {crumb.label}
-                </Link>
-              </span>
-                        ))}
-                    </nav>
+            <header className="bg-white/95 backdrop-blur-sm dark:bg-brand-accent/95 shadow-lg dark:shadow-dark border-b border-slate-200 dark:border-slate-700 smooth-transition">
+                {/* Mobile Header */}
+                <div className="flex md:hidden items-center justify-between px-4 py-3">
+                    <div className="flex items-center gap-3">
+                        <button
+                            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition"
+                            onClick={() => setShowMobileMenu(true)}
+                        >
+                            <Menu size={20} className="text-slate-700 dark:text-slate-300" />
+                        </button>
+                        <Link href="/" className="flex items-center gap-2">
+                            <div className="w-8 h-8 bg-gradient-to-r from-brand-yellow to-yellow-400 rounded-lg flex items-center justify-center">
+                                <span className="text-black font-bold text-sm">E</span>
+                            </div>
+                            <span className="text-lg font-bold bg-gradient-to-r from-brand-yellow to-yellow-400 bg-clip-text text-transparent">
+                                Everloop
+                            </span>
+                        </Link>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <ThemeToggle />
+                        <LanguageSwitcher />
+                    </div>
                 </div>
 
-                <div className="absolute left-1/2 -translate-x-1/2 hidden sm:block">
-                    <Link href="/" className="text-xl font-bold dark:text-brand-primary hover:underline">
-                        Everloop
+                {/* Desktop Header */}
+                <div className="hidden md:flex items-center justify-between px-6 py-4">
+                    <div className="flex items-center gap-4 w-full">
+                        <button onClick={toggleSidebar} className="rounded p-2 hover:bg-muted transition">
+                            <Menu className="w-5 h-5" />
+                        </button>
+                        <nav className="flex items-center gap-1 text-sm text-muted-foreground overflow-hidden">
+                            <Link href="/" className="hover:underline whitespace-nowrap">{t("dashboard")}</Link>
+                            {breadcrumbs.map((crumb, idx) => (
+                                <span key={crumb.href} className="flex items-center gap-1 min-w-0">
+                    <ChevronRight className="w-4 h-4 flex-shrink-0" />
+                    <Link href={crumb.href} className="hover:underline truncate">
+                      {crumb.label}
                     </Link>
-                </div>
+                  </span>
+                            ))}
+                        </nav>
+                    </div>
 
-                <div className="flex items-center gap-4 whitespace-nowrap">
-                    <ThemeToggle />
-                    <LanguageSwitcher />
-                    {/*<DropdownMenu>*/}
-                    {/*    <DropdownMenuTrigger asChild>*/}
-                    {/*        <div className="flex items-center gap-2 cursor-pointer rounded-md hover:bg-muted px-2 py-1 transition">*/}
-                    {/*            <img*/}
-                    {/*                src="https://github.com/shadcn.png"*/}
-                    {/*                alt="avatar"*/}
-                    {/*                width={32}*/}
-                    {/*                height={32}*/}
-                    {/*                className="rounded-full"*/}
-                    {/*            />*/}
-                    {/*        </div>*/}
-                    {/*    </DropdownMenuTrigger>*/}
-                    {/*    <DropdownMenuContent align="end" className="w-56">*/}
-                    {/*        <DropdownMenuItem><User className="w-4 h-4 mr-2" /> Профиль</DropdownMenuItem>*/}
-                    {/*        <DropdownMenuItem><CreditCard className="w-4 h-4 mr-2" /> Подписка</DropdownMenuItem>*/}
-                    {/*        <DropdownMenuItem><Bell className="w-4 h-4 mr-2" /> Уведомления</DropdownMenuItem>*/}
-                    {/*        <DropdownMenuItem><LogOut className="w-4 h-4 mr-2" /> Выйти</DropdownMenuItem>*/}
-                    {/*    </DropdownMenuContent>*/}
-                    {/*</DropdownMenu>*/}
+                    <div className="absolute left-1/2 -translate-x-1/2">
+                        <Link href="/" className="flex items-center gap-2">
+                            <div className="w-8 h-8 bg-gradient-to-r from-brand-yellow to-yellow-400 rounded-lg flex items-center justify-center">
+                                <span className="text-black font-bold text-sm">E</span>
+                            </div>
+                            <span className="text-xl font-bold bg-gradient-to-r from-brand-yellow to-yellow-400 bg-clip-text text-transparent">
+                                Everloop
+                            </span>
+                        </Link>
+                    </div>
+
+                    <div className="flex items-center gap-4 whitespace-nowrap">
+                        <ThemeToggle />
+                        <LanguageSwitcher />
+                    </div>
                 </div>
             </header>
             <MobileSidebar open={showMobileMenu} onClose={() => setShowMobileMenu(false)} />

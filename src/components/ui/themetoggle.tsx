@@ -13,11 +13,28 @@ export const ThemeToggle = () => {
 
     return (
         <button
-            className="text-brand-gray hover:text-brand-black dark:text-white"
+            className="relative h-9 w-9 rounded-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-100 shadow-md hover:shadow-lg dark:shadow-dark smooth-transition active:scale-95"
             onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
             aria-label="Toggle Theme"
         >
-            {resolvedTheme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+            <div className="relative w-4 h-4 mx-auto">
+                <Sun 
+                    size={16} 
+                    className={`absolute top-0 left-0 transition-all duration-500 ${
+                        resolvedTheme === 'dark' 
+                        ? 'rotate-90 scale-0 opacity-0' 
+                        : 'rotate-0 scale-100 opacity-100'
+                    }`} 
+                />
+                <Moon 
+                    size={16} 
+                    className={`absolute top-0 left-0 transition-all duration-500 ${
+                        resolvedTheme === 'dark' 
+                        ? 'rotate-0 scale-100 opacity-100' 
+                        : '-rotate-90 scale-0 opacity-0'
+                    }`} 
+                />
+            </div>
         </button>
     );
 };

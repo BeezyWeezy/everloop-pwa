@@ -23,62 +23,101 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user, onEdit }) 
     const { t } = useTranslation();
 
     return (
-        <Card className="p-6">
-            <CardHeader className="flex flex-row items-center justify-between">
+        <div className="space-y-6">
+            {/* Header with title and edit button */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <CardTitle className="text-2xl font-bold">{t("profileInfo")}</CardTitle>
-                    <p className="text-sm text-muted-foreground">
+                    <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+                        {t("profileInfo")}
+                    </h1>
+                    <p className="text-slate-600 dark:text-slate-400 mt-2">
                         {t("mainProfileInfo")}
                     </p>
                 </div>
-                {/* Кнопка редактирования профиля */}
                 {onEdit && (
                     <Button
                         variant="outline"
                         size="sm"
                         onClick={onEdit}
+                        className="self-start sm:self-auto"
                     >
                         {t("edit")}
                     </Button>
                 )}
-            </CardHeader>
+            </div>
 
-            <CardContent className="flex flex-col lg:flex-row lg:items-center lg:gap-8">
-                {/* Аватар */}
-                <Avatar className="w-24 h-24">
-                    <AvatarImage src={user.avatar || undefined} alt={user.name} />
-                    <AvatarFallback>
-                        {user.name
-                            .split(" ")
-                            .map((word) => word.charAt(0))
-                            .join("")
-                            .toUpperCase()}
-                    </AvatarFallback>
-                </Avatar>
+            {/* Profile Card */}
+            <Card className="border-0 shadow-lg">
+                <CardContent className="p-4 sm:p-6 lg:p-8">
+                    <div className="flex flex-col lg:flex-row lg:items-start lg:gap-8">
+                        {/* Avatar section */}
+                        <div className="flex flex-col items-center lg:items-start gap-4">
+                            <Avatar className="w-24 h-24 sm:w-32 sm:h-32 border-4 border-white dark:border-slate-600 shadow-xl">
+                                <AvatarImage src={user.avatar || undefined} alt={user.name} />
+                                <AvatarFallback className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-brand-yellow to-yellow-400 text-black">
+                                    {user.name
+                                        .split(" ")
+                                        .map((word) => word.charAt(0))
+                                        .join("")
+                                        .toUpperCase()}
+                                </AvatarFallback>
+                            </Avatar>
+                            <div className="text-center lg:text-left">
+                                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100">
+                                    {user.name}
+                                </h2>
+                                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
+                                    {user.email}
+                                </p>
+                            </div>
+                        </div>
 
-                {/* Информация о пользователе */}
-                <div className="mt-4 lg:mt-0 flex-1 space-y-4 text-sm">
-                    <p>
-                        <strong>{t("name")}:</strong> {user.name}
-                    </p>
-                    <p>
-                        <strong>{t("email")}:</strong> {user.email}
-                    </p>
-                    <p>
-                        <strong>{t("registrationDate")}:</strong> {new Date(user.registeredAt).toLocaleDateString()}
-                    </p>
-                    {user.lastLoginAt ? (
-                        //TODO: перевести если нужны будут данные
-                        <p>
-                            <strong>Последний вход:</strong> {new Date(user.lastLoginAt).toLocaleDateString()}
-                        </p>
-                    ) : (
-                        <p>
-                            <strong>Последний вход:</strong> Нет данных
-                        </p>
-                    )}
-                </div>
-            </CardContent>
-        </Card>
+                        {/* User information grid */}
+                        <div className="flex-1 mt-6 lg:mt-0">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
+                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 sm:p-4">
+                                    <dt className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
+                                        {t("name")}
+                                    </dt>
+                                    <dd className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100">
+                                        {user.name}
+                                    </dd>
+                                </div>
+                                
+                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 sm:p-4">
+                                    <dt className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
+                                        {t("email")}
+                                    </dt>
+                                    <dd className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100 break-all">
+                                        {user.email}
+                                    </dd>
+                                </div>
+                                
+                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 sm:p-4">
+                                    <dt className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
+                                        {t("registrationDate")}
+                                    </dt>
+                                    <dd className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100">
+                                        {new Date(user.registeredAt).toLocaleDateString()}
+                                    </dd>
+                                </div>
+                                
+                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 sm:p-4">
+                                    <dt className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
+                                        Последний вход
+                                    </dt>
+                                    <dd className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100">
+                                        {user.lastLoginAt 
+                                            ? new Date(user.lastLoginAt).toLocaleDateString()
+                                            : 'Нет данных'
+                                        }
+                                    </dd>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
     )
 }

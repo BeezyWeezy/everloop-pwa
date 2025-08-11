@@ -16,22 +16,37 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { GoogleIcon } from '@/components/icons'
+import { ThemeToggle } from '@/components/ui/themetoggle'
+import { LanguageSwitcher } from '@/i18n/LanguageSwitcher'
+import { useTranslation } from 'react-i18next'
 
 interface AuthFormProps extends React.ComponentPropsWithoutRef<'div'> {
     mode: 'login' | 'register'
 }
 
 export function AuthForm({ className, mode, ...props }: AuthFormProps) {
+    const { t, i18n } = useTranslation()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [fullName, setFullName] = useState('')
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
+    const [, forceUpdate] = useState({})
     const setUser = useUserStore((s) => s.setUser)
     const router = useRouter()
 
     const isRegister = mode === 'register'
+
+    // Принудительная перерисовка при смене языка
+    useEffect(() => {
+        const handleLanguageChange = () => {
+            forceUpdate({})
+        }
+
+        i18n.on('languageChanged', handleLanguageChange)
+        return () => i18n.off('languageChanged', handleLanguageChange)
+    }, [i18n])
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data }) => {
@@ -97,77 +112,95 @@ export function AuthForm({ className, mode, ...props }: AuthFormProps) {
     }
 
     return (
-        <div className={cn('flex flex-col gap-6 min-h-screen items-center justify-center px-4', className)} {...props}>
-            <Card className="w-full max-w-md bg-background border border-border shadow-xl rounded-xl">
-                <CardHeader className="text-center">
-                    <CardTitle className="text-2xl font-semibold text-primary">
-                        {isRegister ? 'Создайте аккаунт' : 'Добро пожаловать'}
+        <div className={cn('relative flex flex-col gap-6 min-h-screen items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-brand-darker dark:to-brand-dark smooth-transition', className)} {...props}>
+            {/* Переключатели темы и языка */}
+            <div className="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center gap-2 z-10">
+                <LanguageSwitcher />
+                <ThemeToggle />
+            </div>
+
+            {/* Логотип и название */}
+            <div className="text-center mb-4 px-4">
+                <Link href="/" className="inline-block">
+                    <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-brand-yellow to-yellow-400 bg-clip-text text-transparent smooth-transition">
+                        Everloop
+                    </h1>
+                </Link>
+                <p className="text-slate-600 dark:text-slate-400 mt-2 text-sm sm:text-base">
+                    PWA & Spy Service Platform
+                </p>
+            </div>
+
+            <Card className="w-full max-w-md mx-4 bg-white/90 dark:bg-brand-accent/90 backdrop-blur-sm border border-slate-200 dark:border-slate-600 shadow-2xl dark:shadow-dark rounded-xl smooth-transition">{/* Card content */}
+                <CardHeader className="text-center px-4 sm:px-6">
+                    <CardTitle className="text-xl sm:text-2xl font-semibold text-slate-900 dark:text-slate-100">
+                        {isRegister ? t('createAccount') : t('welcome')}
                     </CardTitle>
-                    <CardDescription>
-                        {isRegister ? 'Введите данные для регистрации' : 'Войдите через Telegram, Google или email'}
+                    <CardDescription className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
+                        {isRegister ? t('enterRegistrationData') : t('signInWith')}
                     </CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleSubmit} className="grid gap-6">
+                <CardContent className="px-4 sm:px-6">
+                    <form onSubmit={handleSubmit} className="grid gap-4 sm:gap-6">
                         {error && (
                             <Alert variant="destructive">
                                 <AlertTitle>Ошибка</AlertTitle>
-                                <AlertDescription>{error}</AlertDescription>
+                                <AlertDescription className="text-sm">{error}</AlertDescription>
                             </Alert>
                         )}
-                        <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-3 sm:gap-4">
                         <Button
                             variant="outline"
-                            className="w-full hover:bg-primary/10 hover:text-primary transition-colors"
-                        >
-                            {isRegister ? 'Регистрация через Telegram' : 'Войти через Telegram'}
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="w-full hover:bg-primary/10 hover:text-primary transition-colors flex items-center gap-2"
+                            className="w-full h-11 sm:h-12 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 smooth-transition text-sm sm:text-base"
                             onClick={(e) => {
                                 e.preventDefault();
                                 handleGoogleSignIn();
                             }}
                         >
-                            <GoogleIcon className="h-5 w-5" />
+                            <GoogleIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                             <span>
-                                {isRegister ? 'Регистрация через Google' : 'Войти через Google'}
+                                {isRegister ? t('signUpWithGoogle') : t('signInWithGoogle')}
                             </span>
                         </Button>
         </div>
                         <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
               <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                Или с помощью email
+                {t('orWithEmail')}
               </span>
                         </div>
-                        <div className="grid gap-4">
+                        <div className="grid gap-3 sm:gap-4">
                             {isRegister && (
                                 <div className="grid gap-2">
-                                    <Label htmlFor="fullName">Имя</Label>
-                                    <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+                                    <Label htmlFor="fullName" className="text-sm font-medium">{t('name')}</Label>
+                                    <Input 
+                                        id="fullName" 
+                                        value={fullName} 
+                                        onChange={(e) => setFullName(e.target.value)} 
+                                        className="h-11 sm:h-12 text-base"
+                                        required 
+                                    />
                                 </div>
                             )}
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email</Label>
+                                <Label htmlFor="email" className="text-sm font-medium">{t('email')}</Label>
                                 <Input
                                     id="email"
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="m@example.com"
-                                    className="bg-background border border-border placeholder:text-muted-foreground"
+                                    className="bg-background border border-border placeholder:text-muted-foreground h-11 sm:h-12 text-base"
                                     required
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="password">Пароль</Label>
+                                <Label htmlFor="password" className="text-sm font-medium">{t('password')}</Label>
                                 <Input
                                     id="password"
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="bg-background border border-border placeholder:text-muted-foreground"
+                                    className="bg-background border border-border placeholder:text-muted-foreground h-11 sm:h-12 text-base"
                                     required
                                 />
                             </div>
@@ -177,19 +210,19 @@ export function AuthForm({ className, mode, ...props }: AuthFormProps) {
                                         href="/forgot-password"
                                         className="text-primary hover:underline"
                                     >
-                                        Забыли пароль?
+                                        {t('forgotPassword')}
                                     </Link>
                                 </div>
                             )}
                             {isRegister && (
                                 <div className="grid gap-2">
-                                    <Label htmlFor="confirmPassword">Подтвердите пароль</Label>
+                                    <Label htmlFor="confirmPassword" className="text-sm font-medium">{t('confirmPassword')}</Label>
                                     <Input
                                         id="confirmPassword"
                                         type="password"
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
-                                        className="bg-background border border-border placeholder:text-muted-foreground"
+                                        className="bg-background border border-border placeholder:text-muted-foreground h-11 sm:h-12 text-base"
                                         required
                                     />
                                 </div>
@@ -197,23 +230,23 @@ export function AuthForm({ className, mode, ...props }: AuthFormProps) {
                             <Button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-brand-yellow text-black hover:bg-yellow-400 transition"
+                                className="w-full h-11 sm:h-12 bg-brand-yellow text-black hover:bg-yellow-400 transition font-medium text-sm sm:text-base"
                             >
-                                {loading ? 'Загрузка...' : isRegister ? 'Зарегистрироваться' : 'Войти'}
+                                {loading ? t('loading') : isRegister ? t('signUp') : t('signIn')}
                             </Button>
-                            <div className="mt-4 text-center text-sm text-muted-foreground">
+                            <div className="mt-4 text-center text-xs sm:text-sm text-muted-foreground">
                                 {isRegister ? (
                                     <p>
-                                        Уже есть аккаунт?{' '}
+                                        {t('alreadyHaveAccount')}{' '}
                                         <Link href="/signin" className="text-primary hover:underline font-medium">
-                                            Войти
+                                            {t('signIn')}
                                         </Link>
                                     </p>
                                 ) : (
                                     <p>
-                                        Нет аккаунта?{' '}
-                                        <Link href="/signup" className="text-primary hover:underline font-medium">
-                                            Зарегистрироваться
+                                        {t('noAccount')}{' '}
+                                        <Link href="/signup" className="text-brand-yellow hover:text-yellow-400 hover:underline font-medium smooth-transition">
+                                            {t('signUp')}
                                         </Link>
                                     </p>
                                 )}
@@ -222,8 +255,8 @@ export function AuthForm({ className, mode, ...props }: AuthFormProps) {
                     </form>
                 </CardContent>
             </Card>
-            <div className="text-balance text-center text-xs text-muted-foreground mt-4 [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">
-                Нажимая продолжить, вы соглашаетесь с <a href="#">условиями сервиса</a> и <a href="#">политикой конфиденциальности</a>.
+            <div className="text-balance text-center text-xs text-slate-600 dark:text-slate-400 mt-4 [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-brand-yellow">
+                {t('termsAndPrivacy')} <a href="#">{t('termsOfService')}</a> {t('and')} <a href="#">{t('privacyPolicy')}</a>.
             </div>
         </div>
     )

@@ -9,6 +9,7 @@ import {
     LogOut,
     Bell,
     Star,
+    Smartphone,
 } from "lucide-react"
 import {
     DropdownMenu,
@@ -38,7 +39,7 @@ export default function AppSidebar({ collapsed }: { collapsed: boolean }) {
 
     return (
         <Sidebar
-            className={`h-screen flex flex-col border-r bg-background transition-all duration-300 ${collapsed ? 'w-16' : 'w-64'}`}
+            className={`h-screen border-r bg-background transition-all duration-300 hidden md:flex md:flex-col ${collapsed ? 'w-16' : 'w-64'}`}
         >
             <SidebarHeader className="flex items-center justify-between px-4 py-2 border-b">
                 {!collapsed && <span className="font-semibold text-lg">logo</span>}

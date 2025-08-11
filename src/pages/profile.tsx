@@ -72,7 +72,16 @@ export default function ProfilePage() {
 
     const renderActiveComponent = () => {
         if (isLoading) {
-            return <p>Загрузка...</p>
+            return (
+                <div className="flex items-center justify-center py-20">
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="w-8 h-8 border-3 border-brand-yellow border-t-transparent rounded-full animate-spin"></div>
+                        <p className="text-slate-600 dark:text-slate-400 font-medium">
+                            {t('loading')}...
+                        </p>
+                    </div>
+                </div>
+            )
         }
 
         switch (activeTab) {
@@ -110,31 +119,53 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="container mx-auto p-6 flex space-x-8">
-            {/* Сайдбар */}
-            <aside className="w-1/4 bg-gray-50 p-4 rounded-lg shadow">
-                <ul className="space-y-4">
-                    {tabs.map((tab) => (
-                        <li key={tab.id}>
-                            <button
-                                onClick={() => setActiveTab(tab.id)}
-                                className={`w-full text-left py-2 px-4 rounded ${
-                                    tab.id === activeTab
-                                        ? "bg-blue-500 text-white"
-                                        : "text-blue-600 hover:bg-blue-100"
-                                }`}
-                            >
-                                {tab.label}
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            </aside>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-brand-darker dark:to-brand-dark smooth-transition">
+            <div className="container mx-auto p-6 max-w-7xl">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                    {/* Sidebar с навигацией */}
+                    <aside className="lg:col-span-1">
+                        <div className="bg-white/90 dark:bg-brand-accent/90 backdrop-blur-sm border border-slate-200 dark:border-slate-600 rounded-xl shadow-xl dark:shadow-dark p-6 sticky top-6">
+                            <div className="flex items-center gap-3 mb-6 pb-6 border-b border-slate-200 dark:border-slate-600">
+                                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-brand-yellow to-yellow-400 flex items-center justify-center">
+                                    <span className="text-black font-bold text-lg">
+                                        {user?.name?.charAt(0) || 'U'}
+                                    </span>
+                                </div>
+                                <div>
+                                    <h2 className="font-semibold text-slate-900 dark:text-slate-100">
+                                        {user?.name || 'Пользователь'}
+                                    </h2>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                                        {t('profile')}
+                                    </p>
+                                </div>
+                            </div>
+                            <nav className="space-y-2">
+                                {tabs.map((tab) => (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        className={`w-full text-left px-4 py-3 rounded-lg font-medium smooth-transition ${
+                                            tab.id === activeTab
+                                                ? "bg-brand-yellow text-black shadow-lg"
+                                                : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-100"
+                                        }`}
+                                    >
+                                        {tab.label}
+                                    </button>
+                                ))}
+                            </nav>
+                        </div>
+                    </aside>
 
-            {/* Контент */}
-            <main className="w-3/4 bg-white p-6 rounded-lg shadow">
-                {renderActiveComponent()}
-            </main>
+                    {/* Main content */}
+                    <main className="lg:col-span-3">
+                        <div className="bg-white/90 dark:bg-brand-accent/90 backdrop-blur-sm border border-slate-200 dark:border-slate-600 rounded-xl shadow-xl dark:shadow-dark p-8">
+                            {renderActiveComponent()}
+                        </div>
+                    </main>
+                </div>
+            </div>
         </div>
     )
 }

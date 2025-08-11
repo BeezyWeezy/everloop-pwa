@@ -24,25 +24,29 @@ export default function DashboardPage() {
             <Head>
                 <title>Dashboard</title>
             </Head>
-            <div className="grid gap-4 p-6">
+            <div className="grid gap-4 sm:gap-6 p-4 sm:p-6">
                 {/* Статистика */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <Card>
-                        <CardHeader><CardTitle>{t("myPwa")}</CardTitle></CardHeader>
-                        <CardContent><p className="text-2xl font-bold">{pwas.length}</p></CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
+                    <Card className="relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 opacity-10 group-hover:opacity-20 smooth-transition"></div>
+                        <CardHeader className="pb-2"><CardTitle className="text-slate-600 dark:text-slate-300 text-sm sm:text-base">{t("myPwa")}</CardTitle></CardHeader>
+                        <CardContent className="pt-0"><p className="text-xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">{pwas.length}</p></CardContent>
                     </Card>
-                    <Card>
-                        <CardHeader><CardTitle>{t("creativesInUse")}</CardTitle></CardHeader>
-                        <CardContent><p className="text-2xl font-bold">{creatives.length}</p></CardContent>
+                    <Card className="relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-teal-600 opacity-10 group-hover:opacity-20 smooth-transition"></div>
+                        <CardHeader className="pb-2"><CardTitle className="text-slate-600 dark:text-slate-300 text-sm sm:text-base">{t("creativesInUse")}</CardTitle></CardHeader>
+                        <CardContent className="pt-0"><p className="text-xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">{creatives.length}</p></CardContent>
                     </Card>
-                    <Card>
-                        <CardHeader><CardTitle>{t("bundles")}</CardTitle></CardHeader>
-                        <CardContent><p className="text-2xl font-bold">{linkedSets.length}</p></CardContent>
+                    <Card className="relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-600 opacity-10 group-hover:opacity-20 smooth-transition"></div>
+                        <CardHeader className="pb-2"><CardTitle className="text-slate-600 dark:text-slate-300 text-sm sm:text-base">{t("bundles")}</CardTitle></CardHeader>
+                        <CardContent className="pt-0"><p className="text-xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">{linkedSets.length}</p></CardContent>
                     </Card>
-                    <Card>
-                        <CardHeader><CardTitle>{t("avgCr")}</CardTitle></CardHeader>
-                        <CardContent>
-                            <p className="text-2xl font-bold text-green-600">
+                    <Card className="relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-green-600 opacity-10 group-hover:opacity-20 smooth-transition"></div>
+                        <CardHeader className="pb-2"><CardTitle className="text-slate-600 dark:text-slate-300 text-sm sm:text-base">{t("avgCr")}</CardTitle></CardHeader>
+                        <CardContent className="pt-0">
+                            <p className="text-xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400">
                                 {avgCr.toFixed(1)}%
                             </p>
                         </CardContent>
@@ -50,23 +54,23 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Быстрые действия */}
-                <div className="flex flex-wrap gap-4 mt-6">
-                    <Link href="/pwa"><Button>{t("createPwa")}</Button></Link>
-                    <Link href="/spy"><Button variant="outline">{t("spyCreo")}</Button></Link>
-                    <Link href="/linked"><Button variant="brand">{t("myBundles")}</Button></Link>
+                <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 mt-6 sm:mt-8">
+                    <Link href="/pwa" className="w-full sm:w-auto"><Button variant="brand" size="lg" className="w-full sm:w-auto shadow-lg hover:shadow-xl">{t("createPwa")}</Button></Link>
+                    <Link href="/spy" className="w-full sm:w-auto"><Button variant="outline" size="lg" className="w-full sm:w-auto">{t("spyCreo")}</Button></Link>
+                    <Link href="/linked" className="w-full sm:w-auto"><Button variant="default" size="lg" className="w-full sm:w-auto">{t("myBundles")}</Button></Link>
                 </div>
 
                 {/* Топ связка */}
                 {topPwa && topCreative && (
-                    <div className="mt-8">
+                    <div className="mt-6 sm:mt-8">
                         <Card>
-                            <CardHeader><CardTitle>🔥 {t("topBundleOfTheWeek")}</CardTitle></CardHeader>
+                            <CardHeader><CardTitle className="text-lg sm:text-xl">🔥 {t("topBundleOfTheWeek")}</CardTitle></CardHeader>
                             <CardContent>
-                                <p className="text-sm text-muted-foreground mb-2">
+                                <p className="text-xs sm:text-sm text-muted-foreground mb-2">
                                     {topPwa.name} + {topCreative.text.slice(0, 40)}
                                 </p>
                                 <Progress value={topLinked.stats.cr} />
-                                <p className="mt-2 text-green-600">
+                                <p className="mt-2 text-green-600 text-sm sm:text-base">
                                     CR: {topLinked.stats.cr}%, ROI: {topLinked.stats.roi}%
                                 </p>
                             </CardContent>

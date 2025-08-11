@@ -44,9 +44,13 @@ const config: Config = {
                     foreground: "hsl(var(--accent-foreground))",
                 },
                 brand: {
-                    dark: "#111111",
+                    dark: "#0f172a",      // Более мягкий тёмный цвет (slate-900)
+                    darker: "#020617",    // Очень тёмный для контраста (slate-950)
                     yellow: "#F5BE37",
-                    gray: "#B2B2B2",
+                    gray: "#64748b",      // Более современный серый (slate-500)
+                    light: "#f8fafc",     // Светлый фон (slate-50)
+                    accent: "#1e293b",    // Тёмный акцент (slate-800)
+                    muted: "#334155",     // Приглушённый цвет (slate-700)
                 },
             },
             fontFamily: {

@@ -7,12 +7,12 @@ export function LinkedCard({ link }: { link: any }) {
 
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>{t("bundle")} #{link.id}</CardTitle>
+        <Card className="h-full">
+            <CardHeader className="pb-3">
+                <CardTitle className="text-base sm:text-lg">{t("bundle")} #{link.id}</CardTitle>
             </CardHeader>
-            <CardContent>
-                <p className="text-muted-foreground text-sm mb-2">CR: {link.stats.cr}%, ROI: {link.stats.roi}%</p>
+            <CardContent className="pt-0">
+                <p className="text-muted-foreground text-xs sm:text-sm mb-3">CR: {link.stats.cr}%, ROI: {link.stats.roi}%</p>
                 <Progress value={link.stats.cr} />
             </CardContent>
         </Card>

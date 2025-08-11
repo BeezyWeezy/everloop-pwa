@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
+import Head from "next/head";
 import { supabase } from "@/lib/supabaseClient";
 import { useUserStore } from "@/store/useUserStore";
 import { Layout } from "@/components/layout/Layout";
@@ -92,16 +93,28 @@ export default function App({ Component, pageProps }: AppProps) {
 
     // Рендерим страницу с Layout или без Layout
     return (
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <main className="min-h-screen bg-white text-brand-black dark:bg-brand-dark dark:text-white transition-colors duration-300">
-                {noLayout ? (
-                    <Component {...pageProps} /> // Без Layout
-                ) : (
-                    <Layout>
-                        <Component {...pageProps} /> {/* С Layout */}
-                    </Layout>
-                )}
-            </main>
-        </ThemeProvider>
+        <>
+            <Head>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+                <meta name="theme-color" content="#F5BE37" />
+                <meta name="apple-mobile-web-app-capable" content="yes" />
+                <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+                <meta name="apple-mobile-web-app-title" content="Everloop" />
+                <link rel="manifest" href="/manifest.json" />
+                <link rel="icon" href="/icon-192.svg" type="image/svg+xml" />
+                <link rel="apple-touch-icon" href="/icon-192.svg" />
+            </Head>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+                <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900 dark:from-brand-darker dark:to-brand-dark dark:text-slate-100 smooth-transition">
+                    {noLayout ? (
+                        <Component {...pageProps} /> // Без Layout
+                    ) : (
+                        <Layout>
+                            <Component {...pageProps} /> {/* С Layout */}
+                        </Layout>
+                    )}
+                </main>
+            </ThemeProvider>
+        </>
     );
 }
