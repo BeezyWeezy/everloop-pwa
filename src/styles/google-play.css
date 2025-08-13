@@ -1,0 +1,146 @@
+/* Google Play Store specific styles */
+.google-play-page {
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.google-play-header {
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-icon {
+  border-radius: 20%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.install-button {
+  background: #1a73e8;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-weight: 500;
+  padding: 10px 24px;
+  transition: background-color 0.2s;
+}
+
+.install-button:hover {
+  background: #1557b0;
+}
+
+.screenshot-container {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.screenshot-container::-webkit-scrollbar {
+  display: none;
+}
+
+.rating-bar {
+  background: #e0e0e0;
+  border-radius: 2px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.rating-bar-fill {
+  background: #34a853;
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.info-section {
+  border-top: 1px solid #e0e0e0;
+  margin-top: 24px;
+  padding-top: 24px;
+}
+
+.app-badge {
+  background: #f8f9fa;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  color: #5f6368;
+  font-size: 12px;
+  padding: 4px 8px;
+}
+
+.verified-badge {
+  color: #1a73e8;
+}
+
+.editors-choice-badge {
+  background: #fff3e0;
+  border-color: #fb8c00;
+  color: #fb8c00;
+}
+
+.developer-link {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.developer-link:hover {
+  text-decoration: underline;
+}
+
+.stars-container {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.star-filled {
+  color: #fbbc04;
+  fill: currentColor;
+}
+
+.star-empty {
+  color: #dadce0;
+}
+
+.sidebar-section {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.info-label {
+  color: #5f6368;
+}
+
+.info-value {
+  color: #202124;
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .google-play-page {
+    padding: 0 16px;
+  }
+  
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .app-icon {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .screenshot-container {
+    margin: 0 -16px;
+    padding: 0 16px;
+  }
+}
