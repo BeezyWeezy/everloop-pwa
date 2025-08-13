@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useUserStore } from "@/store/useUserStore";
 import { Layout } from "@/components/layout/Layout";
 import { ThemeProvider } from "@/components/theme-provider";
+import { PwaProvider } from "@/context/PwaContext";
 import "@/styles/globals.css";
 import "@/i18n/i18n";
 
@@ -105,15 +106,17 @@ export default function App({ Component, pageProps }: AppProps) {
                 <link rel="apple-touch-icon" href="/icon-192.svg" />
             </Head>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-                <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900 dark:from-brand-darker dark:to-brand-dark dark:text-slate-100 smooth-transition">
-                    {noLayout ? (
-                        <Component {...pageProps} /> // Без Layout
-                    ) : (
-                        <Layout>
-                            <Component {...pageProps} /> {/* С Layout */}
-                        </Layout>
-                    )}
-                </main>
+                <PwaProvider>
+                    <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900 dark:from-brand-darker dark:to-brand-dark dark:text-slate-100 smooth-transition">
+                        {noLayout ? (
+                            <Component {...pageProps} /> // Без Layout
+                        ) : (
+                            <Layout>
+                                <Component {...pageProps} /> {/* С Layout */}
+                            </Layout>
+                        )}
+                    </main>
+                </PwaProvider>
             </ThemeProvider>
         </>
     );

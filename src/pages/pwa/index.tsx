@@ -1,18 +1,20 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus, BarChart3, Settings, Globe, TrendingUp, Users, Download, Search, Filter, SortAsc, SortDesc, X } from "lucide-react";
+import { Plus, BarChart3, Settings, Globe, TrendingUp, Users, Search, Filter, SortAsc, SortDesc, X, Loader2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import Head from "next/head";
-import { pwas } from "@/lib/mocks/pwas";
-import { PwaCard } from "@/components/cards/PwaCard";
+import { getUserPWAs } from "@/lib/pwaApi";
+import { usePWAStore } from "@/store/usePWAStore";
+import { PWAListItem } from "@/types/pwa";
 
 export default function PwaIndexPage() {
     const { t } = useTranslation();
+    const { pwas, loading, error, setPWAs, setLoading, setError } = usePWAStore();
 
     // States for filtering and searching
     const [searchQuery, setSearchQuery] = useState("");
@@ -20,11 +22,32 @@ export default function PwaIndexPage() {
     const [sortBy, setSortBy] = useState<string>("name");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
+    // Загрузка PWA при монтировании компонента
+    useEffect(() => {
+        loadUserPWAs();
+    }, []);
+
+    const loadUserPWAs = async () => {
+        setLoading(true);
+        setError(null);
+        
+        const { data, error } = await getUserPWAs();
+        
+        if (error) {
+            setError(error.message || 'Ошибка загрузки PWA');
+        } else {
+            setPWAs(data || []);
+        }
+        
+        setLoading(false);
+    };
+
     const stats = {
         totalPwas: pwas.length,
-        activePwas: pwas.filter(p => p.status === 'active').length,
-        totalDownloads: pwas.reduce((sum, p) => sum + (p.downloads || 0), 0),
-        avgRating: 4.6
+        activePwas: pwas.filter(p => p.status === 'deployed').length,
+        draftPwas: pwas.filter(p => p.status === 'draft').length,
+        readyPwas: pwas.filter(p => p.status === 'ready').length,
+        pausedPwas: pwas.filter(p => p.status === 'paused').length
     };
 
     // Filtered and sorted PWAs
@@ -35,8 +58,7 @@ export default function PwaIndexPage() {
         if (searchQuery.trim()) {
             filtered = filtered.filter(pwa => 
                 pwa.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                pwa.domain.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                (pwa.description && pwa.description.toLowerCase().includes(searchQuery.toLowerCase()))
+                pwa.domain.toLowerCase().includes(searchQuery.toLowerCase())
             );
         }
 
@@ -55,17 +77,17 @@ export default function PwaIndexPage() {
                     aValue = a.name.toLowerCase();
                     bValue = b.name.toLowerCase();
                     break;
-                case "downloads":
-                    aValue = a.downloads || 0;
-                    bValue = b.downloads || 0;
-                    break;
-                case "rating":
-                    aValue = a.rating || 0;
-                    bValue = b.rating || 0;
+                case "status":
+                    aValue = a.status;
+                    bValue = b.status;
                     break;
                 case "created":
-                    aValue = new Date(a.createdAt);
-                    bValue = new Date(b.createdAt);
+                    aValue = new Date(a.created_at);
+                    bValue = new Date(b.created_at);
+                    break;
+                case "updated":
+                    aValue = new Date(a.updated_at);
+                    bValue = new Date(b.updated_at);
                     break;
                 default:
                     aValue = a.name.toLowerCase();
@@ -78,7 +100,7 @@ export default function PwaIndexPage() {
         });
 
         return filtered;
-    }, [searchQuery, statusFilter, sortBy, sortOrder]);
+    }, [pwas, searchQuery, statusFilter, sortBy, sortOrder]);
 
     const clearFilters = () => {
         setSearchQuery("");
@@ -114,12 +136,6 @@ export default function PwaIndexPage() {
                             <Button variant="outline" className="w-full sm:w-auto">
                                 <BarChart3 className="w-4 h-4 mr-2" />
                                 Аналитика
-                            </Button>
-                        </Link>
-                        <Link href="/pwa/settings" className="w-full sm:w-auto">
-                            <Button variant="outline" className="w-full sm:w-auto">
-                                <Settings className="w-4 h-4 mr-2" />
-                                Настройки
                             </Button>
                         </Link>
                     </div>
@@ -162,13 +178,13 @@ export default function PwaIndexPage() {
                     <Card className="hover:shadow-lg transition-shadow">
                         <CardContent className="p-4 sm:p-6">
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                                    <Download className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                                <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+                                    <Settings className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                                 </div>
                                 <div>
-                                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Скачиваний</p>
+                                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Черновики</p>
                                     <p className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-slate-100">
-                                        {stats.totalDownloads.toLocaleString()}
+                                        {stats.draftPwas}
                                     </p>
                                 </div>
                             </div>
@@ -178,13 +194,13 @@ export default function PwaIndexPage() {
                     <Card className="hover:shadow-lg transition-shadow">
                         <CardContent className="p-4 sm:p-6">
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
-                                    <Users className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+                                <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+                                    <Settings className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                                 </div>
                                 <div>
-                                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Рейтинг</p>
+                                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Приостановлено</p>
                                     <p className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-slate-100">
-                                        {stats.avgRating}
+                                        {stats.pausedPwas}
                                     </p>
                                 </div>
                             </div>
@@ -192,150 +208,35 @@ export default function PwaIndexPage() {
                     </Card>
                 </div>
 
-                {/* Filters and Search */}
-                <Card>
-                    <CardContent className="p-4 sm:p-6">
-                        <div className="space-y-4">
-                            {/* Search Bar */}
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <Input
-                                    placeholder="Поиск по названию, домену или описанию..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="pl-10"
-                                />
-                                {searchQuery && (
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => setSearchQuery("")}
-                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
-                                    >
-                                        <X className="w-4 h-4" />
-                                    </Button>
-                                )}
-                            </div>
-
-                            {/* Filters Row */}
-                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                                {/* Status Filter */}
-                                <div className="flex-1">
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="outline" className="w-full justify-between">
-                                                <div className="flex items-center gap-2">
-                                                    <Filter className="w-4 h-4" />
-                                                    {statusFilter === "all" ? "Все статусы" : 
-                                                     statusFilter === "active" ? "Активные" :
-                                                     statusFilter === "draft" ? "Черновики" : "Приостановленные"}
-                                                </div>
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent className="w-56">
-                                            <DropdownMenuItem onClick={() => setStatusFilter("all")}>
-                                                Все статусы
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setStatusFilter("active")}>
-                                                <div className="flex items-center gap-2">
-                                                    <Badge variant="default" className="w-2 h-2 p-0 rounded-full bg-green-500"></Badge>
-                                                    Активные
-                                                </div>
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setStatusFilter("draft")}>
-                                                <div className="flex items-center gap-2">
-                                                    <Badge variant="secondary" className="w-2 h-2 p-0 rounded-full bg-yellow-500"></Badge>
-                                                    Черновики
-                                                </div>
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setStatusFilter("paused")}>
-                                                <div className="flex items-center gap-2">
-                                                    <Badge variant="secondary" className="w-2 h-2 p-0 rounded-full bg-slate-400"></Badge>
-                                                    Приостановленные
-                                                </div>
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </div>
-
-                                {/* Sort Options */}
-                                <div className="flex-1">
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="outline" className="w-full justify-between">
-                                                <div className="flex items-center gap-2">
-                                                    {sortOrder === "asc" ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
-                                                    {sortBy === "name" ? "По названию" :
-                                                     sortBy === "downloads" ? "По скачиваниям" :
-                                                     sortBy === "rating" ? "По рейтингу" : "По дате"}
-                                                </div>
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent className="w-56">
-                                            <DropdownMenuItem onClick={() => setSortBy("name")}>
-                                                По названию
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setSortBy("downloads")}>
-                                                По скачиваниям
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setSortBy("rating")}>
-                                                По рейтингу
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setSortBy("created")}>
-                                                По дате создания
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem 
-                                                onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-                                                className="border-t mt-1 pt-1"
-                                            >
-                                                {sortOrder === "asc" ? "По убыванию" : "По возрастанию"}
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </div>
-
-                                {/* Clear Filters */}
-                                {(searchQuery || statusFilter !== "all" || sortBy !== "name" || sortOrder !== "asc") && (
-                                    <Button variant="ghost" onClick={clearFilters} className="whitespace-nowrap">
-                                        <X className="w-4 h-4 mr-2" />
-                                        Сбросить
-                                    </Button>
-                                )}
-                            </div>
-
-                            {/* Results Count */}
-                            <div className="flex justify-between items-center text-sm text-slate-600 dark:text-slate-400">
-                                <span>
-                                    Найдено: {filteredAndSortedPwas.length} из {pwas.length} PWA
-                                </span>
-                                {(searchQuery || statusFilter !== "all") && (
-                                    <span className="text-brand-yellow">
-                                        Применены фильтры
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
                 {/* PWA List */}
                 <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                        <h2 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-100">
-                            Ваши PWA приложения
-                        </h2>
-                        <Link href="/pwa/settings">
-                            <Button variant="ghost" size="sm">
-                                <Settings className="w-4 h-4 mr-2" />
-                                Настройки
-                            </Button>
-                        </Link>
-                    </div>
-                    
-                    {filteredAndSortedPwas.length > 0 ? (
+                    {/* Loading State */}
+                    {loading ? (
+                        <div className="flex justify-center items-center py-12">
+                            <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+                            <span className="ml-2 text-slate-600 dark:text-slate-400">Загрузка PWA...</span>
+                        </div>
+                    ) : error ? (
+                        <Card className="text-center py-12 border-red-200 dark:border-red-800">
+                            <CardContent>
+                                <div className="text-red-500 mb-4">
+                                    <X className="w-12 h-12 mx-auto" />
+                                </div>
+                                <h3 className="text-lg font-semibold text-red-900 dark:text-red-100 mb-2">
+                                    Ошибка загрузки
+                                </h3>
+                                <p className="text-red-600 dark:text-red-400 mb-6">
+                                    {error}
+                                </p>
+                                <Button variant="outline" onClick={loadUserPWAs}>
+                                    Попробовать снова
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    ) : filteredAndSortedPwas.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                             {filteredAndSortedPwas.map(pwa => (
-                                <PwaCard key={pwa.id} pwa={pwa} />
+                                <PWACardSimple key={pwa.id} pwa={pwa} />
                             ))}
                         </div>
                     ) : pwas.length === 0 ? (
@@ -376,5 +277,211 @@ export default function PwaIndexPage() {
                 </div>
             </div>
         </>
+    );
+}
+
+// Простая карточка PWA
+function PWACardSimple({ pwa }: { pwa: PWAListItem }) {
+    const { updatePWAInStore, removePWA } = usePWAStore();
+    const [loading, setLoading] = useState<string | null>(null);
+
+    const getStatusColor = (status: PWAListItem['status']) => {
+        switch (status) {
+            case 'deployed': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
+            case 'ready': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
+            case 'building': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
+            case 'error': return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
+            case 'paused': return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400';
+            default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400';
+        }
+    };
+
+    const getStatusText = (status: PWAListItem['status']) => {
+        switch (status) {
+            case 'deployed': return 'Активно';
+            case 'ready': return 'Готово';
+            case 'building': return 'Сборка';
+            case 'error': return 'Ошибка';
+            case 'paused': return 'Приостановлено';
+            case 'draft': return 'Черновик';
+            default: return status;
+        }
+    };
+
+    const handleStatusChange = async (newStatus: 'deployed' | 'paused') => {
+        setLoading(newStatus);
+        try {
+            const { updatePWAStatus } = await import('@/lib/pwaApi');
+            const { data, error } = await updatePWAStatus(pwa.id, newStatus);
+            
+            if (error) {
+                alert('Ошибка изменения статуса: ' + (error.message || 'Неизвестная ошибка'));
+                return;
+            }
+
+            if (data) {
+                updatePWAInStore(pwa.id, { status: data.status, published_at: data.published_at });
+            }
+        } catch (error) {
+            alert('Ошибка изменения статуса');
+        } finally {
+            setLoading(null);
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!confirm('Вы уверены, что хотите удалить это PWA? Это действие нельзя отменить.')) {
+            return;
+        }
+
+        setLoading('delete');
+        try {
+            const { deletePWA } = await import('@/lib/pwaApi');
+            const { error } = await deletePWA(pwa.id);
+            
+            if (error) {
+                alert('Ошибка удаления: ' + (error.message || 'Неизвестная ошибка'));
+                return;
+            }
+
+            removePWA(pwa.id);
+        } catch (error) {
+            alert('Ошибка удаления PWA');
+        } finally {
+            setLoading(null);
+        }
+    };
+
+    // Моковые данные метрик (в реальности будут приходить с сервера)
+    // Заглушка для метрик (пока без реальных данных)
+    const metrics = {
+        clicks: 0,
+        click2inst: 0,
+        installs: pwa.installs || 0,
+        ftds: 0,
+        cr: 0,
+        last_updated: new Date().toISOString()
+    };    return (
+        <Card className="hover:shadow-lg transition-shadow group">
+            <CardContent className="p-4">
+                <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold bg-gradient-to-br from-blue-500 to-purple-600 overflow-hidden">
+                            {pwa.logo_url ? (
+                                <img 
+                                    src={pwa.logo_url} 
+                                    alt={`${pwa.name} логотип`}
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                pwa.name.charAt(0).toUpperCase()
+                            )}
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                {pwa.name}
+                            </h3>
+                        </div>
+                    </div>
+                    <Badge className={getStatusColor(pwa.status)}>
+                        {getStatusText(pwa.status)}
+                    </Badge>
+                </div>
+                
+                {/* Метрики производительности */}
+                <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-3 mb-3">
+                    <div className="grid grid-cols-5 gap-2 text-center">
+                        <div>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">Clicks</p>
+                            <p className="font-semibold text-sm">{metrics.clicks.toLocaleString()}</p>
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">Click2Inst</p>
+                            <p className="font-semibold text-sm">{metrics.click2inst}%</p>
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">Installs</p>
+                            <p className="font-semibold text-sm">{metrics.installs.toLocaleString()}</p>
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">FTDs</p>
+                            <p className="font-semibold text-sm">{metrics.ftds.toLocaleString()}</p>
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">CR</p>
+                            <p className="font-semibold text-sm">{metrics.cr}%</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-4">
+                    <span>Создано: {new Date(pwa.created_at).toLocaleDateString()}</span>
+                    {pwa.domain && <span>🌐 {pwa.domain}</span>}
+                </div>
+                
+                {/* Действия */}
+                <div className="flex gap-2">
+                    <Link href={`/pwa/${pwa.id}`} className="flex-1">
+                        <Button variant="outline" size="sm" className="w-full">
+                            <Settings className="w-4 h-4 mr-2" />
+                            Настройки
+                        </Button>
+                    </Link>
+                    
+                    {/* Активировать/Приостановить */}
+                    {pwa.status === 'deployed' ? (
+                        <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => handleStatusChange('paused')}
+                            disabled={loading === 'paused'}
+                        >
+                            {loading === 'paused' ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                                '⏸️'
+                            )}
+                        </Button>
+                    ) : pwa.status === 'paused' || pwa.status === 'ready' || pwa.status === 'draft' ? (
+                        <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => handleStatusChange('deployed')}
+                            disabled={loading === 'deployed'}
+                        >
+                            {loading === 'deployed' ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                                '▶️'
+                            )}
+                        </Button>
+                    ) : null}
+                    
+                    {/* Удалить */}
+                    <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={handleDelete}
+                        disabled={loading === 'delete'}
+                        className="text-red-600 hover:text-red-700 hover:border-red-300"
+                    >
+                        {loading === 'delete' ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                            '🗑️'
+                        )}
+                    </Button>
+                    
+                    {/* Просмотр (если развернуто) */}
+                    {pwa.status === 'deployed' && pwa.domain && (
+                        <Button variant="outline" size="sm" asChild>
+                            <a href={`https://${pwa.domain}`} target="_blank" rel="noopener noreferrer">
+                                <Globe className="w-4 h-4" />
+                            </a>
+                        </Button>
+                    )}
+                </div>
+            </CardContent>
+        </Card>
     );
 }

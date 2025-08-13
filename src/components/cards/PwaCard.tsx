@@ -1,7 +1,6 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useTranslation } from "react-i18next";
-import { PWA } from "@/lib/mocks/pwas";
 import { Badge } from "@/components/ui/badge";
 import { Globe, Download, Star, Calendar, MoreVertical, Play, Pause, Edit } from "lucide-react";
 import Link from "next/link";
@@ -11,6 +10,22 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+interface PWA {
+    id: string;
+    name: string;
+    domain: string;
+    url?: string;
+    status: 'active' | 'draft' | 'paused';
+    created_at: string;
+    description?: string;
+    downloads?: number;
+    rating?: number;
+    updated_at?: string;
+    category?: string;
+    icon_url?: string;
+    logo_url?: string;
+}
 
 export function PwaCard({ pwa }: { pwa: PWA }) {
     const { t } = useTranslation();
@@ -38,8 +53,16 @@ export function PwaCard({ pwa }: { pwa: PWA }) {
             <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                     <div className="flex items-start gap-3 min-w-0 flex-1">
-                        <div className="w-12 h-12 bg-gradient-to-r from-brand-yellow to-yellow-400 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <Globe className="w-6 h-6 text-black" />
+                        <div className="w-12 h-12 bg-gradient-to-r from-brand-yellow to-yellow-400 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                            {pwa.logo_url ? (
+                                <img 
+                                    src={pwa.logo_url} 
+                                    alt={`${pwa.name} логотип`}
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <Globe className="w-6 h-6 text-black" />
+                            )}
                         </div>
                         <div className="min-w-0 flex-1">
                             <CardTitle className="text-base sm:text-lg truncate group-hover:text-brand-yellow transition-colors">
@@ -110,7 +133,7 @@ export function PwaCard({ pwa }: { pwa: PWA }) {
                 <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-500">
                     <Calendar className="w-3 h-3" />
                     <span>
-                        Создано {new Date(pwa.createdAt).toLocaleDateString()}
+                        Создано {new Date(pwa.created_at).toLocaleDateString()}
                     </span>
                 </div>
 

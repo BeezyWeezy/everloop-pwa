@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { MobileSidebar } from "./Sidebar/MobileSidebar";
 import { ThemeToggle } from "../ui/themetoggle";
+import { usePwa } from "@/context/PwaContext";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -15,6 +16,7 @@ import { useTranslation } from "react-i18next";
 
 export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
     const { t } = useTranslation();
+    const { currentPwaName } = usePwa();
 
     const [showMobileMenu, setShowMobileMenu] = useState(false)
     const router = useRouter()
@@ -35,11 +37,30 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
                 case 'profile': label = t('profile'); break;
                 case 'analytics': label = t('analytics'); break;
                 case 'settings': label = t('settings'); break;
-                default: label = decodeURIComponent(label);
+                case '[id]': 
+                    // Если это динамический сегмент [id] и есть название PWA, используем его
+                    if (currentPwaName) {
+                        label = currentPwaName;
+                    } else {
+                        // Если название еще не загружено, пропускаем этот сегмент
+                        return null;
+                    }
+                    break;
+                default: 
+                    // Проверяем, если это UUID (динамический ID)
+                    if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(segment) && currentPwaName) {
+                        label = currentPwaName;
+                    } else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(segment)) {
+                        // Если это UUID но название еще не загружено, пропускаем
+                        return null;
+                    } else {
+                        label = decodeURIComponent(label);
+                    }
+                    break;
             }
             
             return { label, href }
-        })
+        }).filter(Boolean) // Убираем null значения
         return breadcrumbs
     }
 

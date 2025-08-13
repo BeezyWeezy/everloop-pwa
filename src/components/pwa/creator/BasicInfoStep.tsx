@@ -1,241 +1,152 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Hash, Users, FileText, X } from "lucide-react";
-import { useTranslation } from 'react-i18next';
+import { Info, Settings, Globe, FileText } from "lucide-react";
 
 interface BasicInfoStepProps {
     data: {
         name: string;
         description: string;
-        tags: string[];
-        collaborators: string[];
+        domain: string;
+        category: string;
     };
     onChange: (updates: Partial<BasicInfoStepProps['data']>) => void;
 }
 
-export function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
-    const { t } = useTranslation();
-    
-    const addTag = (tag: string) => {
-        if (tag.trim() && !data.tags.includes(tag.trim())) {
-            onChange({ tags: [...data.tags, tag.trim()] });
-        }
+type BasicInfoData = BasicInfoStepProps['data'];
+
+export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
+    const updateField = (field: keyof BasicInfoData, value: string) => {
+        onChange({ [field]: value });
     };
 
-    const removeTag = (index: number) => {
-        const newTags = data.tags.filter((_, i) => i !== index);
-        onChange({ tags: newTags });
-    };
-
-    const addCollaborator = (email: string) => {
-        if (email.trim() && !data.collaborators.includes(email.trim())) {
-            onChange({ collaborators: [...data.collaborators, email.trim()] });
-        }
-    };
-
-    const removeCollaborator = (index: number) => {
-        const newCollaborators = data.collaborators.filter((_, i) => i !== index);
-        onChange({ collaborators: newCollaborators });
-    };
+    const categories = [
+        'Casino', 'Sports Betting', 'Poker', 'Slots', 'Live Casino', 'Bingo', 'Lottery', 'Other'
+    ];
 
     return (
-        <div className="space-y-8">
-            {/* Header */}
-            <div className="text-center">
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                    {t('basicInformation')}
-                </h2>
-                <p className="text-slate-600 dark:text-slate-400">
-                    {t('fillBasicDetails')}
+        <>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                    <Settings className="w-5 h-5 text-purple-600" />
+                    Основная информация PWA
+                </CardTitle>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                    Укажите базовые параметры вашего Casino PWA приложения
                 </p>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Left Column */}
-                <div className="space-y-6">
-                    {/* App Name */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <FileText className="w-5 h-5" />
-                                {t('appNameLabel')} *
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <Input
-                                placeholder={t('appNamePlaceholder')}
-                                value={data.name}
-                                onChange={(e) => onChange({ name: e.target.value })}
-                                className="text-lg"
-                            />
-                        </CardContent>
-                    </Card>
-
-                    {/* Description */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>{t('appDescriptionLabel')}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <textarea
-                                placeholder={t('appDescriptionPlaceholder')}
-                                value={data.description}
-                                onChange={(e) => onChange({ description: e.target.value })}
-                                className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-background text-foreground resize-none"
-                                rows={3}
-                            />
-                        </CardContent>
-                    </Card>
-
-                    {/* Tags */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Hash className="w-5 h-5" />
-                                {t('tags')}
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="flex gap-2">
-                                <Input
-                                    placeholder={t('addTagPlaceholder')}
-                                    onKeyPress={(e) => {
-                                        if (e.key === 'Enter') {
-                                            addTag(e.currentTarget.value);
-                                            e.currentTarget.value = '';
-                                        }
-                                    }}
-                                />
-                                <Button
-                                    type="button"
-                                    onClick={() => {
-                                        const input = document.querySelector('input[placeholder*="' + t('addTagPlaceholder') + '"]') as HTMLInputElement;
-                                        if (input) {
-                                            addTag(input.value);
-                                            input.value = '';
-                                        }
-                                    }}
-                                    className="px-6"
-                                >
-                                    {t('add')}
-                                </Button>
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                                {data.tags.map((tag, index) => (
-                                    <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                                        {tag}
-                                        <button
-                                            onClick={() => removeTag(index)}
-                                            className="ml-1 hover:text-red-500"
-                                        >
-                                            <X className="w-3 h-3" />
-                                        </button>
-                                    </Badge>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
+            </CardHeader>
+            <CardContent className="space-y-6">
+                {/* PWA Name */}
+                <div className="space-y-2">
+                    <Label htmlFor="pwa-name" className="flex items-center gap-2">
+                        <FileText className="w-4 h-4" />
+                        Название PWA *
+                    </Label>
+                    <Input
+                        id="pwa-name"
+                        value={data.name}
+                        onChange={(e) => updateField('name', e.target.value)}
+                        placeholder="Golden Casino PWA"
+                        className="text-lg"
+                    />
+                    <p className="text-xs text-slate-500">
+                        Это внутреннее название для управления PWA. Пользователи увидят другое название.
+                    </p>
                 </div>
 
-                {/* Right Column */}
-                <div className="space-y-6">
-                    {/* Collaborators */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Users className="w-5 h-5" />
-                                {t('collaborators')}
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="flex gap-2">
-                                <Input
-                                    type="email"
-                                    placeholder={t('addCollaboratorPlaceholder')}
-                                    onKeyPress={(e) => {
-                                        if (e.key === 'Enter') {
-                                            addCollaborator(e.currentTarget.value);
-                                            e.currentTarget.value = '';
-                                        }
-                                    }}
-                                />
-                                <Button
-                                    type="button"
-                                    onClick={() => {
-                                        const input = document.querySelector('input[placeholder*="' + t('addCollaboratorPlaceholder') + '"]') as HTMLInputElement;
-                                        if (input) {
-                                            addCollaborator(input.value);
-                                            input.value = '';
-                                        }
-                                    }}
-                                    className="px-6"
-                                >
-                                    {t('add')}
-                                </Button>
-                            </div>
-                            <div className="space-y-2">
-                                {data.collaborators.map((email, index) => (
-                                    <div key={index} className="flex items-center justify-between p-2 bg-slate-50 dark:bg-slate-700 rounded-lg">
-                                        <span className="text-sm">{email}</span>
-                                        <button
-                                            onClick={() => removeCollaborator(index)}
-                                            className="text-red-500 hover:text-red-700"
-                                        >
-                                            <X className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
+                {/* Domain */}
+                <div className="space-y-2">
+                    <Label htmlFor="domain" className="flex items-center gap-2">
+                        <Globe className="w-4 h-4" />
+                        Домен *
+                    </Label>
+                    <Input
+                        id="domain"
+                        value={data.domain}
+                        onChange={(e) => updateField('domain', e.target.value)}
+                        placeholder="goldencasino.com"
+                    />
+                    <p className="text-xs text-slate-500">
+                        Домен где будет размещено PWA приложение
+                    </p>
+                </div>
 
-                    {/* Quick Setup */}
-                    <Card className="border-brand-yellow/20 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/10 dark:to-orange-900/10">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Sparkles className="w-5 h-5 text-brand-yellow" />
-                                {t('quickSetup')}
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            <p className="text-sm text-slate-600 dark:text-slate-400">
-                                {t('quickSetupDescription')}
+                {/* Description */}
+                <div className="space-y-2">
+                    <Label htmlFor="description">
+                        Описание (опционально)
+                    </Label>
+                    <Input
+                        id="description"
+                        value={data.description}
+                        onChange={(e) => updateField('description', e.target.value)}
+                        placeholder="Лучшее казино с бонусами и джекпотами"
+                    />
+                    <p className="text-xs text-slate-500">
+                        Краткое описание для внутреннего использования
+                    </p>
+                </div>
+
+                {/* Category */}
+                <div className="space-y-2">
+                    <Label>Категория</Label>
+                    <div className="flex flex-wrap gap-2">
+                        {categories.map((category) => (
+                            <Badge
+                                key={category}
+                                variant={data.category === category ? "default" : "outline"}
+                                className={`cursor-pointer transition-all ${
+                                    data.category === category 
+                                        ? 'bg-purple-600 text-white hover:bg-purple-700' 
+                                        : 'hover:bg-slate-100 dark:hover:bg-slate-800'
+                                }`}
+                                onClick={() => updateField('category', category)}
+                            >
+                                {category}
+                            </Badge>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Info Card */}
+                <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                        <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                        <div>
+                            <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-1">
+                                Что происходит дальше?
+                            </h4>
+                            <p className="text-sm text-blue-700 dark:text-blue-300">
+                                После заполнения основной информации мы настроим параметры казино, 
+                                трекинг для аналитики и push-уведомления для ретаргетинга пользователей.
                             </p>
-                            <div className="grid grid-cols-2 gap-2">
-                                <Button variant="outline" size="sm" onClick={() => {
-                                    onChange({ 
-                                        tags: ['casino', 'gambling', 'slots'],
-                                        name: 'Casino Pro',
-                                        description: 'Professional casino application'
-                                    });
-                                }}>
-                                    🎰 {t('casino')}
-                                </Button>
-                                <Button variant="outline" size="sm" onClick={() => {
-                                    onChange({ 
-                                        tags: ['sports', 'betting', 'live'],
-                                        name: 'Sports Bet',
-                                        description: 'Sports betting platform'
-                                    });
-                                }}>
-                                    ⚽ {t('sports')}
-                                </Button>
-                                <Button variant="outline" size="sm" onClick={() => {
-                                    onChange({ 
-                                        tags: ['crypto', 'trading', 'finance'],
-                                        name: 'Crypto Trader',
-                                        description: 'Cryptocurrency trading app'
-                                    });
-                                }}>
-                                    ₿ {t('crypto')}
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+
+                {/* Validation Status */}
+                <div className="border-t pt-4">
+                    <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">Готовность к следующему шагу:</span>
+                        <div className="flex items-center gap-2">
+                            {data.name.trim() && data.domain.trim() ? (
+                                <>
+                                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                    <span className="text-sm text-green-600">Готово</span>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                                    <span className="text-sm text-amber-600">
+                                        Заполните обязательные поля
+                                    </span>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </CardContent>
+        </>
     );
 }

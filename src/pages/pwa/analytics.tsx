@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,31 +24,67 @@ import {
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import Head from "next/head";
-import { pwas, PWA } from "@/lib/mocks/pwas";
+import { supabase } from "@/lib/supabaseClient";
+
+interface PWA {
+    id: string;
+    name: string;
+    domain: string;
+    status: 'draft' | 'building' | 'ready' | 'deployed' | 'paused' | 'error';
+    installs?: number;
+    rating?: number;
+}
 
 export default function PwaAnalyticsPage() {
     const { t } = useTranslation();
+    const [pwas, setPwas] = useState<PWA[]>([]);
+
+    useEffect(() => {
+        loadPwas();
+    }, []);
+
+    const loadPwas = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('pwa_projects')
+                .select('id, name, domain, status, installs')
+                .order('created_at', { ascending: false });
+            
+            if (error) {
+                console.error('Error loading PWAs:', error);
+            } else {
+                // Добавляем рейтинг как моковые данные пока
+                const pwasWithRating = (data || []).map(pwa => ({
+                    ...pwa,
+                    rating: Math.random() * 2 + 3 // рейтинг от 3 до 5
+                }));
+                setPwas(pwasWithRating);
+            }
+        } catch (error) {
+            console.error('Error loading PWAs:', error);
+        }
+    };
 
     // States for filtering
     const [timeRange, setTimeRange] = useState("30d");
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedPwas, setSelectedPwas] = useState<string[]>([]);
 
-    // Мок данные для аналитики
+    // Мок данные для аналитики  
     const analyticsData = {
-        totalDownloads: pwas.reduce((sum, p) => sum + (p.downloads || 0), 0),
+        totalDownloads: pwas.reduce((sum, p) => sum + (p.installs || 0), 0),
         totalUsers: 45670,
         avgRating: 4.5,
         conversionRate: 23.8,
         monthlyGrowth: 15.2,
-        topPwa: pwas.find(p => p.downloads === Math.max(...pwas.map(p => p.downloads || 0))),
-        downloadsByMonth: [
-            { month: 'Янв', downloads: 1200 },
-            { month: 'Фев', downloads: 1800 },
-            { month: 'Мар', downloads: 2400 },
-            { month: 'Апр', downloads: 3200 },
-            { month: 'Май', downloads: 4100 },
-            { month: 'Июн', downloads: 5200 },
+        topPwa: pwas.find(p => p.installs === Math.max(...pwas.map(p => p.installs || 0))),
+        installsByMonth: [
+            { month: 'Янв', installs: 1200 },
+            { month: 'Фев', installs: 1800 },
+            { month: 'Мар', installs: 2400 },
+            { month: 'Апр', installs: 3200 },
+            { month: 'Май', installs: 4100 },
+            { month: 'Июн', installs: 5200 },
         ],
         deviceStats: [
             { device: 'Android', percentage: 67, color: 'bg-green-500' },
@@ -207,9 +243,9 @@ export default function PwaAnalyticsPage() {
                                                 className="relative"
                                             >
                                                 {pwa.name}
-                                                {pwa.downloads && (
+                                                {pwa.installs && (
                                                     <Badge variant="secondary" className="ml-2 text-xs">
-                                                        {pwa.downloads.toLocaleString()}
+                                                        {pwa.installs.toLocaleString()}
                                                     </Badge>
                                                 )}
                                             </Button>
@@ -317,18 +353,18 @@ export default function PwaAnalyticsPage() {
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
-                                {analyticsData.downloadsByMonth.map((item, index) => (
+                                {analyticsData.installsByMonth.map((item, index) => (
                                     <div key={index} className="flex items-center justify-between">
                                         <span className="text-sm font-medium">{item.month}</span>
                                         <div className="flex items-center gap-3 flex-1 ml-4">
                                             <div className="flex-1 bg-slate-200 dark:bg-slate-700 rounded-full h-2">
                                                 <div 
                                                     className="bg-brand-yellow h-2 rounded-full transition-all duration-500"
-                                                    style={{ width: `${(item.downloads / 5200) * 100}%` }}
+                                                    style={{ width: `${(item.installs / 5200) * 100}%` }}
                                                 />
                                             </div>
                                             <span className="text-sm text-slate-600 dark:text-slate-400 min-w-[60px] text-right">
-                                                {item.downloads.toLocaleString()}
+                                                {item.installs.toLocaleString()}
                                             </span>
                                         </div>
                                     </div>
@@ -388,7 +424,7 @@ export default function PwaAnalyticsPage() {
                                     <div className="flex items-center gap-4 mt-2">
                                         <div className="flex items-center gap-1">
                                             <Download className="w-4 h-4 text-slate-500" />
-                                            <span className="text-sm">{analyticsData.topPwa.downloads?.toLocaleString()}</span>
+                                            <span className="text-sm">{analyticsData.topPwa.installs?.toLocaleString()}</span>
                                         </div>
                                         <div className="flex items-center gap-1">
                                             <Star className="w-4 h-4 text-yellow-500 fill-current" />
@@ -430,7 +466,7 @@ export default function PwaAnalyticsPage() {
                                     </div>
                                     <div className="flex items-center gap-6 text-sm">
                                         <div className="text-center">
-                                            <p className="font-semibold">{pwa.downloads?.toLocaleString() || '0'}</p>
+                                            <p className="font-semibold">{pwa.installs?.toLocaleString() || '0'}</p>
                                             <p className="text-slate-600 dark:text-slate-400">скачиваний</p>
                                         </div>
                                         <div className="text-center">
@@ -438,11 +474,11 @@ export default function PwaAnalyticsPage() {
                                             <p className="text-slate-600 dark:text-slate-400">рейтинг</p>
                                         </div>
                                         <Badge className={
-                                            pwa.status === 'active' 
+                                            pwa.status === 'deployed' 
                                                 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                                                 : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
                                         }>
-                                            {pwa.status === 'active' ? 'Активен' : 'Неактивен'}
+                                            {pwa.status === 'deployed' ? 'Активен' : 'Неактивен'}
                                         </Badge>
                                     </div>
                                 </div>

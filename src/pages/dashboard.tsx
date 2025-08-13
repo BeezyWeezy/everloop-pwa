@@ -1,6 +1,5 @@
-import { pwas } from "@/lib/mocks/pwas"
-import { creatives } from "@/lib/mocks/creatives"
-import { linkedSets } from "@/lib/mocks/linkedSets"
+import { useState, useEffect } from "react"
+import { supabase } from "@/lib/supabaseClient"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -9,15 +8,51 @@ import Link from "next/link"
 import Head from "next/head"
 import { useTranslation } from "react-i18next";
 
+interface PWA {
+    id: string;
+    name: string;
+    domain: string;
+    status: 'draft' | 'building' | 'ready' | 'deployed' | 'paused' | 'error';
+    created_at: string;
+    installs?: number;
+}
+
 export default function DashboardPage() {
     const { t } = useTranslation()
-    const topLinked = linkedSets[0]
-    const topPwa = pwas.find((p) => p.id === topLinked.pwaId)
-    const topCreative = creatives.find((c) => c.id === topLinked.creativeIds[0])
-
-    const avgCr = linkedSets.length
-        ? linkedSets.reduce((acc, l) => acc + l.stats.cr, 0) / linkedSets.length
-        : 0
+    const [pwas, setPwas] = useState<PWA[]>([])
+    const [isLoading, setIsLoading] = useState(true)
+    
+    useEffect(() => {
+        loadPwas()
+    }, [])
+    
+    const loadPwas = async () => {
+        try {
+            console.log('Loading PWAs from Supabase...');
+            const { data, error } = await supabase
+                .from('pwa_projects')
+                .select('id, name, domain, status, created_at, installs')
+                .order('created_at', { ascending: false })
+            
+            console.log('Supabase response:', { data, error });
+            
+            if (error) {
+                console.error('Error loading PWAs:', error)
+            } else {
+                console.log('Loaded PWAs count:', data?.length || 0);
+                setPwas(data || [])
+            }
+        } catch (error) {
+            console.error('Error loading PWAs:', error)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+    
+    // Заглушки для статистики (пока без реальных данных)
+    const totalCreatives = 0;
+    const totalLinkedSets = 0;
+    const avgCr = 0;
 
     return (
         <>
@@ -35,12 +70,12 @@ export default function DashboardPage() {
                     <Card className="relative overflow-hidden group">
                         <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-teal-600 opacity-10 group-hover:opacity-20 smooth-transition"></div>
                         <CardHeader className="pb-2"><CardTitle className="text-slate-600 dark:text-slate-300 text-sm sm:text-base">{t("creativesInUse")}</CardTitle></CardHeader>
-                        <CardContent className="pt-0"><p className="text-xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">{creatives.length}</p></CardContent>
+                        <CardContent className="pt-0"><p className="text-xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">{totalCreatives}</p></CardContent>
                     </Card>
                     <Card className="relative overflow-hidden group">
                         <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-600 opacity-10 group-hover:opacity-20 smooth-transition"></div>
                         <CardHeader className="pb-2"><CardTitle className="text-slate-600 dark:text-slate-300 text-sm sm:text-base">{t("bundles")}</CardTitle></CardHeader>
-                        <CardContent className="pt-0"><p className="text-xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">{linkedSets.length}</p></CardContent>
+                        <CardContent className="pt-0"><p className="text-xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">{totalLinkedSets}</p></CardContent>
                     </Card>
                     <Card className="relative overflow-hidden group">
                         <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-green-600 opacity-10 group-hover:opacity-20 smooth-transition"></div>
@@ -61,22 +96,6 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Топ связка */}
-                {topPwa && topCreative && (
-                    <div className="mt-6 sm:mt-8">
-                        <Card>
-                            <CardHeader><CardTitle className="text-lg sm:text-xl">🔥 {t("topBundleOfTheWeek")}</CardTitle></CardHeader>
-                            <CardContent>
-                                <p className="text-xs sm:text-sm text-muted-foreground mb-2">
-                                    {topPwa.name} + {topCreative.text.slice(0, 40)}
-                                </p>
-                                <Progress value={topLinked.stats.cr} />
-                                <p className="mt-2 text-green-600 text-sm sm:text-base">
-                                    CR: {topLinked.stats.cr}%, ROI: {topLinked.stats.roi}%
-                                </p>
-                            </CardContent>
-                        </Card>
-                    </div>
-                )}
             </div>
         </>
     )
