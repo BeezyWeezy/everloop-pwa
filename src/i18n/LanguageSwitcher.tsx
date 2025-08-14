@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { Check, Globe, ChevronDown } from "lucide-react"
+import { useLogger } from '@/lib/utils/logger';
 
 const languages = [
     { code: "en", label: "English", flag: "🇺🇸" },
@@ -12,6 +13,7 @@ const languages = [
 
 export const LanguageSwitcher: React.FC = () => {
     const { i18n } = useTranslation()
+    const logger = useLogger('i18n');
     const currentLanguage = i18n.language || 'en'
 
     const changeLanguage = async (lang: string) => {
@@ -20,7 +22,7 @@ export const LanguageSwitcher: React.FC = () => {
             // Сохраняем выбор в localStorage
             localStorage.setItem('preferredLanguage', lang)
         } catch (error) {
-            console.error('Language change error:', error)
+            logger.error('Language change error:', error)
         }
     }
 

@@ -52,7 +52,7 @@ const resources = {
             upgradeToPro: "Upgrade to Pro",
             profile: "Profile",
             billing: "Billing",
-            notifications: "Notifications",
+
             logout: "Logout",
             creativesInUse: "Creatives in use",
             avgCr: "Avg. CR",
@@ -118,35 +118,321 @@ const resources = {
             poker: "Poker",
             innovativeApp: "Innovative application for",
             withModernDesign: "with modern design and user-friendly interface.",
-            back: "Back",
             step: "Step",
             of: "of",
             finalPreview: "Final Preview",
             settingsSummary: "Settings Summary",
             aboutThisApp: "About this app",
             information: "Information",
-            size: "Size",
-            version: "Version",
-            updatedOn: "Updated on",
             readyToCreate: "PWA ready to create!",
             checkSettings: "Check settings and create your Progressive Web Application",
             creating: "Creating your PWA...",
             pleaseWait: "Please wait. This may take a few seconds.",
             // Status translations
-            active: "Active",
-            draft: "Draft",
             paused: "Paused",
-            // Navigation/Breadcrumbs
-            analytics: "Analytics",
-            settings: "Settings",
             // Live Preview
-            livePreview: "Live Preview",
             mobile: "Mobile",
             desktop: "Desktop", 
             yourAppName: "Your App Name",
             previewDescription: "App description will appear here...",
             demoButton: "Demo Button",
             livePreviewNote: "This is a live preview of your PWA",
+            notifications: {
+                // Auth notifications
+                auth: {
+                    loginSuccess: "Successful authorization",
+                    loginError: "Invalid login data",
+                    registrationSuccess: "Check email to confirm account",
+                    registrationError: "Check email to confirm registration",
+                    passwordMismatch: "Passwords do not match",
+                    passwordResetSuccess: "If email exists, instructions sent to your email",
+                    passwordResetError: "An error occurred. Please try again",
+                    passwordChangeSuccess: "Password successfully changed",
+                    passwordChangeError: "Failed to change password. Please try again",
+                    oauthSuccess: "Successful authorization via Google",
+                    oauthError: "Error signing in via Google",
+                    oauthGeneralError: "An error occurred during authorization",
+                    emailNotConfirmed: "Confirm email before signing in",
+                    tooManyAttempts: "Too many login attempts. Please try later",
+                    passwordMinLength: "Password must contain at least 6 characters",
+                    invalidEmail: "Check email address format",
+                    generalError: "An error occurred. Please try again"
+                },
+                
+                // PWA notifications
+                pwa: {
+                    loadError: "Failed to load application data",
+                    loadListError: "Failed to load application list",
+                    createError: "Failed to create PWA",
+                    updateError: "Failed to update PWA",
+                    deleteError: "Failed to delete application",
+                    statusChangeError: "Failed to change application status",
+                    logoUploadError: "Failed to upload logo",
+                    logoDeleteError: "Failed to delete logo",
+                    screenshotUploadError: "Failed to upload screenshots",
+                    screenshotDeleteError: "Failed to delete screenshot",
+                    screenshotOrderError: "Failed to save new screenshot order",
+                    mediaUploadError: "Failed to upload files",
+                    mediaDeleteError: "Failed to delete file",
+                    maxScreenshots: "Maximum number of screenshots: 6. You already have {{current}}, can add {{remaining}} more",
+                    uploadProgress: "Uploaded: {{successful}}/{{total}}. Failed to upload: {{failed}}",
+                    maxFiles: "Maximum number of files: {{max}}",
+                    videoTooLong: "Video \"{{name}}\" is too long. Maximum 30 seconds.",
+                    requiredFields: "Please fill in all required fields: name, domain and casino URL",
+                    createSuccess: "Casino PWA created! PWA successfully created and ready to use"
+                },
+                
+                // Domain notifications
+                domain: {
+                    searchError: "Domain search error. Please try again.",
+                    noDomainsFound: "Domains with name \"{{query}}\" not found. Try a different name.",
+                    searchTips: "Try a more unique name or other domain options.",
+                    purchaseError: "Failed to purchase domain",
+                    purchaseSuccess: "Domain successfully purchased"
+                },
+                
+                // General notifications
+                general: {
+                    loading: "Loading...",
+                    error: "An error occurred",
+                    success: "Operation completed successfully",
+                    warning: "Warning",
+                    info: "Information"
+                }
+            },
+            
+            // UI Text
+            ui: {
+                // Common actions
+                back: "Back",
+                next: "Next",
+                cancel: "Cancel",
+                save: "Save",
+                delete: "Delete",
+                edit: "Edit",
+                add: "Add",
+                remove: "Remove",
+                confirm: "Confirm",
+                close: "Close",
+                loading: "Loading...",
+                error: "Error",
+                success: "Success",
+                warning: "Warning",
+                
+                // Form labels
+                name: "Name",
+                email: "Email",
+                password: "Password",
+                confirmPassword: "Confirm Password",
+                description: "Description",
+                category: "Category",
+                language: "Language",
+                version: "Version",
+                size: "Size",
+                rating: "Rating",
+                reviews: "Reviews",
+                downloads: "Downloads",
+                ageRating: "Age Rating",
+                developer: "Developer",
+                lastUpdated: "Last Updated",
+                
+                // Placeholders
+                enterName: "Enter name...",
+                enterEmail: "Enter email...",
+                enterPassword: "Enter password...",
+                enterDescription: "Enter description...",
+                selectCategory: "Select category...",
+                selectLanguage: "Select language...",
+                
+                // Messages
+                noData: "No data available",
+                notFound: "Not found",
+                accessDenied: "Access denied",
+                sessionExpired: "Session expired",
+                networkError: "Network error",
+                serverError: "Server error",
+                
+                // Status
+                active: "Active",
+                inactive: "Inactive",
+                draft: "Draft",
+                published: "Published",
+                pending: "Pending",
+                completed: "Completed",
+                failed: "Failed",
+                ready: "Ready",
+                building: "Building",
+                paused: "Paused",
+                
+                // PWA specific
+                myPwa: "My PWA",
+                spyCreo: "Spy Creo",
+                bundles: "Bundles",
+                createPwa: "Create PWA",
+                pwaManagement: "Manage your Progressive Web Applications",
+                totalPwa: "Total PWA",
+                loadingPwa: "Loading PWA...",
+                loadError: "Load Error",
+                tryAgain: "Try Again",
+                noPwaYet: "No PWA applications yet",
+                createFirstPwa: "Create your first Progressive Web Application",
+                createFirstPwaButton: "Create First PWA",
+                nothingFound: "Nothing Found",
+                tryDifferentSearch: "Try changing search parameters or filters",
+                resetFilters: "Reset Filters",
+                created: "Created",
+                settings: "Settings",
+                confirmDeletePwa: "Are you sure you want to delete this PWA? This action cannot be undone.",
+                analytics: "Analytics",
+                notifications: "Notifications",
+                billing: "Billing",
+                upgradeToPro: "Upgrade to Pro"
+            },
+            
+            // Domain related
+            domain: {
+                search: "Search domains",
+                searchPlaceholder: "Enter domain name (e.g.: goldencasino)",
+                searchButton: "Search",
+                availableDomains: "Available domains (from cheap to expensive):",
+                selectedDomain: "Selected domain:",
+                domainActive: "Active",
+                domainTips: "Find and purchase a domain for your PWA application. Try unique names for better results.",
+                domainSearchTips: "💡 Domain search tips:",
+                domainTip1: "Use unique names (e.g.: mycasino2024)",
+                domainTip2: "Try adding numbers or words (e.g.: goldenbet, casino777)",
+                domainTip3: "Cheap domains (.xyz, .top, .site) cost from $1.99",
+                domainTip4: "Popular domains (.com, .net) cost from $12.99",
+                domainPurchase: "Domain Purchase Confirmation",
+                domainPrice: "Registration cost:",
+                userBalance: "Your balance:",
+                purchaseWhatHappens: "What happens after purchase:",
+                purchaseStep1: "• Domain will be registered for 1 year",
+                purchaseStep2: "• DNS records will be automatically configured",
+                purchaseStep3: "• Domain will be linked to your PWA",
+                purchaseStep4: "• {{amount}} will be deducted from balance",
+                insufficientFunds: "Insufficient funds. Top up balance to purchase domain.",
+                purchaseButton: "Purchase Domain",
+                purchaseLoading: "Purchasing...",
+                cancelButton: "Cancel",
+                searchNoResults: "No domains found with this name. Try a different name.",
+                searchNoResultsSuggestion: "Try a more unique name or other domain options.",
+                cheapDomain: "Cheap",
+                showFirstTenDomains: "Showing 10 cheapest domains. Scroll to see more.",
+                tipsTitle: "Domain search tips",
+                premiumDomain: "Premium domain"
+            },
+            
+            // Test Step
+            testStep: {
+                title: "Test Step Component",
+                success: "✅ TestStep renders successfully!",
+                description: "This component loads without errors. Data",
+                notSpecified: "not specified"
+            },
+            
+            // Basic Info Step specific
+            basicInfoDescription: "This is the internal name for PWA management. Users will see a different name.",
+            descriptionDescription: "Brief description for internal use",
+            playStoreSettings: "Play Store Settings",
+            internalName: "Internal Name",
+            pwaName: "PWA Name",
+            reviewsCount: "Reviews Count",
+            downloadsCount: "Downloads Count",
+            verification: "Verification",
+            hasAds: "Contains Ads",
+            inAppPurchases: "In-App Purchases",
+            editorsChoice: "Editor's Choice",
+            descriptionTitle: "Description Title",
+            whatsNext: "What happens next?",
+            whatsNextDescription: "After filling in basic information, we will configure casino parameters, tracking for analytics and push notifications for user retargeting.",
+            readiness: "Readiness for next step",
+            ready: "Ready",
+            fillRequiredFields: "Fill in required fields",
+            
+            // PWA Creator
+            pwaCreator: {
+                title: "Create PWA for casino affiliate marketing with automatic redirect and tracking",
+                basicInfo: "Basic Information",
+                basicInfoDesc: "PWA name, domain and basic settings",
+                casinoSettings: "Casino Settings",
+                casinoSettingsDesc: "Casino URL and redirect parameters",
+                analytics: "Analytics & Tracking",
+                analyticsDesc: "Analytics and tracking setup",
+                pushNotifications: "Push Notifications",
+                pushNotificationsDesc: "Retargeting setup",
+                preview: "Preview",
+                createButton: "Create Casino PWA",
+                creating: "Creating...",
+                stepCounter: "Step {{current}} of {{total}}: {{title}}",
+                nextStep: "What happens next?",
+                nextStepDesc: "After filling in basic information, we will configure casino parameters, tracking for analytics and push notifications for user retargeting.",
+                readiness: "Readiness for next step:",
+                ready: "Ready",
+                fillRequired: "Fill in required fields",
+                domainSearch: "Domain Search",
+                domainSearchDesc: "Find and purchase a domain for your PWA application"
+            },
+            
+            // Media Uploader
+            mediaUploader: {
+                appIcons: "App Icons",
+                appIconsDesc: "PNG, ICO, SVG up to 2MB. Recommended sizes: 192x192, 512x512",
+                screenshots: "Screenshots",
+                screenshotsDesc: "PNG, JPG, WebP up to 5MB. Up to 8 screenshots",
+                videos: "Videos",
+                videosDesc: "MP4, WebM up to 50MB. Maximum 30 seconds",
+                additionalFiles: "Additional Files",
+                additionalFilesDesc: "Images for splash screen, background, etc.",
+                uploading: "Uploading files...",
+                dragDrop: "Drag files here or click to select",
+                uploadedFiles: "Uploaded files:",
+                fileInfo: "File information",
+                deleteFile: "Delete file"
+            },
+            
+            // Google Play Store
+            googlePlay: {
+                games: "Games",
+                apps: "Apps",
+                books: "Books",
+                kids: "Kids",
+                searchPlaceholder: "Search apps and games",
+                editorsChoice: "Editor's Choice",
+                hasAds: "Contains Ads",
+                inAppPurchases: "In-App Purchases",
+                install: "Install",
+                aboutThisGame: "About this game",
+                whatsNew: "What's new",
+                ratingsAndReviews: "Ratings and reviews",
+                reviews: "reviews",
+                loading: "Loading...",
+                notFound: "PWA not found"
+            },
+            // Analytics
+            analytics: {
+                title: "PWA Analytics",
+                description: "Detailed statistics of your Progressive Web Applications",
+                backToPwa: "Back to PWA",
+                searchPlaceholder: "Search PWA for analysis...",
+                last7Days: "Last 7 days",
+                last30Days: "Last 30 days",
+                last90Days: "Last 90 days",
+                last12Months: "Last 12 months",
+                refresh: "Refresh",
+                reset: "Reset",
+                selectPwaForAnalysis: "Select PWA for analysis",
+                allPwa: "All PWA",
+                jan: "Jan",
+                feb: "Feb",
+                mar: "Mar",
+                apr: "Apr",
+                may: "May",
+                jun: "Jun",
+                android: "Android",
+                ios: "iOS",
+                desktop: "Desktop"
+            },
         },
     },
     ru: {
@@ -198,7 +484,7 @@ const resources = {
             upgradeToPro: "Обновить до PRO",
             profile: "Профиль",
             billing: "Оплата",
-            notifications: "Уведомления",
+
             logout: "Выйти",
             creativesInUse: "Креативы в использовании",
             avgCr: "Средний CR",
@@ -267,7 +553,6 @@ const resources = {
             crypto: "Криптовалюта",
             innovativeApp: "Инновативное приложение для",
             withModernDesign: "с современным дизайном и удобным интерфейсом.",
-            back: "Назад",
             step: "Шаг",
             of: "из",
             finalPreview: "Финальный предпросмотр",
@@ -282,12 +567,307 @@ const resources = {
             creating: "Создаем ваше PWA...",
             pleaseWait: "Пожалуйста, подождите. Это может занять несколько секунд.",
             // Status translations
-            active: "Активен",
-            draft: "Черновик",
             paused: "Приостановлен",
-            // Navigation/Breadcrumbs
-            analytics: "Аналитика",
-            settings: "Настройки",
+
+            
+            // Notifications and Errors
+            notifications: {
+                // Auth notifications
+                auth: {
+                    loginSuccess: "Успешная авторизация",
+                    loginError: "Неверные данные для входа",
+                    registrationSuccess: "Проверьте email для подтверждения аккаунта",
+                    registrationError: "Проверьте email для подтверждения регистрации",
+                    passwordMismatch: "Пароли не совпадают",
+                    passwordResetSuccess: "Если email существует, инструкция отправлена на ваш email",
+                    passwordResetError: "Произошла ошибка. Попробуйте еще раз",
+                    passwordChangeSuccess: "Пароль успешно изменен",
+                    passwordChangeError: "Не удалось изменить пароль. Попробуйте еще раз",
+                    oauthSuccess: "Успешная авторизация через Google",
+                    oauthError: "Ошибка при входе через Google",
+                    oauthGeneralError: "Произошла ошибка при авторизации",
+                    emailNotConfirmed: "Подтвердите email перед входом",
+                    tooManyAttempts: "Слишком много попыток входа. Попробуйте позже",
+                    passwordMinLength: "Пароль должен содержать минимум 6 символов",
+                    invalidEmail: "Проверьте правильность email адреса",
+                    generalError: "Произошла ошибка. Попробуйте еще раз"
+                },
+                
+                // PWA notifications
+                pwa: {
+                    loadError: "Не удалось загрузить данные приложения",
+                    loadListError: "Не удалось загрузить список приложений",
+                    createError: "Не удалось создать PWA",
+                    updateError: "Не удалось обновить PWA",
+                    deleteError: "Не удалось удалить приложение",
+                    statusChangeError: "Не удалось изменить статус приложения",
+                    logoUploadError: "Не удалось загрузить логотип",
+                    logoDeleteError: "Не удалось удалить логотип",
+                    screenshotUploadError: "Не удалось загрузить скриншоты",
+                    screenshotDeleteError: "Не удалось удалить скриншот",
+                    screenshotOrderError: "Не удалось сохранить новый порядок скриншотов",
+                    mediaUploadError: "Не удалось загрузить файлы",
+                    mediaDeleteError: "Не удалось удалить файл",
+                    maxScreenshots: "Максимальное количество скриншотов: 6. У вас уже {{current}}, можно добавить еще {{remaining}}",
+                    uploadProgress: "Загружено: {{successful}}/{{total}}. Не удалось загрузить: {{failed}}",
+                    maxFiles: "Максимальное количество файлов: {{max}}",
+                    videoTooLong: "Видео \"{{name}}\" слишком длинное. Максимум 30 секунд.",
+                    requiredFields: "Пожалуйста, заполните все обязательные поля: название, домен и URL казино",
+                    createSuccess: "Casino PWA создано! PWA успешно создано и готово к использованию"
+                },
+                
+                // Domain notifications
+                domain: {
+                    searchError: "Ошибка поиска доменов. Попробуйте еще раз.",
+                    noDomainsFound: "Домены с названием \"{{query}}\" не найдены. Попробуйте другое название.",
+                    searchTips: "Попробуйте более уникальное название или другие варианты доменов.",
+                    purchaseError: "Не удалось приобрести домен",
+                    purchaseSuccess: "Домен успешно приобретен"
+                },
+                
+                // General notifications
+                general: {
+                    loading: "Загрузка...",
+                    error: "Произошла ошибка",
+                    success: "Операция выполнена успешно",
+                    warning: "Предупреждение",
+                    info: "Информация"
+                }
+            },
+            
+            // UI Text
+            ui: {
+                // Common actions
+                back: "Назад",
+                next: "Далее",
+                cancel: "Отмена",
+                save: "Сохранить",
+                delete: "Удалить",
+                edit: "Редактировать",
+                add: "Добавить",
+                remove: "Удалить",
+                confirm: "Подтвердить",
+                close: "Закрыть",
+                loading: "Загрузка...",
+                error: "Ошибка",
+                success: "Успех",
+                warning: "Предупреждение",
+                
+                // Form labels
+                name: "Имя",
+                email: "Email",
+                password: "Пароль",
+                confirmPassword: "Подтвердите пароль",
+                description: "Описание",
+                category: "Категория",
+                language: "Язык",
+                version: "Версия",
+                size: "Размер",
+                rating: "Рейтинг",
+                reviews: "Отзывы",
+                downloads: "Скачивания",
+                ageRating: "Возрастной рейтинг",
+                developer: "Разработчик",
+                lastUpdated: "Последнее обновление",
+                
+                // Placeholders
+                enterName: "Введите имя...",
+                enterEmail: "Введите email...",
+                enterPassword: "Введите пароль...",
+                enterDescription: "Введите описание...",
+                selectCategory: "Выберите категорию...",
+                selectLanguage: "Выберите язык...",
+                
+                // Messages
+                noData: "Данные недоступны",
+                notFound: "Не найдено",
+                accessDenied: "Доступ запрещен",
+                sessionExpired: "Сессия истекла",
+                networkError: "Ошибка сети",
+                serverError: "Ошибка сервера",
+                
+                // Status
+                active: "Активен",
+                inactive: "Неактивен",
+                draft: "Черновик",
+                published: "Опубликовано",
+                pending: "В ожидании",
+                completed: "Завершено",
+                failed: "Ошибка",
+                ready: "Готово",
+                building: "Сборка",
+                paused: "Приостановлено",
+                
+                // PWA specific
+                myPwa: "Мои PWA",
+                spyCreo: "Spy Creo",
+                bundles: "Связки",
+                createPwa: "Создать PWA",
+                pwaManagement: "Управляйте своими Progressive Web Applications",
+                totalPwa: "Всего PWA",
+                loadingPwa: "Загрузка PWA...",
+                loadError: "Ошибка загрузки",
+                tryAgain: "Попробовать снова",
+                noPwaYet: "Пока нет PWA приложений",
+                createFirstPwa: "Создайте свое первое Progressive Web Application",
+                createFirstPwaButton: "Создать первое PWA",
+                nothingFound: "Ничего не найдено",
+                tryDifferentSearch: "Попробуйте изменить параметры поиска или фильтры",
+                resetFilters: "Сбросить фильтры",
+                created: "Создано",
+                settings: "Настройки",
+                confirmDeletePwa: "Вы уверены, что хотите удалить это PWA? Это действие нельзя отменить.",
+                analytics: "Аналитика",
+                notifications: "Уведомления",
+                billing: "Биллинг",
+                upgradeToPro: "Обновить до Pro"
+            },
+            
+            // Analytics
+            analytics: {
+                title: "Аналитика PWA",
+                description: "Детальная статистика ваших Progressive Web Applications",
+                backToPwa: "Назад к PWA",
+                searchPlaceholder: "Поиск PWA для анализа...",
+                last7Days: "Последние 7 дней",
+                last30Days: "Последние 30 дней",
+                last90Days: "Последние 90 дней",
+                last12Months: "Последние 12 месяцев",
+                refresh: "Обновить",
+                reset: "Сбросить",
+                selectPwaForAnalysis: "Выберите PWA для анализа",
+                allPwa: "Все PWA",
+                jan: "Янв",
+                feb: "Фев",
+                mar: "Мар",
+                apr: "Апр",
+                may: "Май",
+                jun: "Июн",
+                android: "Android",
+                ios: "iOS",
+                desktop: "Desktop"
+            },
+            
+            // Domain related
+            domain: {
+                search: "Поиск доменов",
+                searchPlaceholder: "Введите название домена (например: goldencasino)",
+                searchButton: "Поиск",
+                availableDomains: "Доступные домены (от дешевых к дорогим):",
+                selectedDomain: "Выбранный домен:",
+                domainActive: "Активен",
+                domainTips: "Найдите и купите домен для вашего PWA приложения. Попробуйте уникальные названия для лучших результатов.",
+                domainSearchTips: "💡 Советы для поиска доменов:",
+                domainTip1: "• Используйте уникальные названия (например: mycasino2024)",
+                domainTip2: "• Попробуйте добавить цифры или слова (например: goldenbet, casino777)",
+                domainTip3: "• Дешевые домены (.xyz, .top, .site) стоят от $1.99",
+                domainTip4: "• Популярные домени (.com, .net) стоят от $12.99",
+                domainPurchase: "Подтверждение покупки домена",
+                domainPrice: "Стоимость регистрации:",
+                userBalance: "Ваш баланс:",
+                purchaseWhatHappens: "Что произойдет после покупки:",
+                purchaseStep1: "• Домен будет зарегистрирован на 1 год",
+                purchaseStep2: "• Автоматически настроятся DNS записи",
+                purchaseStep3: "• Домен будет привязан к вашему PWA",
+                purchaseStep4: "• С баланса будет списано {{amount}}",
+                insufficientFunds: "Недостаточно средств. Пополните баланс для покупки домена.",
+                purchaseButton: "Купить домен",
+                purchaseLoading: "Покупка...",
+                cancelButton: "Отмена",
+                searchNoResults: "Домены с названием \"{{query}}\" не найдены. Попробуйте другое название.",
+                searchNoResultsSuggestion: "Попробуйте более уникальное название или другие варианты доменов.",
+                cheapDomain: "Дешевый",
+                showFirstTenDomains: "Показываются 10 самых дешевых доменов. Прокрутите вниз, чтобы увидеть больше.",
+                tipsTitle: "Советы по поиску доменов",
+                premiumDomain: "Премиум домен"
+            },
+            
+            // Test Step
+            testStep: {
+                title: "Тестовый компонент",
+                success: "✅ TestStep рендерится успешно!",
+                description: "Этот компонент загружается без ошибок. Данные",
+                notSpecified: "не указано"
+            },
+            
+            // Basic Info Step specific
+            basicInfoDescription: "Это внутреннее название для управления PWA. Пользователи увидят другое название.",
+            descriptionDescription: "Краткое описание для внутреннего использования",
+            playStoreSettings: "Настройки Play Store",
+            internalName: "Внутреннее название",
+            pwaName: "Название PWA",
+            reviewsCount: "Количество отзывов",
+            downloadsCount: "Количество скачиваний",
+            verification: "Верификация",
+            hasAds: "Содержит рекламу",
+            inAppPurchases: "Внутренние покупки",
+            editorsChoice: "Выбор редакции",
+            descriptionTitle: "Заголовок описания",
+            whatsNext: "Что происходит дальше?",
+            whatsNextDescription: "После заполнения основной информации мы настроим параметры казино, трекинг для аналитики и push-уведомления для ретаргетинга пользователей.",
+            readiness: "Готовность к следующему шагу",
+            ready: "Готово",
+            fillRequiredFields: "Заполните обязательные поля",
+            
+            // PWA Creator
+            pwaCreator: {
+                title: "Создайте PWA для казино-аффилиат маркетинга с автоматическим редиректом и трекингом",
+                basicInfo: "Основная информация",
+                basicInfoDesc: "Название PWA, домен и базовые настройки",
+                casinoSettings: "Настройки казино",
+                casinoSettingsDesc: "URL казино и параметры редиректа",
+                analytics: "Аналитика и трекинг",
+                analyticsDesc: "Настройка аналитики и трекинга",
+                pushNotifications: "Push-уведомления",
+                pushNotificationsDesc: "Настройка ретаргетинга",
+                preview: "Предпросмотр",
+                createButton: "Создать Casino PWA",
+                creating: "Создаю...",
+                stepCounter: "Шаг {{current}} из {{total}}: {{title}}",
+                nextStep: "Что происходит дальше?",
+                nextStepDesc: "После заполнения основной информации мы настроим параметры казино, трекинг для аналітики та push-уведомления для ретаргетинга користувачів.",
+                readiness: "Готовность к следующему шагу:",
+                ready: "Готово",
+                fillRequired: "Заполните обязательные поля",
+                domainSearch: "Поиск доменов",
+                domainSearchDesc: "Найдите и купите домен для вашего PWA приложения"
+            },
+            
+            // Media Uploader
+            mediaUploader: {
+                appIcons: "Иконки приложения",
+                appIconsDesc: "PNG, ICO, SVG до 2MB. Рекомендуемые размеры: 192x192, 512x512",
+                screenshots: "Скриншоты",
+                screenshotsDesc: "PNG, JPG, WebP до 5MB. До 8 скриншотов",
+                videos: "Відео",
+                videosDesc: "MP4, WebM до 50MB. Максимум 30 секунд",
+                additionalFiles: "Дополнительные файлы",
+                additionalFilesDesc: "Изображения для сплэш-экрана, фона и т.д.",
+                uploading: "Завантажуємо файли...",
+                dragDrop: "Перетягніть файли сюди або натисніть для вибору",
+                uploadedFiles: "Завантажені файли:",
+                fileInfo: "Інформація про файл",
+                deleteFile: "Видалити файл"
+            },
+            
+            // Google Play Store
+            googlePlay: {
+                games: "Игры",
+                apps: "Приложения",
+                books: "Книги",
+                kids: "Детям",
+                searchPlaceholder: "Поиск приложений и игр",
+                editorsChoice: "Выбор редакции",
+                hasAds: "Есть реклама",
+                inAppPurchases: "Покупки в приложении",
+                install: "Установить",
+                aboutThisGame: "Об этой игре",
+                whatsNew: "Что нового",
+                ratingsAndReviews: "Оценки и отзывы",
+                reviews: "отзывов",
+                loading: "Завантаження...",
+                notFound: "PWA не знайдено"
+            },
         },
     },
     ua: {
@@ -340,7 +920,7 @@ const resources = {
             upgradeToPro: "Оновити до PRO",
             profile: "Профіль",
             billing: "Оплата",
-            notifications: "Сповіщення",
+
             logout: "Вийти",
             creativesInUse: "Креативи в користуванні",
             avgCr: "Середній CR",
@@ -377,7 +957,7 @@ const resources = {
             createProfessionalPwa: "Створіть професіональне Progressive Web Application за кілька хвилин за допомогою нашого конструктора",
             // Steps
             basicInformation: "Основна інформація",
-            basicInfoDescription: "Назва, опис та категорія",
+
             designDescription: "Кольори та візуальний стиль",
             featuresDescription: "Можливості додатку",
             previewDescription: "Перевірка та створення",
@@ -439,14 +1019,307 @@ const resources = {
             quickSetup: 'Швидка настройка',
             quickSetupDescription: 'Виберіть шаблон для швидкого старту',
             
-            back: "Назад",
             // Status translations
-            active: "Активний",
-            draft: "Чернетка",
             paused: "Призупинено",
-            // Navigation/Breadcrumbs
-            analytics: "Аналітика",
-            settings: "Налаштування",
+
+            
+            // Notifications and Errors
+            notifications: {
+                // Auth notifications
+                auth: {
+                    loginSuccess: "Успішна авторизація",
+                    loginError: "Невірні дані для входу",
+                    registrationSuccess: "Перевірте email для підтвердження акаунту",
+                    registrationError: "Перевірте email для підтвердження реєстрації",
+                    passwordMismatch: "Паролі не співпадають",
+                    passwordResetSuccess: "Якщо email існує, інструкція відправлена на ваш email",
+                    passwordResetError: "Сталася помилка. Спробуйте ще раз",
+                    passwordChangeSuccess: "Пароль успішно змінено",
+                    passwordChangeError: "Не вдалося змінити пароль. Спробуйте ще раз",
+                    oauthSuccess: "Успішна авторизація через Google",
+                    oauthError: "Помилка при вході через Google",
+                    oauthGeneralError: "Сталася помилка при авторизації",
+                    emailNotConfirmed: "Підтвердіть email перед входом",
+                    tooManyAttempts: "Занадто багато спроб входу. Спробуйте пізніше",
+                    passwordMinLength: "Пароль повинен містити мінімум 6 символів",
+                    invalidEmail: "Перевірте правильність email адреси",
+                    generalError: "Сталася помилка. Спробуйте ще раз"
+                },
+                
+                // PWA notifications
+                pwa: {
+                    loadError: "Не вдалося завантажити дані додатку",
+                    loadListError: "Не вдалося завантажити список додатків",
+                    createError: "Не вдалося створити PWA",
+                    updateError: "Не вдалося оновити PWA",
+                    deleteError: "Не вдалося видалити додаток",
+                    statusChangeError: "Не вдалося змінити статус додатку",
+                    logoUploadError: "Не вдалося завантажити логотип",
+                    logoDeleteError: "Не вдалося видалити логотип",
+                    screenshotUploadError: "Не вдалося завантажити скріншоти",
+                    screenshotDeleteError: "Не вдалося видалити скріншот",
+                    screenshotOrderError: "Не вдалося зберегти новий порядок скріншотів",
+                    mediaUploadError: "Не вдалося завантажити файли",
+                    mediaDeleteError: "Не вдалося видалити файл",
+                    maxScreenshots: "Максимальна кількість скріншотів: 6. У вас вже {{current}}, можна додати ще {{remaining}}",
+                    uploadProgress: "Завантажено: {{successful}}/{{total}}. Не вдалося завантажити: {{failed}}",
+                    maxFiles: "Максимальна кількість файлів: {{max}}",
+                    videoTooLong: "Відео \"{{name}}\" занадто довге. Максимум 30 секунд.",
+                    requiredFields: "Будь ласка, заповніть всі обов'язкові поля: назва, домен та URL казино",
+                    createSuccess: "Casino PWA створено! PWA успішно створено та готово до використання"
+                },
+                
+                // Domain notifications
+                domain: {
+                    searchError: "Помилка пошуку доменів. Спробуйте ще раз.",
+                    noDomainsFound: "Домени з назвою \"{{query}}\" не знайдено. Спробуйте іншу назву.",
+                    searchTips: "Спробуйте більш унікальну назву або інші варіанти доменів.",
+                    purchaseError: "Не вдалося придбати домен",
+                    purchaseSuccess: "Домен успішно придбано"
+                },
+                
+                // General notifications
+                general: {
+                    loading: "Завантаження...",
+                    error: "Сталася помилка",
+                    success: "Операція виконана успішно",
+                    warning: "Попередження",
+                    info: "Інформація"
+                }
+            },
+            
+            // UI Text
+            ui: {
+                // Common actions
+                back: "Назад",
+                next: "Далі",
+                cancel: "Скасувати",
+                save: "Зберегти",
+                delete: "Видалити",
+                edit: "Редагувати",
+                add: "Додати",
+                remove: "Видалити",
+                confirm: "Підтвердити",
+                close: "Закрити",
+                loading: "Завантаження...",
+                error: "Помилка",
+                success: "Успіх",
+                warning: "Попередження",
+                
+                // Form labels
+                name: "Ім'я",
+                email: "Email",
+                password: "Пароль",
+                confirmPassword: "Підтвердіть пароль",
+                description: "Опис",
+                category: "Категорія",
+                language: "Мова",
+                version: "Версія",
+                size: "Розмір",
+                rating: "Рейтинг",
+                reviews: "Відгуки",
+                downloads: "Завантаження",
+                ageRating: "Віковий рейтинг",
+                developer: "Розробник",
+                lastUpdated: "Останнє оновлення",
+                
+                // Placeholders
+                enterName: "Введіть ім'я...",
+                enterEmail: "Введіть email...",
+                enterPassword: "Введіть пароль...",
+                enterDescription: "Введіть опис...",
+                selectCategory: "Виберіть категорію...",
+                selectLanguage: "Виберіть мову...",
+                
+                // Messages
+                noData: "Дані недоступні",
+                notFound: "Не знайдено",
+                accessDenied: "Доступ заборонено",
+                sessionExpired: "Сесія закінчилася",
+                networkError: "Помилка мережі",
+                serverError: "Помилка сервера",
+                
+                // Status
+                active: "Активний",
+                inactive: "Неактивний",
+                draft: "Чернетка",
+                published: "Опубліковано",
+                pending: "В очікуванні",
+                completed: "Завершено",
+                failed: "Помилка",
+                ready: "Готово",
+                building: "Збірка",
+                paused: "Призупинено",
+                
+                // PWA specific
+                myPwa: "Мої PWA",
+                spyCreo: "Spy Creo",
+                bundles: "Зв'язки",
+                createPwa: "Створити PWA",
+                pwaManagement: "Керуйте своїми Progressive Web Applications",
+                totalPwa: "Всього PWA",
+                loadingPwa: "Завантаження PWA...",
+                loadError: "Помилка завантаження",
+                tryAgain: "Спробувати знову",
+                noPwaYet: "Поки немає PWA додатків",
+                createFirstPwa: "Створіть свій перший Progressive Web Application",
+                createFirstPwaButton: "Створити перший PWA",
+                nothingFound: "Нічого не знайдено",
+                tryDifferentSearch: "Спробуйте змінити параметри пошуку або фільтри",
+                resetFilters: "Скинути фільтри",
+                created: "Створено",
+                settings: "Налаштування",
+                confirmDeletePwa: "Ви впевнені, що хочете видалити це PWA? Цю дію не можна скасувати.",
+                analytics: "Аналітика",
+                notifications: "Сповіщення",
+                billing: "Білінг",
+                upgradeToPro: "Оновити до Pro"
+            },
+            
+            // Domain related
+            domain: {
+                search: "Пошук доменів",
+                searchPlaceholder: "Введіть назву домену (наприклад: goldencasino)",
+                searchButton: "Пошук",
+                availableDomains: "Доступні домени (від дешевих до дорогих):",
+                selectedDomain: "Вибраний домен:",
+                domainActive: "Активний",
+                domainTips: "Знайдіть та придбайте домен для вашого PWA додатку. Спробуйте унікальні назви для кращих результатів.",
+                domainSearchTips: "💡 Поради для пошуку доменів:",
+                domainTip1: "• Використовуйте унікальні назви (наприклад: mycasino2024)",
+                domainTip2: "• Спробуйте додати цифри або слова (наприклад: goldenbet, casino777)",
+                domainTip3: "• Дешеві домени (.xyz, .top, .site) коштують від $1.99",
+                domainTip4: "• Популярні домени (.com, .net) коштують від $12.99",
+                domainPurchase: "Підтвердження покупки домену",
+                domainPrice: "Вартість реєстрації:",
+                userBalance: "Ваш баланс:",
+                purchaseWhatHappens: "Що станеться після покупки:",
+                purchaseStep1: "• Домен буде зареєстрований на 1 рік",
+                purchaseStep2: "• Автоматично налаштуються DNS записи",
+                purchaseStep3: "• Домен буде прив'язаний до вашого PWA",
+                purchaseStep4: "• З балансу буде списано {{amount}}",
+                insufficientFunds: "Недостатньо коштів. Поповніть баланс для покупки домену.",
+                purchaseButton: "Купити домен",
+                purchaseLoading: "Покупка...",
+                cancelButton: "Скасувати",
+                searchNoResults: "Домени з назвою \"{{query}}\" не знайдено. Спробуйте іншу назву.",
+                searchNoResultsSuggestion: "Спробуйте більш унікальну назву або інші варіанти доменів.",
+                cheapDomain: "Дешеві",
+                showFirstTenDomains: "Показуються 10 самі дешеві домени. Прокрутіть вниз, щоб побачити більше.",
+                tipsTitle: "Поради по пошуку доменів",
+                premiumDomain: "Преміум домен"
+            },
+            
+            // Test Step
+            testStep: {
+                title: "Тестовий компонент",
+                success: "✅ TestStep рендериться успішно!",
+                description: "Цей компонент завантажується без помилок. Дані",
+                notSpecified: "не вказано"
+            },
+            
+            // Basic Info Step specific
+
+            descriptionDescription: "Короткий опис для внутрішнього використання",
+            playStoreSettings: "Налаштування Play Store",
+            internalName: "Внутрішнє ім'я",
+            pwaName: "Ім'я PWA",
+            reviewsCount: "Кількість відгуків",
+            downloadsCount: "Кількість скачувань",
+            verification: "Верифікація",
+            hasAds: "Містить рекламу",
+            inAppPurchases: "Внутрішні покупки",
+            editorsChoice: "Вибір редакції",
+            descriptionTitle: "Заголовок опису",
+            whatsNext: "Що відбувається далі?",
+            whatsNextDescription: "Після заповнення основної інформації ми налаштуємо параметри казино, трекінг для аналітики та push-сповіщення для ретаргетингу користувачів.",
+            readiness: "Готовність до наступного кроку:",
+            ready: "Готово",
+            fillRequiredFields: "Заповніть обов'язкові поля",
+            
+            // PWA Creator
+            pwaCreator: {
+                title: "Створіть PWA для казино-афіліат маркетингу з автоматичним редиректом та трекінгом",
+                basicInfo: "Основна інформація",
+                basicInfoDesc: "Назва PWA, домен та базові налаштування",
+                casinoSettings: "Налаштування казино",
+                casinoSettingsDesc: "URL казино та параметри редиректу",
+                analytics: "Аналітика та трекінг",
+                analyticsDesc: "Налаштування аналітики та трекінгу",
+                pushNotifications: "Push-сповіщення",
+                pushNotificationsDesc: "Налаштування ретаргетингу",
+                preview: "Попередній перегляд",
+                createButton: "Створити Casino PWA",
+                creating: "Створюю...",
+                stepCounter: "Крок {{current}} з {{total}}: {{title}}",
+                nextStep: "Що відбувається далі?",
+                nextStepDesc: "Після заповнення основної інформації ми налаштуємо параметри казино, трекінг для аналітики та push-сповіщення для ретаргетингу користувачів.",
+                readiness: "Готовність до наступного кроку:",
+                ready: "Готово",
+                fillRequired: "Заповніть обов'язкові поля",
+                domainSearch: "Пошук доменів",
+                domainSearchDesc: "Знайдіть та придбайте домен для вашого PWA додатку"
+            },
+            
+            // Media Uploader
+            mediaUploader: {
+                appIcons: "Іконки додатку",
+                appIconsDesc: "PNG, ICO, SVG до 2MB. Рекомендовані розміри: 192x192, 512x512",
+                screenshots: "Скріншоти",
+                screenshotsDesc: "PNG, JPG, WebP до 5MB. До 8 скріншотів",
+                videos: "Відео",
+                videosDesc: "MP4, WebM до 50MB. Максимум 30 секунд",
+                additionalFiles: "Додаткові файли",
+                additionalFilesDesc: "Зображення для сплеш-екрану, фону тощо.",
+                uploading: "Завантажуємо файли...",
+                dragDrop: "Перетягніть файли сюди або натисніть для вибору",
+                uploadedFiles: "Завантажені файли:",
+                fileInfo: "Інформація про файл",
+                deleteFile: "Видалити файл"
+            },
+            
+            // Google Play Store
+            googlePlay: {
+                games: "Ігри",
+                apps: "Додатки",
+                books: "Книги",
+                kids: "Дітям",
+                searchPlaceholder: "Пошук додатків та ігор",
+                editorsChoice: "Вибір редакції",
+                hasAds: "Є реклама",
+                inAppPurchases: "Покупки в додатку",
+                install: "Встановити",
+                aboutThisGame: "Про цю гру",
+                whatsNew: "Що нового",
+                ratingsAndReviews: "Оцінки та відгуки",
+                reviews: "відгуків",
+                loading: "Завантаження...",
+                notFound: "PWA не знайдено"
+            },
+            // Analytics
+            analytics: {
+                title: "Аналітика PWA",
+                description: "Детальна статистика ваших Progressive Web Applications",
+                backToPwa: "Назад до PWA",
+                searchPlaceholder: "Пошук PWA для аналізу...",
+                last7Days: "Останні 7 днів",
+                last30Days: "Останні 30 днів",
+                last90Days: "Останні 90 днів",
+                last12Months: "Останні 12 місяців",
+                refresh: "Оновити",
+                reset: "Скинути",
+                selectPwaForAnalysis: "Виберіть PWA для аналізу",
+                allPwa: "Всі PWA",
+                jan: "Січ",
+                feb: "Лют",
+                mar: "Бер",
+                apr: "Кві",
+                may: "Тра",
+                jun: "Чер",
+                android: "Android",
+                ios: "iOS",
+                desktop: "Desktop"
+            },
         },
     },
 }

@@ -1,11 +1,13 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Upload, X, Image, Video, FileImage, Loader2 } from 'lucide-react';
-import { supabase } from '@/lib/supabaseClient';
-import { MediaFile, uploadPWAMedia, deletePWAMedia, validateImage, validateVideo } from '@/lib/mediaApi';
+import { supabase } from '@/lib/providers/supabase';
+import { MediaFile, uploadPWAMedia, deletePWAMedia, validateImage, validateVideo } from '@/lib/api/storage';
+import { useLogger } from '@/lib/utils/logger';
 
 interface MediaUploaderProps {
   pwaId: string;
@@ -16,7 +18,9 @@ interface MediaUploaderProps {
 }
 
 export function MediaUploader({ pwaId, type, currentFiles, onFilesChange, maxFiles }: MediaUploaderProps) {
+  const { t } = useTranslation();
   const [uploading, setUploading] = useState(false);
+  const logger = useLogger('pwa');
   const [dragActive, setDragActive] = useState(false);
 
   const getTypeConfig = () => {
@@ -59,7 +63,7 @@ export function MediaUploader({ pwaId, type, currentFiles, onFilesChange, maxFil
 
     // Проверяем лимит файлов
     if (maxFiles && currentFiles.length + files.length > maxFiles) {
-      alert(`Максимальное количество файлов: ${maxFiles}`);
+      logger.warning('Лимит файлов', `Максимальное количество файлов: ${maxFiles}`);
       return;
     }
 
@@ -95,8 +99,7 @@ export function MediaUploader({ pwaId, type, currentFiles, onFilesChange, maxFil
       onFilesChange(newFiles);
 
     } catch (error) {
-      console.error('Ошибка загрузки файлов:', error);
-      alert(`Ошибка загрузки: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`);
+      logger.error('Ошибка загрузки файлов', t('notifications.pwa.mediaUploadError'));
     } finally {
       setUploading(false);
     }
@@ -106,7 +109,7 @@ export function MediaUploader({ pwaId, type, currentFiles, onFilesChange, maxFil
     const { error } = await deletePWAMedia(pwaId, fileId, type);
     
     if (error) {
-      alert(`Ошибка удаления: ${error.message}`);
+      logger.error('Ошибка удаления файла', t('notifications.pwa.mediaDeleteError'));
       return;
     }
 

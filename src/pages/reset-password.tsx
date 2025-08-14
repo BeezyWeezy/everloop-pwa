@@ -1,13 +1,15 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/providers/supabase";
 import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "@/components/ui/themetoggle";
 import { LanguageSwitcher } from "@/i18n/LanguageSwitcher";
 import Link from "next/link";
+import { useLogger } from "@/lib/utils/logger";
 
 export default function ResetPasswordPage() {
     const { t } = useTranslation()
+    const logger = useLogger('ResetPasswordPage')
     const router = useRouter();
     const { access_token, type } = router.query; // Получаем токены из URL
     const [password, setPassword] = useState("");
@@ -34,13 +36,19 @@ export default function ResetPasswordPage() {
                 password,
             });
 
-            if (updateError) throw new Error(updateError.message);
+            if (updateError) {
+                logger.user.error(t('passwordReset'), t('notifications.auth.passwordChangeError'))
+                throw new Error(t('notifications.auth.passwordChangeError'));
+            }
 
             // Если всё успешно
+            logger.user.success(t('passwordReset'), t('notifications.auth.passwordChangeSuccess'))
             setSuccess(true);
             setTimeout(() => router.push("/signin"), 2000); // Редирект на страницу входа
         } catch (err) {
-            setError(err instanceof Error ? err.message : `${t("anErrorOccurred")}`);
+            const errorMessage = err instanceof Error ? err.message : 'Произошла ошибка при сбросе пароля';
+            logger.user.error(t('passwordReset'), t('notifications.auth.passwordResetError'))
+            setError(t('notifications.auth.passwordResetError'));
         } finally {
             setLoading(false);
         }
@@ -83,18 +91,7 @@ export default function ResetPasswordPage() {
                             className="w-full p-3 h-11 sm:h-12 border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-yellow bg-background text-foreground placeholder:text-muted-foreground smooth-transition text-base"
                             required
                         />
-                        {error && (
-                            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                                <p className="text-red-600 dark:text-red-400 text-sm text-center">{error}</p>
-                            </div>
-                        )}
-                        {success && (
-                            <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg">
-                                <p className="text-emerald-600 dark:text-emerald-400 text-sm text-center">
-                                    {t("passwordChangeSuccess")}
-                                </p>
-                            </div>
-                        )}
+                        {/* Уведомления показываются через логгер в правом верхнем углу */}
                         <button
                             type="submit"
                             disabled={loading}

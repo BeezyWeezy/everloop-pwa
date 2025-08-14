@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/providers/supabase";
 import { useUserStore } from "@/store/useUserStore";
 import { Layout } from "@/components/layout/Layout";
 import { ThemeProvider } from "@/components/theme-provider";
 import { PwaProvider } from "@/context/PwaContext";
+import { NotificationProvider } from "@/context/NotificationContext";
 import "@/styles/globals.css";
 import "@/i18n/i18n";
 
@@ -106,17 +107,19 @@ export default function App({ Component, pageProps }: AppProps) {
                 <link rel="apple-touch-icon" href="/icon-192.svg" />
             </Head>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-                <PwaProvider>
-                    <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900 dark:from-brand-darker dark:to-brand-dark dark:text-slate-100 smooth-transition">
-                        {noLayout ? (
-                            <Component {...pageProps} /> // Без Layout
-                        ) : (
-                            <Layout>
-                                <Component {...pageProps} /> {/* С Layout */}
-                            </Layout>
-                        )}
-                    </main>
-                </PwaProvider>
+                <NotificationProvider>
+                    <PwaProvider>
+                        <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900 dark:from-brand-darker dark:to-brand-dark dark:text-slate-100 smooth-transition">
+                            {noLayout ? (
+                                <Component {...pageProps} /> // Без Layout
+                            ) : (
+                                <Layout>
+                                    <Component {...pageProps} /> {/* С Layout */}
+                                </Layout>
+                            )}
+                        </main>
+                    </PwaProvider>
+                </NotificationProvider>
             </ThemeProvider>
         </>
     );

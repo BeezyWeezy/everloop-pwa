@@ -2,6 +2,7 @@ import React from 'react';
 import { Star, Share2, MoreVertical, Download, ShieldCheck, Menu, Search } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
 
 interface GooglePlayStorePageProps {
   data: {
@@ -32,6 +33,8 @@ interface GooglePlayStorePageProps {
 }
 
 export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) {
+  const { t } = useTranslation();
+  
   const handleInstallClick = () => {
     // Редирект на casino URL
     window.location.href = data.casinoUrl;
@@ -72,10 +75,10 @@ export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) 
               <span className="text-xl font-normal text-gray-700">Google Play</span>
             </div>
             <nav className="hidden md:flex items-center gap-6 text-sm ml-8">
-              <span className="text-green-700 font-medium border-b-2 border-green-700 pb-3">Игры</span>
-              <span className="text-gray-600 hover:text-gray-900 cursor-pointer pb-3">Приложения</span>
-              <span className="text-gray-600 hover:text-gray-900 cursor-pointer pb-3">Книги</span>
-              <span className="text-gray-600 hover:text-gray-900 cursor-pointer pb-3">Детям</span>
+              <span className="text-green-700 font-medium border-b-2 border-green-700 pb-3">{t('googlePlay.games')}</span>
+              <span className="text-gray-600 hover:text-gray-900 cursor-pointer pb-3">{t('googlePlay.apps')}</span>
+              <span className="text-gray-600 hover:text-gray-900 cursor-pointer pb-3">{t('googlePlay.books')}</span>
+              <span className="text-gray-600 hover:text-gray-900 cursor-pointer pb-3">{t('googlePlay.kids')}</span>
             </nav>
           </div>
           <div className="flex items-center gap-3">
@@ -83,7 +86,7 @@ export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) 
               <Search className="w-5 h-5 text-gray-400 mr-3" />
               <input 
                 type="text" 
-                placeholder="Поиск приложений и игр"
+                placeholder={t('googlePlay.searchPlaceholder')}
                 className="bg-transparent outline-none flex-1 text-sm"
               />
             </div>
@@ -123,14 +126,14 @@ export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) 
                   </a>
                   {data.isEditorsChoice && (
                     <span className="editors-choice-badge app-badge">
-                      Выбор редакции
+                      {t('googlePlay.editorsChoice')}
                     </span>
                   )}
                   <span className="app-badge">
-                    Есть реклама
+                    {t('googlePlay.hasAds')}
                   </span>
                   <span className="app-badge">
-                    Покупки в приложении
+                    {t('googlePlay.inAppPurchases')}
                   </span>
                 </div>
 
@@ -142,7 +145,7 @@ export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) 
                     </div>
                   </div>
                   <span className="text-sm text-gray-600">
-                    {data.reviewsCount.toLocaleString()} отзывов
+                    {data.reviewsCount.toLocaleString()} {t('googlePlay.reviews')}
                   </span>
                   <span className="text-sm text-gray-600">
                     {data.downloadsCount}
@@ -157,7 +160,7 @@ export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) 
                     onClick={handleInstallClick}
                     className="install-button"
                   >
-                    Установить
+                    {t('googlePlay.install')}
                   </Button>
                   <button className="p-3 rounded-full hover:bg-gray-100 border border-gray-300">
                     <Share2 className="w-5 h-5 text-gray-700" />
@@ -203,7 +206,7 @@ export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) 
 
             {/* About this game */}
             <div className="mb-8">
-              <h2 className="text-xl font-medium mb-3">Об этой игре</h2>
+              <h2 className="text-xl font-medium mb-3">{t('googlePlay.aboutThisGame')}</h2>
               <h3 className="text-lg font-medium mb-2">{data.descriptionTitle}</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
                 {data.description}
@@ -211,7 +214,7 @@ export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) 
               
               {data.whatIsNew && (
                 <div className="mb-6">
-                  <h4 className="font-medium mb-2">Что нового</h4>
+                  <h4 className="font-medium mb-2">{t('googlePlay.whatsNew')}</h4>
                   <p className="text-gray-700 text-sm">{data.whatIsNew}</p>
                 </div>
               )}

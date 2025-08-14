@@ -8,12 +8,14 @@ import { Plus, BarChart3, Settings, Globe, TrendingUp, Users, Search, Filter, So
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import Head from "next/head";
-import { getUserPWAs } from "@/lib/pwaApi";
+import { getUserPWAs } from "@/lib/api/pwa";
 import { usePWAStore } from "@/store/usePWAStore";
 import { PWAListItem } from "@/types/pwa";
+import { useLogger } from "@/lib/utils/logger";
 
 export default function PwaIndexPage() {
     const { t } = useTranslation();
+    const logger = useLogger('PwaIndexPage');
     const { pwas, loading, error, setPWAs, setLoading, setError } = usePWAStore();
 
     // States for filtering and searching
@@ -34,7 +36,7 @@ export default function PwaIndexPage() {
         const { data, error } = await getUserPWAs();
         
         if (error) {
-            setError(error.message || 'Ошибка загрузки PWA');
+            setError(error.message || t('notifications.pwa.loadListError'));
         } else {
             setPWAs(data || []);
         }
@@ -112,7 +114,7 @@ export default function PwaIndexPage() {
     return (
         <>
             <Head>
-                <title>PWA Приложения - Everloop</title>
+                <title>{t('myPwa')} - Everloop</title>
             </Head>
             <div className="p-3 sm:p-6 space-y-6">
                 {/* Header with Quick Actions */}
@@ -122,20 +124,20 @@ export default function PwaIndexPage() {
                             {t("myPwa")}
                         </h1>
                         <p className="text-slate-600 dark:text-slate-400 mt-1">
-                            Управляйте своими Progressive Web Applications
+                            {t('pwaManagement')}
                         </p>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                         <Link href="/pwa/create" className="w-full sm:w-auto">
                             <Button className="w-full sm:w-auto bg-brand-yellow text-black hover:bg-yellow-400 font-medium">
                                 <Plus className="w-4 h-4 mr-2" />
-                                Создать PWA
+                                {t('createPwa')}
                             </Button>
                         </Link>
                         <Link href="/pwa/analytics" className="w-full sm:w-auto">
                             <Button variant="outline" className="w-full sm:w-auto">
                                 <BarChart3 className="w-4 h-4 mr-2" />
-                                Аналитика
+                                {t('analytics')}
                             </Button>
                         </Link>
                     </div>
@@ -150,7 +152,7 @@ export default function PwaIndexPage() {
                                     <Globe className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                                 </div>
                                 <div>
-                                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Всего PWA</p>
+                                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">{t('totalPwa')}</p>
                                     <p className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-slate-100">
                                         {stats.totalPwas}
                                     </p>
@@ -166,7 +168,7 @@ export default function PwaIndexPage() {
                                     <TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
                                 </div>
                                 <div>
-                                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Активных</p>
+                                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">{t('active')}</p>
                                     <p className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-slate-100">
                                         {stats.activePwas}
                                     </p>
@@ -182,7 +184,7 @@ export default function PwaIndexPage() {
                                     <Settings className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                                 </div>
                                 <div>
-                                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Черновики</p>
+                                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">{t('draft')}</p>
                                     <p className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-slate-100">
                                         {stats.draftPwas}
                                     </p>
@@ -198,7 +200,7 @@ export default function PwaIndexPage() {
                                     <Settings className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                                 </div>
                                 <div>
-                                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Приостановлено</p>
+                                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">{t('paused')}</p>
                                     <p className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-slate-100">
                                         {stats.pausedPwas}
                                     </p>
@@ -214,7 +216,7 @@ export default function PwaIndexPage() {
                     {loading ? (
                         <div className="flex justify-center items-center py-12">
                             <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
-                            <span className="ml-2 text-slate-600 dark:text-slate-400">Загрузка PWA...</span>
+                            <span className="ml-2 text-slate-600 dark:text-slate-400">{t('loadingPwa')}</span>
                         </div>
                     ) : error ? (
                         <Card className="text-center py-12 border-red-200 dark:border-red-800">
@@ -223,13 +225,13 @@ export default function PwaIndexPage() {
                                     <X className="w-12 h-12 mx-auto" />
                                 </div>
                                 <h3 className="text-lg font-semibold text-red-900 dark:text-red-100 mb-2">
-                                    Ошибка загрузки
+                                    {t('loadError')}
                                 </h3>
                                 <p className="text-red-600 dark:text-red-400 mb-6">
                                     {error}
                                 </p>
                                 <Button variant="outline" onClick={loadUserPWAs}>
-                                    Попробовать снова
+                                    {t('tryAgain')}
                                 </Button>
                             </CardContent>
                         </Card>
@@ -244,15 +246,15 @@ export default function PwaIndexPage() {
                             <CardContent>
                                 <Globe className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                                 <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
-                                    Пока нет PWA приложений
+                                    {t('noPwaYet')}
                                 </h3>
                                 <p className="text-slate-600 dark:text-slate-400 mb-6">
-                                    Создайте свое первое Progressive Web Application
+                                    {t('createFirstPwa')}
                                 </p>
                                 <Link href="/pwa/create">
                                     <Button className="bg-brand-yellow text-black hover:bg-yellow-400">
                                         <Plus className="w-4 h-4 mr-2" />
-                                        Создать первое PWA
+                                        {t('createFirstPwaButton')}
                                     </Button>
                                 </Link>
                             </CardContent>
@@ -262,14 +264,14 @@ export default function PwaIndexPage() {
                             <CardContent>
                                 <Search className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                                 <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
-                                    Ничего не найдено
+                                    {t('nothingFound')}
                                 </h3>
                                 <p className="text-slate-600 dark:text-slate-400 mb-6">
-                                    Попробуйте изменить параметры поиска или фильтры
+                                    {t('tryDifferentSearch')}
                                 </p>
                                 <Button variant="outline" onClick={clearFilters}>
                                     <X className="w-4 h-4 mr-2" />
-                                    Сбросить фильтры
+                                    {t('resetFilters')}
                                 </Button>
                             </CardContent>
                         </Card>
@@ -281,7 +283,9 @@ export default function PwaIndexPage() {
 }
 
 // Простая карточка PWA
-function PWACardSimple({ pwa }: { pwa: PWAListItem }) {
+    function PWACardSimple({ pwa }: { pwa: PWAListItem }) {
+        const { t } = useTranslation();
+    const logger = useLogger('PWACardSimple');
     const { updatePWAInStore, removePWA } = usePWAStore();
     const [loading, setLoading] = useState<string | null>(null);
 
@@ -298,12 +302,12 @@ function PWACardSimple({ pwa }: { pwa: PWAListItem }) {
 
     const getStatusText = (status: PWAListItem['status']) => {
         switch (status) {
-            case 'deployed': return 'Активно';
-            case 'ready': return 'Готово';
-            case 'building': return 'Сборка';
-            case 'error': return 'Ошибка';
-            case 'paused': return 'Приостановлено';
-            case 'draft': return 'Черновик';
+            case 'deployed': return t('ui.active');
+            case 'ready': return t('ui.ready');
+            case 'building': return t('ui.building');
+            case 'error': return t('ui.failed');
+            case 'paused': return t('ui.paused');
+            case 'draft': return t('ui.draft');
             default: return status;
         }
     };
@@ -311,11 +315,11 @@ function PWACardSimple({ pwa }: { pwa: PWAListItem }) {
     const handleStatusChange = async (newStatus: 'deployed' | 'paused') => {
         setLoading(newStatus);
         try {
-            const { updatePWAStatus } = await import('@/lib/pwaApi');
+            const { updatePWAStatus } = await import('@/lib/api/pwa');
             const { data, error } = await updatePWAStatus(pwa.id, newStatus);
             
             if (error) {
-                alert('Ошибка изменения статуса: ' + (error.message || 'Неизвестная ошибка'));
+                logger.error(t('notifications.pwa.statusChangeError'), error.message || t('notifications.general.unknownError'));
                 return;
             }
 
@@ -323,30 +327,30 @@ function PWACardSimple({ pwa }: { pwa: PWAListItem }) {
                 updatePWAInStore(pwa.id, { status: data.status, published_at: data.published_at });
             }
         } catch (error) {
-            alert('Ошибка изменения статуса');
+            logger.error(t('notifications.pwa.statusChangeError'), t('notifications.pwa.statusChangeError'))
         } finally {
             setLoading(null);
         }
     };
 
     const handleDelete = async () => {
-        if (!confirm('Вы уверены, что хотите удалить это PWA? Это действие нельзя отменить.')) {
+        if (!confirm(t('confirmDeletePwa'))) {
             return;
         }
 
         setLoading('delete');
         try {
-            const { deletePWA } = await import('@/lib/pwaApi');
+            const { deletePWA } = await import('@/lib/api/pwa');
             const { error } = await deletePWA(pwa.id);
             
             if (error) {
-                alert('Ошибка удаления: ' + (error.message || 'Неизвестная ошибка'));
+                logger.error(t('notifications.pwa.deleteError'), t('notifications.pwa.deleteError'))
                 return;
             }
 
             removePWA(pwa.id);
         } catch (error) {
-            alert('Ошибка удаления PWA');
+            logger.error(t('notifications.pwa.deleteError'), t('notifications.general.unknownError'));
         } finally {
             setLoading(null);
         }
@@ -415,7 +419,7 @@ function PWACardSimple({ pwa }: { pwa: PWAListItem }) {
                 </div>
                 
                 <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-4">
-                    <span>Создано: {new Date(pwa.created_at).toLocaleDateString()}</span>
+                    <span>{t('created')}: {new Date(pwa.created_at).toLocaleDateString()}</span>
                     {pwa.domain && <span>🌐 {pwa.domain}</span>}
                 </div>
                 
@@ -424,7 +428,7 @@ function PWACardSimple({ pwa }: { pwa: PWAListItem }) {
                     <Link href={`/pwa/${pwa.id}`} className="flex-1">
                         <Button variant="outline" size="sm" className="w-full">
                             <Settings className="w-4 h-4 mr-2" />
-                            Настройки
+                            {t('settings')}
                         </Button>
                     </Link>
                     

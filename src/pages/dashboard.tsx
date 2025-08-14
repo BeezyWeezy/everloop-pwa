@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { supabase } from "@/lib/supabaseClient"
+import { supabase } from "@/lib/providers/supabase"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress"
 import Link from "next/link"
 import Head from "next/head"
 import { useTranslation } from "react-i18next";
+import { useLogger } from '@/lib/utils/logger';
 
 interface PWA {
     id: string;
@@ -19,6 +20,7 @@ interface PWA {
 
 export default function DashboardPage() {
     const { t } = useTranslation()
+    const logger = useLogger('pages');
     const [pwas, setPwas] = useState<PWA[]>([])
     const [isLoading, setIsLoading] = useState(true)
     
@@ -28,22 +30,22 @@ export default function DashboardPage() {
     
     const loadPwas = async () => {
         try {
-            console.log('Loading PWAs from Supabase...');
+            logger.info('Loading PWAs from Supabase...');
             const { data, error } = await supabase
                 .from('pwa_projects')
                 .select('id, name, domain, status, created_at, installs')
                 .order('created_at', { ascending: false })
             
-            console.log('Supabase response:', { data, error });
+            logger.info('Supabase response', JSON.stringify({ data, error }));
             
             if (error) {
-                console.error('Error loading PWAs:', error)
+                logger.error('Ошибка загрузки PWA', t('notifications.pwa.loadListError'))
             } else {
-                console.log('Loaded PWAs count:', data?.length || 0);
+                logger.info('Loaded PWAs count', `Found ${data?.length || 0} PWAs`);
                 setPwas(data || [])
             }
         } catch (error) {
-            console.error('Error loading PWAs:', error)
+            logger.error('Error loading PWAs:', error)
         } finally {
             setIsLoading(false)
         }

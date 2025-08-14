@@ -24,7 +24,7 @@ import {
     SidebarGroup,
     SidebarFooter
 } from "@/components/ui/sidebar"
-import { supabase } from "@/lib/supabaseClient"
+import { supabase } from "@/lib/providers/supabase"
 import { useUserStore } from "@/store/useUserStore"
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
@@ -71,23 +71,21 @@ export default function AppSidebar({ collapsed }: { collapsed: boolean }) {
                             )}
                         </div>
                     </DropdownMenuTrigger>
-                    {!collapsed && (
-                        <DropdownMenuContent align="start" className="w-56">
-                            <DropdownMenuItem><Star className="w-4 h-4 mr-2" /> {t("upgradeToPro")}</DropdownMenuItem>
-                            <Link href="/profile" passHref>
-                                <DropdownMenuItem asChild>
-                                    <div className="flex items-center">
-                                        <User className="w-4 h-4 mr-2" /> {t("profile")}
-                                    </div>
-                                </DropdownMenuItem>
-                            </Link>
-                            <DropdownMenuItem><CreditCard className="w-4 h-4 mr-2" /> {t("billing")}</DropdownMenuItem>
-                            <DropdownMenuItem><Bell className="w-4 h-4 mr-2" /> {t("notifications")}</DropdownMenuItem>
-                            <DropdownMenuItem onClick={handleLogout}>
-                                <LogOut className="w-4 h-4 mr-2" /> {t("logout")}
+                    <DropdownMenuContent align="start" className="w-56">
+                        <DropdownMenuItem><Star className="w-4 h-4 mr-2" /> {t("upgradeToPro")}</DropdownMenuItem>
+                        <Link href="/profile" passHref>
+                            <DropdownMenuItem asChild>
+                                <div className="flex items-center">
+                                    <User className="w-4 h-4 mr-2" /> {t("profile")}
+                                </div>
                             </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    )}
+                        </Link>
+                        <DropdownMenuItem><CreditCard className="w-4 h-4 mr-2" /> {t("billing")}</DropdownMenuItem>
+                        <DropdownMenuItem><Bell className="w-4 h-4 mr-2" /> {t("notifications")}</DropdownMenuItem>
+                        <DropdownMenuItem onClick={handleLogout}>
+                            <LogOut className="w-4 h-4 mr-2" /> {t("logout")}
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
                 </DropdownMenu>
             </SidebarFooter>
         </Sidebar>

@@ -1,20 +1,14 @@
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';;
 import { CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Info, Settings, Globe, FileText, Star, Users, Search, ShoppingCart, Check, X, Loader2 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Switch } from "@/components/ui/switch";
+import { Info, Settings, Globe, FileText, Star, Users, Search, Loader2, Check, X } from "lucide-react";
 import DomainConfirmModal from "./DomainConfirmModal";
-
-interface DomainSearchResult {
-    domain: string;
-    available: boolean;
-    price: number;
-    extension: string;
-    recommended?: boolean;
-}
+import { useLogger } from "@/lib/utils/logger";
 
 interface BasicInfoStepProps {
     data: {
@@ -23,10 +17,6 @@ interface BasicInfoStepProps {
         description: string;
         domain: string;
         category: string;
-        
-        // Домен данные
-        selectedDomain?: string;
-        domainPurchased?: boolean;
         
         // Новые поля для Google Play Store
         language?: string;
@@ -51,113 +41,106 @@ interface BasicInfoStepProps {
 type BasicInfoData = BasicInfoStepProps['data'];
 
 export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
+    const { t } = useTranslation();
     const [domainSearch, setDomainSearch] = useState('');
-    const [searchResults, setSearchResults] = useState<DomainSearchResult[]>([]);
+    const [searchResults, setSearchResults] = useState<any[]>([]);
     const [isSearching, setIsSearching] = useState(false);
-    const [userBalance] = useState(150); // Мок баланса пользователя
+    const [selectedDomain, setSelectedDomain] = useState<any>(null);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
-    const [selectedDomain, setSelectedDomain] = useState<{domain: string, price: number} | null>(null);
-
-    // Debounce для поиска доменов
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            if (domainSearch.trim() && domainSearch.length >= 2) {
-                searchDomains(domainSearch);
-            } else {
-                setSearchResults([]);
-            }
-        }, 500); // Задержка 500ms
-
-        return () => clearTimeout(timeoutId);
-    }, [domainSearch]);
+    const [isPurchasing, setIsPurchasing] = useState(false);
+    const [userBalance] = useState(1000); // Mock баланс
+    const [searchMessage, setSearchMessage] = useState<string | null>(null);
+    const logger = useLogger('BasicInfoStep');
 
     const updateField = (field: keyof BasicInfoData, value: string) => {
         onChange({ [field]: value });
     };
 
-    // Реальная функция поиска доменов через API
-    const searchDomains = async (query: string) => {
-        if (!query.trim()) {
-            setSearchResults([]);
-            return;
-        }
+    // Поиск доменов
+    const handleDomainSearch = async () => {
+        if (!domainSearch.trim() || domainSearch.trim().length < 2) return;
 
         setIsSearching(true);
-        
+        setSearchResults([]); // Очищаем предыдущие результаты
+        setSearchMessage(null); // Очищаем предыдущие сообщения
         try {
             const response = await fetch('/api/domains/search', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ query: query.trim() })
+                body: JSON.stringify({ query: domainSearch.trim() })
             });
 
             const data = await response.json();
             
-            if (data.success && data.domains) {
-                // Преобразуем данные от API в формат компонента
-                const results: DomainSearchResult[] = data.domains.map((domain: any) => ({
-                    domain: domain.domain,
-                    available: domain.available,
-                    price: domain.price || 0,
-                    extension: '.' + domain.domain.split('.')[1],
-                    recommended: domain.domain.endsWith('.site') || domain.domain.endsWith('.online')
-                }));
-                setSearchResults(results);
+            if (data.success) {
+                setSearchResults(data.domains);
+                
+                // Уведомляем пользователя, если домены не найдены
+                if (data.domains.length === 0) {
+                    setSearchMessage(`${t('domain.searchNoResults')}`);
+                    logger.domain.search(domainSearch.trim(), 0);
+                    logger.warning('Домены не найдены', `${t('domain.searchNoResultsSuggestion')}`);
+                } else {
+                    logger.domain.search(domainSearch.trim(), data.domains.length);
+                }
             } else {
-                console.error('Domain search failed:', data.error);
-                setSearchResults([]);
+                throw new Error(data.error || 'Ошибка поиска доменов');
             }
         } catch (error) {
-            console.error('Domain search error:', error);
-            setSearchResults([]);
+            logger.api.error('/api/domains/search', error);
+            setSearchMessage(t('notifications.domain.searchError'));
         } finally {
             setIsSearching(false);
         }
     };
 
-    const purchaseDomain = async (domain: string, price: number) => {
-        setSelectedDomain({ domain, price });
-        setShowConfirmModal(true);
-    };
-
-    const handleConfirmPurchase = async () => {
+    // Покупка домена
+    const handlePurchaseDomain = async () => {
         if (!selectedDomain) return;
 
-        const { domain, price } = selectedDomain;
-        
+        setIsPurchasing(true);
         try {
-            // Упрощенная покупка без данных регистранта
+            // Покупаем домен напрямую через Namecheap API
             const response = await fetch('/api/domains/purchase', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    domain,
-                    price,
-                    userId: 'user123' // Здесь будет реальный ID пользователя
+                    domain: selectedDomain.domain,
+                    price: selectedDomain.price,
+                    registrant: {
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        email: 'user3312@gmail.com',
+                        phone: '1934567890',
+                        address1: '123 Main Street',
+                        city: 'Los Angeles',
+                        stateProvince: 'CA',
+                        postalCode: '90210',
+                        country: 'US'
+                    }
                 })
             });
 
-            const data = await response.json();
-            
-            if (data.success) {
-                onChange({ 
-                    selectedDomain: domain,
-                    domainPurchased: true,
-                    domain: domain 
-                });
+            const result = await response.json();
+
+            if (result.success) {
+                updateField('domain', selectedDomain.domain);
                 setShowConfirmModal(false);
                 setSelectedDomain(null);
-                alert(`✅ Домен успешно куплен и привязан к PWA!\n\n🌐 Домен: ${domain}\n💰 Стоимость: $${price}/год\n🔗 Статус: Привязан к PWA\n📄 Transaction ID: ${data.transactionId}\n\nТеперь ваше PWA будет доступно по адресу ${domain}`);
+                setSearchResults([]);
+                setDomainSearch('');
+                logger.domain.purchase(selectedDomain.domain, true);
             } else {
-                alert(`Ошибка при покупке домена: ${data.error}`);
+                logger.domain.purchase(selectedDomain.domain, false, t('notifications.domain.purchaseError'));
             }
         } catch (error) {
-            console.error('Domain purchase error:', error);
-            alert('Произошла ошибка при покупке домена. Попробуйте позже.');
+            logger.api.error('/api/domains/purchase', 'Ошибка при покупке домена');
+        } finally {
+            setIsPurchasing(false);
         }
     };
 
@@ -181,187 +164,157 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <Settings className="w-5 h-5 text-purple-600" />
-                    Основная информация PWA
+                    {t('basicInformation')}
                 </CardTitle>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Сначала выберите домен для вашего PWA, затем настройте основные параметры
+                    {t('fillBasicDetails')}
                 </p>
             </CardHeader>
-            <CardContent className="space-y-8">
-                {/* Domain Search Section */}
-                <div className="space-y-4">
-                    <div className="flex items-center gap-2 mb-4">
-                        <Globe className="w-5 h-5 text-purple-600" />
-                        <h3 className="text-lg font-semibold">Выбор домена</h3>
-                        <Badge variant="outline" className="text-xs">
-                            Баланс: ${userBalance}
-                        </Badge>
-                    </div>
-                    
-                    {data.selectedDomain ? (
-                        // Выбранный домен
-                        <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <Check className="w-5 h-5 text-green-600" />
-                                    <div>
-                                        <div className="font-medium text-green-900 dark:text-green-100">
-                                            {data.selectedDomain}
-                                        </div>
-                                        <div className="text-sm text-green-700 dark:text-green-300">
-                                            Домен куплен и готов к использованию
-                                        </div>
-                                    </div>
-                                </div>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => onChange({ selectedDomain: undefined, domainPurchased: false, domain: '' })}
-                                >
-                                    Изменить
-                                </Button>
-                            </div>
-                        </div>
-                    ) : (
-                        // Поиск домена
-                        <div className="space-y-4">
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                                <Input
-                                    value={domainSearch}
-                                    onChange={(e) => {
-                                        setDomainSearch(e.target.value);
-                                    }}
-                                    placeholder="Введите имя домена (поиск начнется через 0.5 сек)"
-                                    className="pl-10"
-                                />
-                            </div>
-                            
-                            {domainSearch.length > 0 && domainSearch.length < 2 && (
-                                <div className="text-sm text-gray-500 dark:text-gray-400">
-                                    Введите минимум 2 символа для поиска
-                                </div>
-                            )}
-                            
-                            {isSearching && (
-                                <div className="flex items-center justify-center py-8">
-                                    <Loader2 className="w-6 h-6 animate-spin text-purple-600" />
-                                    <span className="ml-2">Поиск доменов...</span>
-                                </div>
-                            )}
-                            
-                            {searchResults.length > 0 && !isSearching && (
-                                <div className="space-y-2 animate-in fade-in-50 duration-300">
-                                    <div className="flex items-center justify-between">
-                                        <h4 className="font-medium text-sm text-gray-700 dark:text-gray-300">
-                                            Результаты поиска:
-                                        </h4>
-                                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                                            {searchResults.length} доменов найдено
-                                        </span>
-                                    </div>
-                                    <div className="max-h-[320px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent border border-gray-200 dark:border-gray-700 rounded-lg">
-                                        <div className="grid gap-2 p-2">
-                                            {searchResults.map((result, index) => (
-                                            <div
-                                                key={index}
-                                                className={`flex items-center justify-between p-3 border rounded-lg ${
-                                                    result.available 
-                                                        ? result.recommended
-                                                            ? 'border-purple-200 bg-purple-50 dark:bg-purple-950/20 dark:border-purple-800'
-                                                            : 'border-gray-200 bg-white dark:bg-gray-800 dark:border-gray-700'
-                                                        : 'border-gray-200 bg-gray-50 dark:bg-gray-900 dark:border-gray-700 opacity-60'
-                                                }`}
-                                            >
-                                                <div className="flex items-center gap-3">
-                                                    {result.available ? (
-                                                        <Check className="w-4 h-4 text-green-600" />
-                                                    ) : (
-                                                        <X className="w-4 h-4 text-red-500" />
-                                                    )}
-                                                    <span className="font-medium">{result.domain}</span>
-                                                    {result.recommended && (
-                                                        <Badge className="bg-purple-600 text-white text-xs">
-                                                            Рекомендуем
-                                                        </Badge>
-                                                    )}
-                                                </div>
-                                                <div className="flex items-center gap-3">
-                                                    {result.available ? (
-                                                        <>
-                                                            <span className="font-semibold text-lg">
-                                                                ${result.price}/год
-                                                            </span>
-                                                            <Button
-                                                                size="sm"
-                                                                onClick={() => purchaseDomain(result.domain, result.price)}
-                                                                disabled={userBalance < result.price}
-                                                                className={result.recommended ? 'bg-purple-600 hover:bg-purple-700' : ''}
-                                                            >
-                                                                <ShoppingCart className="w-4 h-4 mr-1" />
-                                                                Купить и привязать
-                                                            </Button>
-                                                        </>
-                                                    ) : (
-                                                        <span className="text-red-500 font-medium">Занят</span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-
-                {/* Разделитель */}
-                <div className="border-t pt-6">
-                    <div className="flex items-center gap-2 mb-4">
-                        <FileText className="w-5 h-5 text-purple-600" />
-                        <h3 className="text-lg font-semibold">Настройки PWA</h3>
-                    </div>
-
-                    {/* PWA Name */}
-                    <div className="space-y-2">
-                        <Label htmlFor="pwa-name" className="flex items-center gap-2">
-                            <FileText className="w-4 h-4" />
-                            Название PWA *
-                        </Label>
-                        <Input
-                            id="pwa-name"
-                            value={data.name}
-                            onChange={(e) => updateField('name', e.target.value)}
-                            placeholder="Golden Casino PWA"
+            <CardContent className="space-y-6">
+                {/* PWA Name */}
+                <div className="space-y-2">
+                    <Label htmlFor="pwa-name" className="flex items-center gap-2">
+                        <FileText className="w-4 h-4" />
+                        {t('appNameLabel')} *
+                    </Label>
+                    <Input
+                        id="pwa-name"
+                        value={data.name}
+                        onChange={(e) => updateField('name', e.target.value)}
+                        placeholder="Golden Casino PWA"
                         className="text-lg"
                     />
                     <p className="text-xs text-slate-500">
-                        Это внутреннее название для управления PWA. Пользователи увидят другое название.
+                        {t('basicInfoDescription')}
                     </p>
                 </div>
 
-                {/* Domain */}
-                <div className="space-y-2">
-                    <Label htmlFor="domain" className="flex items-center gap-2">
+                {/* Domain Search */}
+                <div className="space-y-4">
+                    <Label className="flex items-center gap-2">
                         <Globe className="w-4 h-4" />
-                        Домен *
+                        {t('domain.search')} *
                     </Label>
-                    <Input
-                        id="domain"
-                        value={data.domain}
-                        onChange={(e) => updateField('domain', e.target.value)}
-                        placeholder="goldencasino.com"
-                    />
+                    
+                    {/* Поиск доменов */}
+                    <div className="flex gap-2">
+                        <Input
+                            value={domainSearch}
+                            onChange={(e) => setDomainSearch(e.target.value)}
+                            placeholder={t('domain.searchPlaceholder')}
+                            onKeyPress={(e) => e.key === 'Enter' && handleDomainSearch()}
+                        />
+                        <Button
+                            onClick={handleDomainSearch}
+                            disabled={isSearching || !domainSearch.trim()}
+                            className="px-4"
+                        >
+                            {isSearching ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                                <Search className="w-4 h-4" />
+                            )}
+                        </Button>
+                    </div>
+
+                    {/* Сообщение о результате поиска */}
+                    {searchMessage && (
+                        <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                            <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                                {searchMessage}
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Результаты поиска */}
+                    {searchResults.length > 0 && (
+                        <div className="space-y-2">
+                            <h4 className="text-sm font-medium">{t('domain.availableDomains')}</h4>
+                            <div className="max-h-60 overflow-y-auto space-y-2 pr-2">
+                                {searchResults.map((domain) => (
+                                    <div
+                                        key={domain.domain}
+                                        className={`flex items-center justify-between p-3 border rounded-lg cursor-pointer transition-colors ${
+                                            domain.price && domain.price <= 5
+                                                ? 'border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/30'
+                                                : domain.price && domain.price <= 15
+                                                ? 'border-green-200 bg-green-50 dark:bg-green-900/20 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/30'
+                                                : 'border-purple-200 bg-purple-50 dark:bg-purple-900/20 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/30'
+                                        }`}
+                                        onClick={() => {
+                                            setSelectedDomain(domain);
+                                            setShowConfirmModal(true);
+                                        }}
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-medium">{domain.domain}</span>
+                                            <Check className="w-4 h-4 text-green-600" />
+                                            {domain.price && domain.price <= 5 && (
+                                                <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100">
+                                                    {t('domain.cheapDomain')}
+                                                </Badge>
+                                            )}
+                                        </div>
+                                        <div className="text-right">
+                                            <span className={`font-semibold ${
+                                                domain.price && domain.price <= 5
+                                                    ? 'text-blue-600'
+                                                    : domain.price && domain.price <= 15
+                                                    ? 'text-green-600'
+                                                    : 'text-purple-600'
+                                            }`}>
+                                                ${domain.price ? domain.price.toFixed(2) : 'N/A'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            {searchResults.length === 10 && (
+                                <p className="text-xs text-slate-500 text-center">
+                                    {t('domain.showFirstTenDomains')}
+                                </p>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Текущий домен */}
+                    {data.domain && (
+                        <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                            <div className="flex items-center justify-between">
+                                <span className="font-medium text-blue-900 dark:text-blue-100">
+                                    {t('selectedDomain')}: {data.domain}
+                                </span>
+                                <Badge variant="secondary" className="bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100">
+                                    {t('domain.active')}
+                                </Badge>
+                            </div>
+                        </div>
+                    )}
+
                     <p className="text-xs text-slate-500">
-                        Домен где будет размещено PWA приложение
+                        {t('domain.searchTips')}
                     </p>
+                    
+                    {/* Подсказки для поиска */}
+                    {!searchResults.length && !searchMessage && !isSearching && (
+                        <div className="p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg">
+                            <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
+                                💡 <strong>{t('domain.tipsTitle')}:</strong>
+                            </p>
+                            <ul className="text-xs text-slate-500 dark:text-slate-500 space-y-1">
+                                <li>• {t('domain.tip1')}</li>
+                                <li>• {t('domain.tip2')}</li>
+                                <li>• {t('domain.tip3')}</li>
+                                <li>• {t('domain.tip4')}</li>
+                            </ul>
+                        </div>
+                    )}
                 </div>
 
                 {/* Description */}
                 <div className="space-y-2">
                     <Label htmlFor="description">
-                        Описание (опционально)
+                        {t('description')}
                     </Label>
                     <Input
                         id="description"
@@ -370,13 +323,13 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
                         placeholder="Лучшее казино с бонусами и джекпотами"
                     />
                     <p className="text-xs text-slate-500">
-                        Краткое описание для внутреннего использования
+                        {t('descriptionDescription')}
                     </p>
                 </div>
 
                 {/* Category */}
                 <div className="space-y-2">
-                    <Label>Категория</Label>
+                    <Label>{t('category')}</Label>
                     <div className="flex flex-wrap gap-2">
                         {categories.map((category) => (
                             <Badge
@@ -399,13 +352,13 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
                 <div className="border-t pt-6">
                     <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                         <Star className="w-5 h-5 text-purple-600" />
-                        Настройки Play Store
+                        {t('playStoreSettings')}
                     </h3>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Язык интерфейса */}
                         <div className="space-y-2">
-                            <Label htmlFor="language">Язык интерфейса PWA</Label>
+                            <Label htmlFor="language">{t('language')}</Label>
                             <select
                                 id="language"
                                 value={data.language || 'ru'}
@@ -422,7 +375,7 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
 
                         {/* Внутреннее название */}
                         <div className="space-y-2">
-                            <Label htmlFor="internalName">Название (внутри сервиса)</Label>
+                            <Label htmlFor="internalName">{t('internalName')}</Label>
                             <Input
                                 id="internalName"
                                 value={data.internalName || ''}
@@ -433,7 +386,7 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
 
                         {/* Название PWA */}
                         <div className="space-y-2">
-                            <Label htmlFor="pwaName">Название PWA</Label>
+                            <Label htmlFor="pwaName">{t('pwaName')}</Label>
                             <Input
                                 id="pwaName"
                                 value={data.pwaName || ''}
@@ -444,7 +397,7 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
 
                         {/* Разработчик */}
                         <div className="space-y-2">
-                            <Label htmlFor="developer">Разработчик</Label>
+                            <Label htmlFor="developer">{t('developer')}</Label>
                             <Input
                                 id="developer"
                                 value={data.developer || ''}
@@ -455,7 +408,7 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
 
                         {/* Рейтинг */}
                         <div className="space-y-2">
-                            <Label htmlFor="rating">Рейтинг</Label>
+                            <Label htmlFor="rating">{t('rating')}</Label>
                             <Input
                                 id="rating"
                                 type="number"
@@ -470,7 +423,7 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
 
                         {/* Кол-во отзывов */}
                         <div className="space-y-2">
-                            <Label htmlFor="reviewsCount">Кол-во отзывов</Label>
+                            <Label htmlFor="reviewsCount">{t('reviewsCount')}</Label>
                             <Input
                                 id="reviewsCount"
                                 type="number"
@@ -482,7 +435,7 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
 
                         {/* Кол-во скачиваний */}
                         <div className="space-y-2">
-                            <Label htmlFor="downloadsCount">Кол-во скачиваний</Label>
+                            <Label htmlFor="downloadsCount">{t('downloadsCount')}</Label>
                             <select
                                 id="downloadsCount"
                                 value={data.downloadsCount || '10K+'}
@@ -499,7 +452,7 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
 
                         {/* Возраст */}
                         <div className="space-y-2">
-                            <Label htmlFor="ageRating">Возраст</Label>
+                            <Label htmlFor="ageRating">{t('ageRating')}</Label>
                             <select
                                 id="ageRating"
                                 value={data.ageRating || '18+'}
@@ -518,7 +471,7 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
                     {/* Переключатели */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                         <div className="flex items-center justify-between">
-                            <Label className="text-sm">Верификация</Label>
+                            <Label className="text-sm">{t('verification')}</Label>
                             <Switch
                                 checked={data.isVerified || false}
                                 onCheckedChange={(checked) => onChange({ isVerified: checked })}
@@ -526,7 +479,7 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
                         </div>
                         
                         <div className="flex items-center justify-between">
-                            <Label className="text-sm">Есть реклама</Label>
+                            <Label className="text-sm">{t('hasAds')}</Label>
                             <Switch
                                 checked={data.hasAds || false}
                                 onCheckedChange={(checked) => onChange({ hasAds: checked })}
@@ -534,7 +487,7 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
                         </div>
                         
                         <div className="flex items-center justify-between">
-                            <Label className="text-sm">Покупки в приложении</Label>
+                            <Label className="text-sm">{t('inAppPurchases')}</Label>
                             <Switch
                                 checked={data.hasInAppPurchases || false}
                                 onCheckedChange={(checked) => onChange({ hasInAppPurchases: checked })}
@@ -542,7 +495,7 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
                         </div>
                         
                         <div className="flex items-center justify-between">
-                            <Label className="text-sm">Выбор редакции</Label>
+                            <Label className="text-sm">{t('editorsChoice')}</Label>
                             <Switch
                                 checked={data.isEditorsChoice || false}
                                 onCheckedChange={(checked) => onChange({ isEditorsChoice: checked })}
@@ -553,7 +506,7 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
                     {/* Заголовок описания и версия */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                         <div className="space-y-2">
-                            <Label htmlFor="descriptionTitle">Заголовок описания</Label>
+                            <Label htmlFor="descriptionTitle">{t('descriptionTitle')}</Label>
                             <Input
                                 id="descriptionTitle"
                                 value={data.descriptionTitle || ''}
@@ -563,7 +516,7 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="version">Версия</Label>
+                            <Label htmlFor="version">{t('version')}</Label>
                             <Input
                                 id="version"
                                 value={data.version || '1.0.0'}
@@ -573,7 +526,7 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
                         </div>
 
                         <div className="space-y-2 md:col-span-2">
-                            <Label htmlFor="lastUpdated">Последнее обновление</Label>
+                            <Label htmlFor="lastUpdated">{t('lastUpdated')}</Label>
                             <Input
                                 id="lastUpdated"
                                 type="date"
@@ -590,11 +543,10 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
                         <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
                         <div>
                             <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-1">
-                                Что происходит дальше?
+                                {t('whatsNext')}
                             </h4>
                             <p className="text-sm text-blue-700 dark:text-blue-300">
-                                После заполнения основной информации мы настроим параметры казино, 
-                                трекинг для аналитики и push-уведомления для ретаргетинга пользователей.
+                                {t('whatsNextDescription')}
                             </p>
                         </div>
                     </div>
@@ -603,41 +555,35 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
                 {/* Validation Status */}
                 <div className="border-t pt-4">
                     <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Готовность к следующему шагу:</span>
+                        <span className="text-sm font-medium">{t('readiness')}:</span>
                         <div className="flex items-center gap-2">
-                            {data.name.trim() && data.selectedDomain ? (
+                            {data.name.trim() && data.domain.trim() ? (
                                 <>
                                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                    <span className="text-sm text-green-600">Готово</span>
+                                    <span className="text-sm text-green-600">{t('ready')}</span>
                                 </>
                             ) : (
                                 <>
                                     <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
                                     <span className="text-sm text-amber-600">
-                                        {!data.selectedDomain ? 'Выберите домен' : 'Заполните название PWA'}
+                                        {t('fillRequiredFields')}
                                     </span>
                                 </>
                             )}
                         </div>
                     </div>
                 </div>
-                </div>
             </CardContent>
-            
-            {/* Domain Confirmation Modal */}
-            {selectedDomain && (
-                <DomainConfirmModal
-                    domain={selectedDomain.domain}
-                    price={selectedDomain.price}
-                    isOpen={showConfirmModal}
-                    onClose={() => {
-                        setShowConfirmModal(false);
-                        setSelectedDomain(null);
-                    }}
-                    onConfirm={handleConfirmPurchase}
-                    userBalance={userBalance}
-                />
-            )}
+
+            {/* Модальное окно подтверждения покупки домена */}
+            <DomainConfirmModal
+                isOpen={showConfirmModal}
+                onClose={() => setShowConfirmModal(false)}
+                onConfirm={handlePurchaseDomain}
+                domain={selectedDomain || { domain: '', price: 0 }}
+                userBalance={userBalance}
+                isLoading={isPurchasing}
+            />
         </>
     );
 }

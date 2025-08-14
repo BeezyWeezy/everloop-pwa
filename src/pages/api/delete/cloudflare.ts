@@ -1,19 +1,12 @@
 // API endpoint для удаления файлов из Cloudflare R2
 import { NextApiRequest, NextApiResponse } from 'next';
-import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
-import { supabase } from '@/lib/supabaseClient';
-
-// Настройка Cloudflare R2 S3-совместимого клиента
-const r2Client = new S3Client({
-  region: 'auto',
-  endpoint: process.env.CLOUDFLARE_R2_ENDPOINT,
-  credentials: {
-    accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY!,
-  },
-});
+import { CloudflareProvider } from '@/lib/providers/cloudflare';
+import { supabase } from '@/lib/providers/supabase';
+import { useLogger } from '@/lib/utils/logger';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    const logger = useLogger('delete');
+
   // Добавляем CORS заголовки
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'DELETE, OPTIONS');
@@ -53,13 +46,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(403).json({ error: 'Access denied' });
     }
 
-    // Удаляем файл из Cloudflare R2
-    const deleteCommand = new DeleteObjectCommand({
-      Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME!,
-      Key: path,
-    });
-
-    await r2Client.send(deleteCommand);
+    // Используем наш провайдер для удаления
+    await CloudflareProvider.deleteFromR2(path);
 
     res.status(200).json({
       success: true,
@@ -67,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
   } catch (error) {
-    console.error('Delete error:', error);
+    logger.error('Delete error:', error);
     res.status(500).json({
       error: error instanceof Error ? error.message : 'Delete failed',
     });

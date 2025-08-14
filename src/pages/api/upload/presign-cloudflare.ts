@@ -3,7 +3,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/lib/providers/supabase';
+import { useLogger } from '@/lib/utils/logger';
 
 // Настройка Cloudflare R2 S3-совместимого клиента
 const r2Client = new S3Client({
@@ -16,6 +17,8 @@ const r2Client = new S3Client({
 });
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    const logger = useLogger('upload');
+
   // Добавляем CORS заголовки
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -86,7 +89,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
   } catch (error) {
-    console.error('Presign error:', error);
+    logger.error('Presign error:', error);
     res.status(500).json({
       error: error instanceof Error ? error.message : 'Failed to generate signed URL',
     });

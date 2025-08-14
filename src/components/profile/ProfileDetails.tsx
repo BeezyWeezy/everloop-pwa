@@ -16,7 +16,7 @@ export interface UserProfile {
 // Пропсы компонента
 interface ProfileDetailsProps {
     user: UserProfile
-    onEdit?: () => void // Callback для кнопки "Редактировать"
+    onEdit?: () => void // Callback для кнопки t('ui.edit')
 }
 
 export const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user, onEdit }) => {

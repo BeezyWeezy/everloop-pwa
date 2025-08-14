@@ -4,9 +4,11 @@ import { ChangePasswordForm } from "@/components/profile/ChangePasswordForm"
 import { SubscriptionSection } from "@/components/profile/SubscriptionSection"
 import { TwoFactorAuthSetup } from "@/components/profile/TwoFactorAuthSetup"
 import { useTranslation } from "react-i18next";
+import { useLogger } from '@/lib/utils/logger';
 
 export default function ProfilePage() {
     const { t } = useTranslation();
+    const logger = useLogger('pages');
 
     const tabs = [
         { id: "details", label: `${t("profileInfo")}`, component: "details" },
@@ -50,7 +52,7 @@ export default function ProfilePage() {
         set2FAError(null)
         // Пример проверки кода
         if (code === "123456") {
-            alert("Двухфакторная аутентификация успешно включена!")
+            logger.success("Двухфакторная аутентификация", "Успешно включена!")
         } else {
             set2FAError("Неверный код. Попробуйте ещё раз.")
         }
@@ -62,12 +64,12 @@ export default function ProfilePage() {
         newPassword: string
         confirmPassword: string
     }) => {
-        console.log("Смена пароля:", data)
-        alert("Пароль успешно обновлён")
+        logger.info('Смена пароля', 'Password change initiated')
+        logger.success("Пароль обновлен", "Пароль успешно обновлён")
     }
 
     const handleUpgradeSubscription = () => {
-        alert("Обновление подписки...")
+        logger.info("Обновление подписки", "Обновление подписки...")
     }
 
     const renderActiveComponent = () => {
@@ -89,7 +91,7 @@ export default function ProfilePage() {
                 return user ? (
                     <ProfileDetails
                         user={user}
-                        onEdit={() => alert("Редактирование профиля")}
+                        onEdit={() => logger.info("Редактирование профиля", "Редактирование профиля")}
                     />
                 ) : (
                     <p>Данные профиля не найдены.</p>

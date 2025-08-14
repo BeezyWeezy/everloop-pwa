@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/providers/supabase";
 import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "@/components/ui/themetoggle";
 import { LanguageSwitcher } from "@/i18n/LanguageSwitcher";
 import Link from "next/link";
+import { useLogger } from "@/lib/utils/logger";
 
 export default function ForgotPasswordPage() {
     const { t } = useTranslation()
+    const logger = useLogger('ForgotPasswordPage')
     const [email, setEmail] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -25,19 +27,18 @@ export default function ForgotPasswordPage() {
             });
 
             if (resetError) {
-                if (resetError.message === "User not found") {
-                    // Если email отсутствует в базе данных
-                    setError("Пользователь с таким email не найден.");
-                } else {
-                    // Для всех остальных ошибок
-                    throw new Error(resetError.message);
-                }
+                // Безопасное сообщение - не раскрываем информацию о существующих пользователях
+                logger.user.success(t('passwordReset'), t('notifications.auth.passwordResetSuccess'))
+                setSuccess(t('notifications.auth.passwordResetSuccess'));
             } else {
                 // Успешная отправка письма
-                setSuccess("Инструкция по восстановлению пароля отправлена на ваш email.");
+                logger.user.success(t('passwordReset'), t('notifications.auth.passwordResetSuccess'))
+                setSuccess(t('notifications.auth.passwordResetSuccess'));
             }
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Произошла неизвестная ошибка.");
+            const errorMessage = err instanceof Error ? err.message : "Произошла неизвестная ошибка.";
+            logger.user.error(t('passwordReset'), t('notifications.auth.passwordResetError'))
+            setError(t('notifications.auth.passwordResetError'));
         } finally {
             setLoading(false);
         }
@@ -78,26 +79,13 @@ export default function ForgotPasswordPage() {
                     className="w-full p-3 h-11 sm:h-12 border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-yellow bg-background text-foreground placeholder:text-muted-foreground smooth-transition text-base"
                     required
                 />
-                {error && (
-                    <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                        <p className="text-red-600 dark:text-red-400 text-sm text-center">
-                            {error}
-                        </p>
-                    </div>
-                )}
-                {success && (
-                    <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg">
-                        <p className="text-emerald-600 dark:text-emerald-400 text-sm text-center">
-                            {success}
-                        </p>
-                    </div>
-                )}
+                {/* Уведомления показываются через логгер в правом верхнем углу */}
                 <button
                     type="submit"
                     disabled={loading}
                     className="w-full p-3 h-11 sm:h-12 bg-brand-yellow text-black font-medium rounded-lg hover:bg-yellow-400 disabled:opacity-50 smooth-transition text-sm sm:text-base"
                 >
-                    {loading ? t('sending') : 'Восстановить пароль'}
+                    {loading ? t('sending') : t('passwordReset')}
                 </button>
                 <div className="text-center">
                     <Link

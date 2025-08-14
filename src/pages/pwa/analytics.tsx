@@ -24,7 +24,8 @@ import {
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import Head from "next/head";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/providers/supabase";
+import { useLogger } from '@/lib/utils/logger';
 
 interface PWA {
     id: string;
@@ -37,6 +38,7 @@ interface PWA {
 
 export default function PwaAnalyticsPage() {
     const { t } = useTranslation();
+    const logger = useLogger('pwa');
     const [pwas, setPwas] = useState<PWA[]>([]);
 
     useEffect(() => {
@@ -51,7 +53,7 @@ export default function PwaAnalyticsPage() {
                 .order('created_at', { ascending: false });
             
             if (error) {
-                console.error('Error loading PWAs:', error);
+                logger.error(t('notifications.pwa.loadListError'), t('notifications.pwa.loadListError'))
             } else {
                 // Добавляем рейтинг как моковые данные пока
                 const pwasWithRating = (data || []).map(pwa => ({
@@ -61,7 +63,7 @@ export default function PwaAnalyticsPage() {
                 setPwas(pwasWithRating);
             }
         } catch (error) {
-            console.error('Error loading PWAs:', error);
+            logger.error(t('notifications.pwa.loadListError'), t('notifications.pwa.loadListError'))
         }
     };
 
@@ -79,17 +81,17 @@ export default function PwaAnalyticsPage() {
         monthlyGrowth: 15.2,
         topPwa: pwas.find(p => p.installs === Math.max(...pwas.map(p => p.installs || 0))),
         installsByMonth: [
-            { month: 'Янв', installs: 1200 },
-            { month: 'Фев', installs: 1800 },
-            { month: 'Мар', installs: 2400 },
-            { month: 'Апр', installs: 3200 },
-            { month: 'Май', installs: 4100 },
-            { month: 'Июн', installs: 5200 },
+            { month: t('analytics.jan'), installs: 1200 },
+            { month: t('analytics.feb'), installs: 1800 },
+            { month: t('analytics.mar'), installs: 2400 },
+            { month: t('analytics.apr'), installs: 3200 },
+            { month: t('analytics.may'), installs: 4100 },
+            { month: t('analytics.jun'), installs: 5200 },
         ],
         deviceStats: [
-            { device: 'Android', percentage: 67, color: 'bg-green-500' },
-            { device: 'iOS', percentage: 28, color: 'bg-blue-500' },
-            { device: 'Desktop', percentage: 5, color: 'bg-gray-500' },
+            { device: t('analytics.android'), percentage: 67, color: 'bg-green-500' },
+            { device: t('analytics.ios'), percentage: 28, color: 'bg-blue-500' },
+            { device: t('analytics.desktop'), percentage: 5, color: 'bg-gray-500' },
         ],
     };
 
@@ -128,7 +130,7 @@ export default function PwaAnalyticsPage() {
     return (
         <>
             <Head>
-                <title>Аналитика PWA - Everloop</title>
+                <title>{t('analytics.title')} - Everloop</title>
             </Head>
             <div className="p-3 sm:p-6">
                 {/* Header */}
@@ -136,15 +138,15 @@ export default function PwaAnalyticsPage() {
                     <Link href="/pwa">
                         <Button variant="ghost" size="sm">
                             <ArrowLeft className="w-4 h-4 mr-2" />
-                            Назад к PWA
+                            {t('analytics.backToPwa')}
                         </Button>
                     </Link>
                     <div>
                         <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">
-                            Аналитика PWA
+                            {t('analytics.title')}
                         </h1>
                         <p className="text-slate-600 dark:text-slate-400">
-                            Детальная статистика ваших Progressive Web Applications
+                            {t('analytics.description')}
                         </p>
                     </div>
                 </div>
@@ -158,7 +160,7 @@ export default function PwaAnalyticsPage() {
                                 <div className="flex-1 relative">
                                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
                                     <Input
-                                        placeholder="Поиск PWA для анализа..."
+                                        placeholder={t('analytics.searchPlaceholder')}
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         className="pl-10"
@@ -182,24 +184,24 @@ export default function PwaAnalyticsPage() {
                                             <Button variant="outline" className="w-full justify-between">
                                                 <div className="flex items-center gap-2">
                                                     <Calendar className="w-4 h-4" />
-                                                    {timeRange === "7d" ? "7 дней" :
-                                                     timeRange === "30d" ? "30 дней" :
-                                                     timeRange === "90d" ? "90 дней" : "12 месяцев"}
+                                                    {timeRange === "7d" ? t('analytics.last7Days') :
+                                                     timeRange === "30d" ? t('analytics.last30Days') :
+                                                     timeRange === "90d" ? t('analytics.last90Days') : t('analytics.last12Months')}
                                                 </div>
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent>
                                             <DropdownMenuItem onClick={() => setTimeRange("7d")}>
-                                                Последние 7 дней
+                                                {t('analytics.last7Days')}
                                             </DropdownMenuItem>
                                             <DropdownMenuItem onClick={() => setTimeRange("30d")}>
-                                                Последние 30 дней
+                                                {t('analytics.last30Days')}
                                             </DropdownMenuItem>
                                             <DropdownMenuItem onClick={() => setTimeRange("90d")}>
-                                                Последние 90 дней
+                                                {t('analytics.last90Days')}
                                             </DropdownMenuItem>
                                             <DropdownMenuItem onClick={() => setTimeRange("12m")}>
-                                                Последние 12 месяцев
+                                                {t('analytics.last12Months')}
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu>
@@ -208,14 +210,14 @@ export default function PwaAnalyticsPage() {
                                 {/* Refresh */}
                                 <Button variant="outline" className="whitespace-nowrap">
                                     <RefreshCw className="w-4 h-4 mr-2" />
-                                    Обновить
+                                    {t('analytics.refresh')}
                                 </Button>
 
                                 {/* Clear Filters */}
                                 {(searchQuery || selectedPwas.length > 0 || timeRange !== "30d") && (
                                     <Button variant="ghost" onClick={clearFilters} className="whitespace-nowrap">
                                         <X className="w-4 h-4 mr-2" />
-                                        Сбросить
+                                        {t('analytics.reset')}
                                     </Button>
                                 )}
                             </div>
@@ -224,7 +226,7 @@ export default function PwaAnalyticsPage() {
                             {pwas.length > 0 && (
                                 <div>
                                     <div className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">
-                                        Выберите PWA для анализа:
+                                        {t('analytics.selectPwaForAnalysis')}:
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         <Button
@@ -232,7 +234,7 @@ export default function PwaAnalyticsPage() {
                                             size="sm"
                                             onClick={() => setSelectedPwas([])}
                                         >
-                                            Все PWA ({filteredPwas.length})
+                                            {t('analytics.allPwa')} ({filteredPwas.length})
                                         </Button>
                                         {filteredPwas.map(pwa => (
                                             <Button
@@ -478,7 +480,7 @@ export default function PwaAnalyticsPage() {
                                                 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                                                 : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
                                         }>
-                                            {pwa.status === 'deployed' ? 'Активен' : 'Неактивен'}
+                                            {pwa.status === 'deployed' ? t('ui.active') : t('ui.inactive')}
                                         </Badge>
                                     </div>
                                 </div>

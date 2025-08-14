@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Wand2, Sparkles, Eye, Settings, Target, BarChart, Bell, ArrowRight, ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useLogger } from "@/lib/utils/logger";
 import CasinoLivePreview from "./CasinoLivePreview";
 import TestStep from "./TestStep";
 import BasicInfoStep from "./BasicInfoStep";
@@ -182,6 +183,7 @@ const initialData: PwaData = {
 
 export default function PwaCreator() {
     const { t } = useTranslation();
+    const logger = useLogger('PwaCreator');
     const [pwaData, setPwaData] = useState<PwaData>(initialData);
     const [isCreating, setIsCreating] = useState(false);
     const [currentStep, setCurrentStep] = useState(0);
@@ -190,29 +192,29 @@ export default function PwaCreator() {
     const steps = [
         {
             id: 'basic',
-            title: 'Основная информация',
-            description: 'Название PWA, домен и базовые настройки',
+            title: t('pwaCreator.basicInfo'),
+            description: t('pwaCreator.basicInfoDesc'),
             icon: Settings,
             component: 'basic'
         },
         {
             id: 'casino',
-            title: 'Настройки казино',
-            description: 'URL казино и параметры редиректа',
+            title: t('pwaCreator.casinoSettings'),
+            description: t('pwaCreator.casinoSettingsDesc'),
             icon: Target,
             component: 'casino'
         },
         {
             id: 'tracking',
-            title: 'Аналитика и трекинг',
-            description: 'Facebook Pixel, Google Analytics',
+            title: t('pwaCreator.analytics'),
+            description: t('pwaCreator.analyticsDesc'),
             icon: BarChart,
             component: 'tracking'
         },
         {
             id: 'notifications',
-            title: 'Push-уведомления',
-            description: 'Настройка ретаргетинга',
+            title: t('pwaCreator.pushNotifications'),
+            description: t('pwaCreator.pushNotificationsDesc'),
             icon: Bell,
             component: 'notifications'
         }
@@ -266,7 +268,7 @@ export default function PwaCreator() {
 
     const handleCreatePwa = async () => {
         if (!canCreate()) {
-            alert('Пожалуйста, заполните все обязательные поля: название, домен и URL казино');
+            logger.validation.error(t('ui.name'), t('notifications.pwa.requiredFields'));
             return;
         }
 
@@ -276,15 +278,15 @@ export default function PwaCreator() {
             // Simulate PWA creation
             await new Promise(resolve => setTimeout(resolve, 2000));
             
-            console.log('Creating Casino PWA with data:', pwaData);
+            logger.pwa.created(pwaData.name);
+            logger.info('Creating Casino PWA', `Domain: ${pwaData.domain}, Casino: ${pwaData.affiliateSettings.casinoUrl}`, pwaData);
             
             // Here you would handle the actual PWA creation
             // For example: call your API to create the PWA
             
-            alert('Casino PWA успешно создано!');
+            logger.success(t('notifications.pwa.createSuccess'), t('notifications.pwa.createSuccess'));
         } catch (error) {
-            console.error('Error creating PWA:', error);
-            alert('Ошибка при создании PWA');
+            logger.pwa.error('Creation', error instanceof Error ? error.message : 'Unknown error');
         } finally {
             setIsCreating(false);
         }
@@ -315,13 +317,13 @@ export default function PwaCreator() {
                         Casino PWA Creator
                     </h1>
                     <p className="text-slate-600 dark:text-slate-400 mt-2">
-                        Создайте PWA для казино-аффилиат маркетинга с автоматическим редиректом и трекингом
+                        {t('pwaCreator.title')}
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
                     <Button variant="outline" className="flex items-center gap-2">
                         <Eye className="w-4 h-4" />
-                        Предпросмотр
+                        {t('pwaCreator.preview')}
                     </Button>
                     <Button 
                         onClick={handleCreatePwa}
@@ -329,7 +331,7 @@ export default function PwaCreator() {
                         className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 flex items-center gap-2"
                     >
                         <Sparkles className="w-4 h-4" />
-                        {isCreating ? 'Создаю...' : 'Создать Casino PWA'}
+                        {isCreating ? t('pwaCreator.creating') : t('pwaCreator.createButton')}
                     </Button>
                 </div>
             </div>
@@ -338,7 +340,7 @@ export default function PwaCreator() {
             <div className="mb-8">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                        Шаг {currentStep + 1} из {steps.length}: {steps[currentStep].title}
+                        {t('pwaCreator.stepCounter', { current: currentStep + 1, total: steps.length, title: steps[currentStep].title })}
                     </h2>
                     <div className="text-sm text-slate-500 dark:text-slate-400">
                         {steps[currentStep].description}
@@ -401,7 +403,7 @@ export default function PwaCreator() {
                             className="flex items-center gap-2"
                         >
                             <ArrowLeft className="w-4 h-4" />
-                            Назад
+                            {t('ui.back')}
                         </Button>
                         
                         <div className="flex items-center gap-3">
@@ -411,7 +413,7 @@ export default function PwaCreator() {
                                     disabled={!canProceedToNextStep()}
                                     className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
                                 >
-                                    Далее
+                                    {t('ui.next')}
                                     <ArrowRight className="w-4 h-4" />
                                 </Button>
                             ) : (
@@ -421,7 +423,7 @@ export default function PwaCreator() {
                                     className="bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 flex items-center gap-2"
                                 >
                                     <Sparkles className="w-4 h-4" />
-                                    {isCreating ? 'Создаю...' : 'Создать Casino PWA'}
+                                    {isCreating ? t('pwaCreator.creating') : t('pwaCreator.createButton')}
                                 </Button>
                             )}
                         </div>

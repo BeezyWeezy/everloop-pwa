@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useTranslation } from "react-i18next";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/providers/supabase";
 import { useUserStore } from "@/store/useUserStore";
 
 export function MobileSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {

@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { supabase } from '@/lib/supabaseClient'
+import { supabase } from '@/lib/providers/supabase'
 import { useUserStore } from '@/store/useUserStore'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/css'
 import {
     Card,
     CardContent,
@@ -14,11 +14,12 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+
 import { GoogleIcon } from '@/components/icons'
 import { ThemeToggle } from '@/components/ui/themetoggle'
 import { LanguageSwitcher } from '@/i18n/LanguageSwitcher'
 import { useTranslation } from 'react-i18next'
+import { useLogger } from '@/lib/utils/logger'
 
 interface AuthFormProps extends React.ComponentPropsWithoutRef<'div'> {
     mode: 'login' | 'register'
@@ -26,6 +27,7 @@ interface AuthFormProps extends React.ComponentPropsWithoutRef<'div'> {
 
 export function AuthForm({ className, mode, ...props }: AuthFormProps) {
     const { t, i18n } = useTranslation()
+    const logger = useLogger('AuthForm')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
@@ -64,7 +66,8 @@ export function AuthForm({ className, mode, ...props }: AuthFormProps) {
         try {
             if (isRegister) {
                 if (password !== confirmPassword) {
-                    setError('Пароли не совпадают')
+                    logger.validation.error(t('ui.password'), t('notifications.auth.passwordMismatch'))
+                    setError(t('notifications.auth.passwordMismatch'))
                     return
                 }
                 const { error } = await supabase.auth.signUp({
@@ -76,19 +79,50 @@ export function AuthForm({ className, mode, ...props }: AuthFormProps) {
                         }
                     }
                 })
-                if (error) return setError(error.message)
+                if (error) {
+                    // Безопасные сообщения об ошибках - не раскрываем информацию о пользователях
+                    let safeMessage = t('notifications.auth.generalError')
+                    
+                    if (error.message.includes('already registered') || error.message.includes('already exists')) {
+                        safeMessage = t('notifications.auth.registrationSuccess')
+                    } else if (error.message.includes('password')) {
+                        safeMessage = t('notifications.auth.passwordMinLength')
+                    } else if (error.message.includes('email')) {
+                        safeMessage = t('notifications.auth.invalidEmail')
+                    }
+                    
+                    logger.user.error(t('signUp'), safeMessage)
+                    setError(safeMessage)
+                    return
+                }
+                logger.user.success(t('signUp'), t('notifications.auth.registrationSuccess'))
                 router.push('/check-email')
             } else {
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email,
                     password
                 })
-                if (error) return setError(error.message)
+                if (error) {
+                    // Безопасные сообщения об ошибках - не уточняем что именно неверно
+                    let safeMessage = t('notifications.auth.loginError')
+                    
+                    if (error.message.includes('not confirmed')) {
+                        safeMessage = t('notifications.auth.emailNotConfirmed')
+                    } else if (error.message.includes('too many requests')) {
+                        safeMessage = t('notifications.auth.tooManyAttempts')
+                    }
+                    
+                    logger.user.error(t('signIn'), safeMessage)
+                    setError(safeMessage)
+                    return
+                }
+                logger.user.success(t('signIn'), t('notifications.auth.loginSuccess'))
                 setUser(data.user)
                 router.push('/')
             }
         } catch (err) {
-            setError('Ошибка')
+            logger.user.error(t('signIn'), t('notifications.auth.generalError'))
+            setError(t('notifications.auth.generalError'))
         } finally {
             setLoading(false)
         }
@@ -104,10 +138,14 @@ export function AuthForm({ className, mode, ...props }: AuthFormProps) {
             })
 
             if (error) {
-                setError(error.message);
+                logger.user.error(t('signInWithGoogle'), t('notifications.auth.oauthError'))
+                setError(t('notifications.auth.oauthError'));
+            } else {
+                logger.info(t('signInWithGoogle'), 'Перенаправление на Google...')
             }
         } catch (err) {
-            setError('Ошибка при авторизации через Google');
+            logger.user.error(t('signInWithGoogle'), t('notifications.auth.oauthError'))
+            setError(t('notifications.auth.oauthError'));
         }
     }
 
@@ -142,12 +180,7 @@ export function AuthForm({ className, mode, ...props }: AuthFormProps) {
                 </CardHeader>
                 <CardContent className="px-4 sm:px-6">
                     <form onSubmit={handleSubmit} className="grid gap-4 sm:gap-6">
-                        {error && (
-                            <Alert variant="destructive">
-                                <AlertTitle>Ошибка</AlertTitle>
-                                <AlertDescription className="text-sm">{error}</AlertDescription>
-                            </Alert>
-                        )}
+                        {/* Уведомления теперь показываются через логгер в правом верхнем углу */}
                         <div className="flex flex-col gap-3 sm:gap-4">
                         <Button
                             variant="outline"

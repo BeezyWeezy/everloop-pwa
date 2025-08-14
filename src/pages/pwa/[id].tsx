@@ -7,21 +7,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/providers/supabase";
 import { 
     uploadPwaLogo, 
-    uploadPwaScreenshot, 
-    deleteFileFromR2, 
+        uploadPWAMedia,
+    deleteFile, 
     validateImageFile, 
     createImagePreview 
-} from "@/lib/uploadHelpers";
+} from "@/lib/api/storage";
 import { 
     updatePWALogo, 
     addPWAScreenshot, 
     removePWAScreenshot, 
     removePWALogo,
     updatePWAScreenshotsOrder
-} from "@/lib/pwaApi";
+} from "@/lib/api/pwa";
 import { 
     ArrowLeft, 
     Save,
@@ -41,6 +41,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Head from "next/head";
+import { useLogger } from '@/lib/utils/logger';
 
 interface PWA {
     id: string;
@@ -61,6 +62,7 @@ interface PWA {
 
 export default function EditPwaPage() {
     const router = useRouter();
+    const logger = useLogger('pwa');
     const { id } = router.query;
     const { t } = useTranslation();
     const { setCurrentPwaName } = usePwa();
@@ -89,9 +91,9 @@ export default function EditPwaPage() {
             case 'deployed': return 'Активно';
             case 'ready': return 'Готово';
             case 'building': return 'Сборка';
-            case 'draft': return 'Черновик';
+            case 'draft': return t('ui.draft');
             case 'paused': return 'Приостановлено';
-            case 'error': return 'Ошибка';
+            case 'error': return t('ui.failed');
             default: return 'Неизвестно';
         }
     };
@@ -119,7 +121,7 @@ export default function EditPwaPage() {
         // Валидация файла
         const validation = validateImageFile(file, 2);
         if (!validation.isValid) {
-            alert(validation.error);
+            logger.error(validation.error);
             return;
         }
 
@@ -129,10 +131,10 @@ export default function EditPwaPage() {
             // Если есть старый логотип, удаляем его сначала
             if (pwa?.logo_url) {
                 try {
-                    await deleteFileFromR2(pwa.logo_url);
-                    console.log('Старый логотип удален из R2');
+                    await deleteFile(pwa.logo_url);
+                    logger.info('Старый логотип удален из R2');
                 } catch (error) {
-                    console.warn('Не удалось удалить старый логотип из R2:', error);
+                    logger.warning('Не удалось удалить старый логотип из R2:', error);
                     // Продолжаем загрузку нового логотипа даже если не удалось удалить старый
                 }
             }
@@ -153,10 +155,10 @@ export default function EditPwaPage() {
             // Обновляем локальное состояние
             setPwa(prev => prev ? { ...prev, logo_url: logoUrl } : null);
             
-            console.log('Логотип успешно загружен:', logoUrl);
+            logger.info('Логотип успешно загружен:', logoUrl);
         } catch (error) {
-            console.error('Ошибка загрузки логотипа:', error);
-            alert('Не удалось загрузить логотип');
+            logger.error('Ошибка загрузки логотипа:', error);
+            logger.error(t('notifications.pwa.logoUploadError'));
             setLogoPreview('');
         } finally {
             setIsUploadingLogo(false);
@@ -167,7 +169,7 @@ export default function EditPwaPage() {
         // Проверка количества файлов
         const currentCount = pwa?.screenshots?.length || 0;
         if (currentCount + files.length > 6) {
-            alert(`Максимальное количество скриншотов: 6. У вас уже ${currentCount}, можно добавить еще ${6 - currentCount}`);
+            logger.error(`Максимальное количество скриншотов: 6. У вас уже ${currentCount}, можно добавить еще ${6 - currentCount}`);
             return;
         }
 
@@ -175,7 +177,7 @@ export default function EditPwaPage() {
         for (const file of files) {
             const validation = validateImageFile(file, 5);
             if (!validation.isValid) {
-                alert(validation.error);
+                logger.error(validation.error);
                 return;
             }
         }
@@ -193,7 +195,8 @@ export default function EditPwaPage() {
                     const preview = await createImagePreview(file);
                     
                     // Загружаем на R2
-                    const screenshotUrl = await uploadPwaScreenshot(file, pwa!.id);
+                    const result = await uploadPWAMedia(pwa!.id, file, 'screenshot');
+                    const screenshotUrl = result.data?.url || '';
                     
                     // Добавляем в базу данных
                     const { error } = await addPWAScreenshot(pwa!.id, screenshotUrl);
@@ -202,9 +205,9 @@ export default function EditPwaPage() {
                     }
 
                     successfulUploads.push({ url: screenshotUrl, preview });
-                    console.log(`Скриншот ${file.name} успешно загружен:`, screenshotUrl);
+                    logger.info('Скриншот ${file.name} успешно загружен:', screenshotUrl);
                 } catch (error) {
-                    console.error(`Ошибка загрузки скриншота ${file.name}:`, error);
+                    logger.error('Ошибка загрузки скриншота ${file.name}:', error);
                     failedUploads.push(file.name);
                 }
             }
@@ -227,13 +230,13 @@ export default function EditPwaPage() {
             
             // Показываем результат
             if (failedUploads.length > 0) {
-                alert(`Загружено: ${successfulUploads.length}/${files.length}. Не удалось загрузить: ${failedUploads.join(', ')}`);
+                logger.error(`Загружено: ${successfulUploads.length}/${files.length}. Не удалось загрузить: ${failedUploads.join(', ')}`);
             } else {
-                console.log(`Все скриншоты успешно загружены: ${successfulUploads.length}`);
+                logger.info('Все скриншоты успешно загружены: ${successfulUploads.length}');
             }
         } catch (error) {
-            console.error('Ошибка загрузки скриншотов:', error);
-            alert('Не удалось загрузить скриншоты');
+            logger.error('Ошибка загрузки скриншотов:', error);
+            logger.error(t('notifications.pwa.screenshotUploadError'));
         } finally {
             setIsUploadingScreenshots(false);
         }
@@ -246,7 +249,7 @@ export default function EditPwaPage() {
 
         try {
             // Удаляем из R2
-            await deleteFileFromR2(pwa.logo_url);
+            await deleteFile(pwa.logo_url);
             
             // Удаляем из базы данных
             const { error } = await removePWALogo(pwa.id);
@@ -258,10 +261,10 @@ export default function EditPwaPage() {
             setPwa(prev => prev ? { ...prev, logo_url: undefined } : null);
             setLogoPreview('');
             
-            console.log('Логотип успешно удален');
+            logger.info('Логотип успешно удален');
         } catch (error) {
-            console.error('Ошибка удаления логотипа:', error);
-            alert('Не удалось удалить логотип');
+            logger.error('Ошибка удаления логотипа:', error);
+            logger.error(t('notifications.pwa.logoDeleteError'));
         } finally {
             setIsDeletingLogo(false);
         }
@@ -272,7 +275,7 @@ export default function EditPwaPage() {
         
         try {
             // Удаляем из R2
-            await deleteFileFromR2(screenshotUrl);
+            await deleteFile(screenshotUrl);
             
             // Удаляем из базы данных
             const { error } = await removePWAScreenshot(pwa!.id, screenshotUrl);
@@ -293,10 +296,10 @@ export default function EditPwaPage() {
             // Обновляем превью скриншотов
             setScreenshotPreviews(prev => prev.filter(url => url !== screenshotUrl));
 
-            console.log('Скриншот успешно удален');
+            logger.info('Скриншот успешно удален');
         } catch (error) {
-            console.error('Ошибка удаления скриншота:', error);
-            alert('Не удалось удалить скриншот');
+            logger.error('Ошибка удаления скриншота:', error);
+            logger.error(t('notifications.pwa.screenshotDeleteError'));
         } finally {
             setIsDeletingScreenshot(null);
         }
@@ -315,14 +318,14 @@ export default function EditPwaPage() {
             // Удаляем все скриншоты из R2 и базы данных
             const deletePromises = pwa.screenshots.map(async (screenshotUrl) => {
                 try {
-                    await deleteFileFromR2(screenshotUrl);
+                    await deleteFile(screenshotUrl);
                     const { error } = await removePWAScreenshot(pwa.id, screenshotUrl);
                     if (error) {
-                        console.error(`Ошибка удаления скриншота из БД: ${screenshotUrl}`, error);
+                        logger.error('Ошибка удаления скриншота из БД: ${screenshotUrl}', error);
                     }
                     return true;
                 } catch (error) {
-                    console.error(`Ошибка удаления скриншота: ${screenshotUrl}`, error);
+                    logger.error('Ошибка удаления скриншота: ${screenshotUrl}', error);
                     return false;
                 }
             });
@@ -333,10 +336,10 @@ export default function EditPwaPage() {
             setPwa(prev => prev ? { ...prev, screenshots: [] } : null);
             setScreenshotPreviews([]);
 
-            console.log('Все скриншоты успешно удалены');
+            logger.info('Все скриншоты успешно удалены');
         } catch (error) {
-            console.error('Ошибка удаления всех скриншотов:', error);
-            alert('Не удалось удалить все скриншоты');
+            logger.error('Ошибка удаления всех скриншотов:', error);
+            logger.error('Не удалось удалить все скриншоты');
         } finally {
             setIsDeletingAllScreenshots(false);
         }
@@ -414,18 +417,18 @@ export default function EditPwaPage() {
         try {
             const { error } = await updatePWAScreenshotsOrder(pwa!.id, newScreenshots);
             if (error) {
-                console.error('Ошибка обновления порядка скриншотов:', error);
+                logger.error('Ошибка обновления порядка скриншотов:', error);
                 // Откатываем изменения в случае ошибки
                 const originalScreenshots = pwa?.screenshots || [];
                 setScreenshotPreviews(originalScreenshots);
                 setPwa(prev => prev ? { ...prev, screenshots: originalScreenshots } : null);
-                alert('Не удалось сохранить новый порядок скриншотов');
+                logger.error(t('notifications.pwa.screenshotOrderError'));
             } else {
-                console.log('Порядок скриншотов успешно обновлен');
+                logger.info('Порядок скриншотов успешно обновлен');
             }
         } catch (error) {
-            console.error('Ошибка при сохранении порядка скриншотов:', error);
-            alert('Не удалось сохранить новый порядок скриншотов');
+            logger.error('Ошибка при сохранении порядка скриншотов:', error);
+            logger.error(t('notifications.pwa.screenshotOrderError'));
         } finally {
             setIsReorderingScreenshots(false);
         }
@@ -445,17 +448,17 @@ export default function EditPwaPage() {
     // Функция для загрузки PWA из Supabase
     const loadPwa = async (pwaId: string) => {
         try {
-            console.log('Loading PWA:', pwaId);
+            logger.info('Loading PWA:', pwaId);
             const { data, error } = await supabase
                 .from('pwa_projects')
                 .select('*')
                 .eq('id', pwaId)  // Изменено с app_id на id
                 .single();
 
-            console.log('PWA load response:', { data, error });
+            logger.info('PWA load response', JSON.stringify({ data, error }));
 
             if (error) {
-                console.error('Error loading PWA:', error);
+                logger.error('Ошибка загрузки PWA', t('notifications.pwa.loadError'))
                 setPwa(null);
                 setCurrentPwaName(null); // Сбрасываем название в контексте
             } else {
@@ -472,7 +475,7 @@ export default function EditPwaPage() {
                 }
             }
         } catch (error) {
-            console.error('Error loading PWA:', error);
+            logger.error('Error loading PWA:', error);
             setPwa(null);
             setCurrentPwaName(null); // Сбрасываем название в контексте
         } finally {
