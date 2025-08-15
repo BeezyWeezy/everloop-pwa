@@ -4,6 +4,7 @@ import { supabase } from "@/lib/providers/supabase"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
+import { Loader } from "@/components/ui/loader"
 import Link from "next/link"
 import Head from "next/head"
 import { useTranslation } from "react-i18next";
@@ -55,6 +56,20 @@ export default function DashboardPage() {
     const totalCreatives = 0;
     const totalLinkedSets = 0;
     const avgCr = 0;
+
+    // Показываем лоадер пока данные загружаются
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <Loader 
+                    size="lg" 
+                    variant="dots" 
+                    text={t('loading')} 
+                    color="primary"
+                />
+            </div>
+        );
+    }
 
     return (
         <>

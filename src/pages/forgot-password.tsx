@@ -3,6 +3,7 @@ import { supabase } from "@/lib/providers/supabase";
 import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "@/components/ui/themetoggle";
 import { LanguageSwitcher } from "@/i18n/LanguageSwitcher";
+import { Loader } from "@/components/ui/loader";
 import Link from "next/link";
 import { useLogger } from "@/lib/utils/logger";
 
@@ -83,9 +84,16 @@ export default function ForgotPasswordPage() {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full p-3 h-11 sm:h-12 bg-brand-yellow text-black font-medium rounded-lg hover:bg-yellow-400 disabled:opacity-50 smooth-transition text-sm sm:text-base"
+                    className="w-full p-3 h-11 sm:h-12 bg-brand-yellow text-black font-medium rounded-lg hover:bg-yellow-400 disabled:opacity-50 smooth-transition text-sm sm:text-base flex items-center justify-center gap-2"
                 >
-                    {loading ? t('sending') : t('passwordReset')}
+                    {loading ? (
+                        <>
+                            <Loader size="sm" variant="spinner" color="default" />
+                            {t('sending')}
+                        </>
+                    ) : (
+                        t('passwordReset')
+                    )}
                 </button>
                 <div className="text-center">
                     <Link

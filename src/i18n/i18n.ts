@@ -83,6 +83,12 @@ const resources = {
             termsOfService: "terms of service",
             and: "and",
             privacyPolicy: "privacy policy",
+            
+            // Auth translations
+            auth: {
+                oauthAuthorization: "OAuth Authorization",
+                signingIn: "Signing in..."
+            },
 
             // PWA Creator translations
             pwaCreatorPro: "PWA Creator Pro",
@@ -284,9 +290,16 @@ const resources = {
                 settings: "Settings",
                 confirmDeletePwa: "Are you sure you want to delete this PWA? This action cannot be undone.",
                 analytics: "Analytics",
+                usageStatistics: "Usage Statistics",
                 notifications: "Notifications",
                 billing: "Billing",
-                upgradeToPro: "Upgrade to Pro"
+                upgradeToPro: "Upgrade to Pro",
+                deletePwa: "Delete PWA",
+                installsCount: "Installs",
+                activeCount: "Active",
+                previewTitle: "Preview",
+                installButton: "Install",
+                dangerZone: "Danger Zone"
             },
             
             // Domain related
@@ -374,6 +387,105 @@ const resources = {
                 domainSearchDesc: "Find and purchase a domain for your PWA application"
             },
             
+            // Casino Settings Step
+            casinoSettings: {
+                title: "Casino Settings & Redirect",
+                description: "Configure casino URL, tracking parameters and redirect behavior",
+                casinoUrl: "Casino URL",
+                casinoUrlPlaceholder: "https://casino.com/affiliate?ref=YOUR_ID",
+                casinoUrlHelp: "Affiliate link to casino where users will be redirected",
+                trackingParams: "Tracking Parameters",
+                source: "Source",
+                sourcePlaceholder: "facebook, google, instagram",
+                campaign: "Campaign",
+                campaignPlaceholder: "summer2024, bonus100",
+                sub1: "Sub1",
+                sub1Placeholder: "placement_id",
+                sub2: "Sub2",
+                sub2Placeholder: "creative_id",
+                autoRedirect: "Auto Redirect",
+                autoRedirectDescription: "Automatically redirect users to casino",
+                redirectDelay: "Redirect Delay (seconds)",
+                redirectTrigger: "Redirect Trigger",
+                immediate: "Immediate",
+                onClick: "On Click",
+                onTimer: "On Timer",
+                personalizedLinks: "Personalized Links",
+                personalizedLinksDescription: "Generate unique links for each user",
+                baseUrl: "Base URL",
+                baseUrlPlaceholder: "https://mysite.com/casino",
+                userIdParam: "User ID Parameter",
+                userIdParamPlaceholder: "user_id",
+                readiness: "Readiness for next step:",
+                ready: "Ready",
+                specifyCasinoUrl: "Specify casino URL"
+            },
+            
+            // Tracking Step
+            tracking: {
+                title: "Analytics & Tracking",
+                description: "Configure conversion tracking and analytics for campaign optimization",
+                facebookPixel: "Facebook Pixel ID",
+                facebookPixelPlaceholder: "123456789012345",
+                facebookPixelHelp: "Facebook pixel ID for tracking conversions from Facebook Ads",
+                googleAnalytics: "Google Analytics ID",
+                googleAnalyticsPlaceholder: "G-XXXXXXXXXX or UA-XXXXXXXX-X",
+                googleAnalyticsHelp: "Google Analytics ID for detailed user analytics",
+                trackedEvents: "Tracked Events",
+                pageView: "Page View",
+                pageViewDescription: "Track PWA loading",
+                appInstall: "App Install",
+                appInstallDescription: "PWA installation on device",
+                linkClick: "Link Click",
+                linkClickDescription: "Transition to casino",
+                registration: "Registration",
+                registrationDescription: "Casino registration",
+                deposit: "Deposit",
+                depositDescription: "Casino account deposit",
+                recommended: "Recommended",
+                configuredAnalytics: "Configured Analytics Systems:",
+                activeEvents: "Active events: {{active}} of {{total}}",
+                importantForMediaBuyers: "Important for Media Buyers",
+                importantForMediaBuyersDescription: "Registration and Deposit events require postback notifications from casino. Contact your affiliate manager for webhooks.",
+                thisStep: "This step:",
+                optional: "Optional"
+            },
+            
+            // Push Notifications Step
+            pushNotifications: {
+                title: "Push Notifications for Retargeting",
+                description: "Configure automatic notifications to bring users back",
+                enablePushNotifications: "Enable Push Notifications",
+                enablePushNotificationsDescription: "Automatic notifications to increase conversion",
+                welcomeMessage: "Welcome Message",
+                welcomeMessagePlaceholder: "Welcome! Don't miss your bonus!",
+                welcomeMessageHelp: "Shown immediately after PWA installation",
+                retargetingScenarios: "Retargeting Scenarios ({{count}})",
+                addNewScenario: "Add New Scenario",
+                scenarioName: "Scenario Name",
+                scenarioNamePlaceholder: "Bonus reminder",
+                triggerDelay: "Delay (hours)",
+                triggerCondition: "Trigger Condition",
+                noClick: "Didn't click to casino",
+                noInstall: "Didn't install PWA",
+                noRegistration: "Didn't register",
+                noDeposit: "Didn't make deposit",
+                notificationText: "Notification Text",
+                notificationTextPlaceholder: "You forgot to claim your bonus! Last chance today!",
+                addScenario: "Add Scenario",
+                pushRequirements: "Push Notification Requirements",
+                pushRequirementsList: [
+                    "User must consent to notifications",
+                    "PWA must be installed on device",
+                    "Browser must support Web Push API"
+                ],
+                configuredNotifications: "Configured notifications: {{count}}",
+                scenariosHelp: "Scenarios will help return 15-25% of users and increase conversion.",
+                addAtLeastOne: "Add at least one scenario for effective retargeting.",
+                thisStep: "This step:",
+                optional: "Optional"
+            },
+            
             // Media Uploader
             mediaUploader: {
                 appIcons: "App Icons",
@@ -388,7 +500,23 @@ const resources = {
                 dragDrop: "Drag files here or click to select",
                 uploadedFiles: "Uploaded files:",
                 fileInfo: "File information",
-                deleteFile: "Delete file"
+                deleteFile: "Delete file",
+                uploadingLogo: "Uploading logo...",
+                deletingLogo: "Deleting logo...",
+                dragFileOrClick: "Drag file or click to select",
+                uploadingStatus: "Uploading...",
+                deletingStatus: "Deleting...",
+                upload: "Upload",
+                logoFormat: "PNG, JPG up to 2MB. Recommended size: 512x512px",
+                screenshotsTitle: "Screenshots",
+                deleteAll: "Delete all",
+                currentScreenshots: "Current screenshots",
+                dragToReorder: "Drag to reorder",
+                dragFilesOrClick: "Drag files or click to select",
+                maxScreenshotsReached: "Maximum number of screenshots reached",
+                maxReached: "Maximum reached",
+                uploadLogo: "Upload Logo",
+                uploadScreenshots: "Upload Screenshots"
             },
             
             // Google Play Store
@@ -432,6 +560,43 @@ const resources = {
                 android: "Android",
                 ios: "iOS",
                 desktop: "Desktop"
+            },
+            
+            // Preview Page
+            preview: {
+                title: "PWA Preview Page",
+                description: "Test page for checking the /pwa/preview route"
+            },
+            
+            // Live Preview
+            livePreview: {
+                description: "How your casino PWA looks",
+                defaultName: "Casino PWA",
+                defaultDescription: "Best Casino Experience",
+                welcomeBonus: "Welcome Bonus!",
+                bonusText: "Get $1000 + 100 Free Spins",
+                claimNow: "Claim Now",
+                slots: "Slots",
+                poker: "Poker",
+                blackjack: "Blackjack",
+                roulette: "Roulette",
+                autoRedirectEnabled: "Auto-redirect enabled",
+                redirectsIn: "Redirects to casino in {{seconds}}s",
+                games: "Games",
+                configurationStatus: "Configuration Status",
+                casinoUrl: "Casino URL",
+                tracking: "Tracking",
+                notifications: "Notifications"
+            },
+            
+            // PWA Card
+            pwaCard: {
+                logo: "logo",
+                edit: "Edit",
+                pause: "Pause",
+                activate: "Activate",
+                created: "Created",
+                configure: "Configure"
             },
         },
     },
@@ -515,6 +680,12 @@ const resources = {
             termsOfService: "условиями сервиса",
             and: "и",
             privacyPolicy: "политикой конфиденциальности",
+            
+            // Auth translations
+            auth: {
+                oauthAuthorization: "OAuth авторизация",
+                signingIn: "Выполняется вход..."
+            },
 
             // PWA Creator translations
             pwaCreatorPro: "PWA Creator Pro",
@@ -718,9 +889,16 @@ const resources = {
                 settings: "Настройки",
                 confirmDeletePwa: "Вы уверены, что хотите удалить это PWA? Это действие нельзя отменить.",
                 analytics: "Аналитика",
+                usageStatistics: "Статистика использования",
                 notifications: "Уведомления",
                 billing: "Биллинг",
-                upgradeToPro: "Обновить до Pro"
+                upgradeToPro: "Обновить до Pro",
+                deletePwa: "Удалить PWA",
+                installsCount: "Установок",
+                activeCount: "Активных",
+                previewTitle: "Предпросмотр",
+                installButton: "Установить",
+                dangerZone: "Опасная зона"
             },
             
             // Analytics
@@ -746,6 +924,43 @@ const resources = {
                 android: "Android",
                 ios: "iOS",
                 desktop: "Desktop"
+            },
+            
+            // Preview Page
+            preview: {
+                title: "Страница предпросмотра PWA",
+                description: "Тестовая страница для проверки роута /pwa/preview"
+            },
+            
+            // Live Preview
+            livePreview: {
+                description: "Как выглядит ваше казино PWA",
+                defaultName: "Casino PWA",
+                defaultDescription: "Лучший игровой опыт",
+                welcomeBonus: "Приветственный бонус!",
+                bonusText: "Получите $1000 + 100 бесплатных спинов",
+                claimNow: "Получить сейчас",
+                slots: "Слоты",
+                poker: "Покер",
+                blackjack: "Блэкджек",
+                roulette: "Рулетка",
+                autoRedirectEnabled: "Авторедирект включен",
+                redirectsIn: "Перенаправление в казино через {{seconds}}с",
+                games: "Игры",
+                configurationStatus: "Статус конфигурации",
+                casinoUrl: "URL казино",
+                tracking: "Трекинг",
+                notifications: "Уведомления"
+            },
+            
+            // PWA Card
+            pwaCard: {
+                logo: "логотип",
+                edit: "Редактировать",
+                pause: "Приостановить",
+                activate: "Активировать",
+                created: "Создано",
+                configure: "Настроить"
             },
             
             // Domain related
@@ -833,6 +1048,105 @@ const resources = {
                 domainSearchDesc: "Найдите и купите домен для вашего PWA приложения"
             },
             
+            // Casino Settings Step
+            casinoSettings: {
+                title: "Настройки казино и редиректа",
+                description: "Настройте URL казино, параметры трекинга и поведение редиректа",
+                casinoUrl: "URL казино",
+                casinoUrlPlaceholder: "https://casino.com/affiliate?ref=YOUR_ID",
+                casinoUrlHelp: "Аффилиат ссылка на казино куда будут перенаправляться пользователи",
+                trackingParams: "Параметры трекинга",
+                source: "Source",
+                sourcePlaceholder: "facebook, google, instagram",
+                campaign: "Campaign",
+                campaignPlaceholder: "summer2024, bonus100",
+                sub1: "Sub1",
+                sub1Placeholder: "placement_id",
+                sub2: "Sub2",
+                sub2Placeholder: "creative_id",
+                autoRedirect: "Автоматический редирект",
+                autoRedirectDescription: "Автоматически перенаправлять пользователей в казино",
+                redirectDelay: "Задержка редиректа (секунды)",
+                redirectTrigger: "Триггер редиректа",
+                immediate: "Сразу",
+                onClick: "По клику",
+                onTimer: "По таймеру",
+                personalizedLinks: "Персонализированные ссылки",
+                personalizedLinksDescription: "Генерировать уникальные ссылки для каждого пользователя",
+                baseUrl: "Базовый URL",
+                baseUrlPlaceholder: "https://mysite.com/casino",
+                userIdParam: "Параметр User ID",
+                userIdParamPlaceholder: "user_id",
+                readiness: "Готовность к следующему шагу:",
+                ready: "Готово",
+                specifyCasinoUrl: "Укажите URL казино"
+            },
+            
+            // Tracking Step
+            tracking: {
+                title: "Аналитика и трекинг",
+                description: "Настройте отслеживание конверсий и аналитику для оптимизации кампаний",
+                facebookPixel: "Facebook Pixel ID",
+                facebookPixelPlaceholder: "123456789012345",
+                facebookPixelHelp: "ID пикселя Facebook для отслеживания конверсий из Facebook Ads",
+                googleAnalytics: "Google Analytics ID",
+                googleAnalyticsPlaceholder: "G-XXXXXXXXXX или UA-XXXXXXXX-X",
+                googleAnalyticsHelp: "ID Google Analytics для подробной аналитики пользователей",
+                trackedEvents: "Отслеживаемые события",
+                pageView: "Просмотр страницы",
+                pageViewDescription: "Отслеживание загрузки PWA",
+                appInstall: "Установка приложения",
+                appInstallDescription: "Установка PWA на устройство",
+                linkClick: "Клик по ссылке",
+                linkClickDescription: "Переход в казино",
+                registration: "Регистрация",
+                registrationDescription: "Регистрация в казино",
+                deposit: "Депозит",
+                depositDescription: "Пополнение счета в казино",
+                recommended: "Рекомендуется",
+                configuredAnalytics: "Настроенные системы аналитики:",
+                activeEvents: "Активных событий: {{active}} из {{total}}",
+                importantForMediaBuyers: "Важно для медиабайеров",
+                importantForMediaBuyersDescription: "События \"Регистрация\" и \"Депозит\" требуют настройки postback-уведомлений от казино. Обратитесь к вашему аффилиат менеджеру для получения webhooks.",
+                thisStep: "Этот шаг:",
+                optional: "Опционально"
+            },
+            
+            // Push Notifications Step
+            pushNotifications: {
+                title: "Push-уведомления для ретаргетинга",
+                description: "Настройте автоматические уведомления для возврата пользователей",
+                enablePushNotifications: "Включить push-уведомления",
+                enablePushNotificationsDescription: "Автоматические уведомления для повышения конверсии",
+                welcomeMessage: "Приветственное сообщение",
+                welcomeMessagePlaceholder: "Добро пожаловать! Не упустите свой бонус!",
+                welcomeMessageHelp: "Показывается сразу после установки PWA",
+                retargetingScenarios: "Сценарии ретаргетинга ({{count}})",
+                addNewScenario: "Добавить новый сценарий",
+                scenarioName: "Название сценария",
+                scenarioNamePlaceholder: "Напоминание о бонусе",
+                triggerDelay: "Задержка (часы)",
+                triggerCondition: "Условие срабатывания",
+                noClick: "Не перешел в казино",
+                noInstall: "Не установил PWA",
+                noRegistration: "Не зарегистрировался",
+                noDeposit: "Не сделал депозит",
+                notificationText: "Текст уведомления",
+                notificationTextPlaceholder: "Вы забыли забрать свой бонус! Последний шанс сегодня!",
+                addScenario: "Добавить сценарий",
+                pushRequirements: "Требования для push-уведомлений",
+                pushRequirementsList: [
+                    "Пользователь должен дать согласие на уведомления",
+                    "PWA должно быть установлено на устройство",
+                    "Браузер должен поддерживать Web Push API"
+                ],
+                configuredNotifications: "Настроено уведомлений: {{count}}",
+                scenariosHelp: "Сценарии помогут вернуть до 15-25% пользователей и повысить конверсию.",
+                addAtLeastOne: "Добавьте хотя бы один сценарий для эффективного ретаргетинга.",
+                thisStep: "Этот шаг:",
+                optional: "Опционально"
+            },
+            
             // Media Uploader
             mediaUploader: {
                 appIcons: "Иконки приложения",
@@ -847,7 +1161,23 @@ const resources = {
                 dragDrop: "Перетягніть файли сюди або натисніть для вибору",
                 uploadedFiles: "Завантажені файли:",
                 fileInfo: "Інформація про файл",
-                deleteFile: "Видалити файл"
+                deleteFile: "Видалити файл",
+                uploadingLogo: "Загружаю логотип...",
+                deletingLogo: "Удаляю логотип...",
+                dragFileOrClick: "Перетащите файл или нажмите для выбора",
+                uploadingStatus: "Загружается...",
+                deletingStatus: "Удаляется...",
+                upload: "Загрузить",
+                logoFormat: "PNG, JPG до 2MB. Рекомендуемый размер: 512x512px",
+                screenshotsTitle: "Скриншоты",
+                deleteAll: "Удалить все",
+                currentScreenshots: "Текущие скриншоты",
+                dragToReorder: "Перетащите для изменения порядка",
+                dragFilesOrClick: "Перетащите файлы или нажмите для выбора",
+                maxScreenshotsReached: "Достигнуто максимальное количество скриншотов",
+                maxReached: "Максимум достигнут",
+                uploadLogo: "Загрузить логотип",
+                uploadScreenshots: "Загрузить скриншоты"
             },
             
             // Google Play Store
@@ -951,6 +1281,12 @@ const resources = {
             termsOfService: "умовами сервісу",
             and: "та",
             privacyPolicy: "політикою конфіденційності",
+            
+            // Auth translations
+            auth: {
+                oauthAuthorization: "OAuth авторизація",
+                signingIn: "Виконується вхід..."
+            },
             
             // PWA Creator translations
             pwaCreatorPro: "PWA Creator Pro",
@@ -1171,9 +1507,16 @@ const resources = {
                 settings: "Налаштування",
                 confirmDeletePwa: "Ви впевнені, що хочете видалити це PWA? Цю дію не можна скасувати.",
                 analytics: "Аналітика",
+                usageStatistics: "Статистика використання",
                 notifications: "Сповіщення",
                 billing: "Білінг",
-                upgradeToPro: "Оновити до Pro"
+                upgradeToPro: "Оновити до Pro",
+                deletePwa: "Видалити PWA",
+                installsCount: "Встановлень",
+                activeCount: "Активних",
+                previewTitle: "Попередній перегляд",
+                installButton: "Встановити",
+                dangerZone: "Небезпечна зона"
             },
             
             // Domain related
@@ -1261,6 +1604,105 @@ const resources = {
                 domainSearchDesc: "Знайдіть та придбайте домен для вашого PWA додатку"
             },
             
+            // Casino Settings Step
+            casinoSettings: {
+                title: "Налаштування казино та редиректу",
+                description: "Налаштуйте URL казино, параметри трекінгу та поведінку редиректу",
+                casinoUrl: "URL казино",
+                casinoUrlPlaceholder: "https://casino.com/affiliate?ref=YOUR_ID",
+                casinoUrlHelp: "Афіліат посилання на казино куди будуть перенаправлятися користувачі",
+                trackingParams: "Параметри трекінгу",
+                source: "Source",
+                sourcePlaceholder: "facebook, google, instagram",
+                campaign: "Campaign",
+                campaignPlaceholder: "summer2024, bonus100",
+                sub1: "Sub1",
+                sub1Placeholder: "placement_id",
+                sub2: "Sub2",
+                sub2Placeholder: "creative_id",
+                autoRedirect: "Автоматичний редирект",
+                autoRedirectDescription: "Автоматично перенаправляти користувачів у казино",
+                redirectDelay: "Затримка редиректу (секунди)",
+                redirectTrigger: "Тригер редиректу",
+                immediate: "Відразу",
+                onClick: "По кліку",
+                onTimer: "По таймеру",
+                personalizedLinks: "Персоналізовані посилання",
+                personalizedLinksDescription: "Генерувати унікальні посилання для кожного користувача",
+                baseUrl: "Базовий URL",
+                baseUrlPlaceholder: "https://mysite.com/casino",
+                userIdParam: "Параметр User ID",
+                userIdParamPlaceholder: "user_id",
+                readiness: "Готовність до наступного кроку:",
+                ready: "Готово",
+                specifyCasinoUrl: "Вкажіть URL казино"
+            },
+            
+            // Tracking Step
+            tracking: {
+                title: "Аналітика та трекінг",
+                description: "Налаштуйте відстеження конверсій та аналітику для оптимізації кампаній",
+                facebookPixel: "Facebook Pixel ID",
+                facebookPixelPlaceholder: "123456789012345",
+                facebookPixelHelp: "ID пікселя Facebook для відстеження конверсій з Facebook Ads",
+                googleAnalytics: "Google Analytics ID",
+                googleAnalyticsPlaceholder: "G-XXXXXXXXXX або UA-XXXXXXXX-X",
+                googleAnalyticsHelp: "ID Google Analytics для детальної аналітики користувачів",
+                trackedEvents: "Відстежувані події",
+                pageView: "Перегляд сторінки",
+                pageViewDescription: "Відстеження завантаження PWA",
+                appInstall: "Встановлення додатку",
+                appInstallDescription: "Встановлення PWA на пристрій",
+                linkClick: "Клік по посиланню",
+                linkClickDescription: "Перехід у казино",
+                registration: "Реєстрація",
+                registrationDescription: "Реєстрація в казино",
+                deposit: "Депозит",
+                depositDescription: "Поповнення рахунку в казино",
+                recommended: "Рекомендується",
+                configuredAnalytics: "Налаштовані системи аналітики:",
+                activeEvents: "Активних подій: {{active}} з {{total}}",
+                importantForMediaBuyers: "Важливо для медіабаєрів",
+                importantForMediaBuyersDescription: "Події \"Реєстрація\" та \"Депозит\" потребують налаштування postback-сповіщень від казино. Зверніться до вашого афіліат менеджера для отримання webhooks.",
+                thisStep: "Цей крок:",
+                optional: "Опціонально"
+            },
+            
+            // Push Notifications Step
+            pushNotifications: {
+                title: "Push-сповіщення для ретаргетингу",
+                description: "Налаштуйте автоматичні сповіщення для повернення користувачів",
+                enablePushNotifications: "Увімкнути push-сповіщення",
+                enablePushNotificationsDescription: "Автоматичні сповіщення для підвищення конверсії",
+                welcomeMessage: "Привітальне повідомлення",
+                welcomeMessagePlaceholder: "Ласкаво просимо! Не пропустіть свій бонус!",
+                welcomeMessageHelp: "Показується відразу після встановлення PWA",
+                retargetingScenarios: "Сценарії ретаргетингу ({{count}})",
+                addNewScenario: "Додати новий сценарій",
+                scenarioName: "Назва сценарію",
+                scenarioNamePlaceholder: "Нагадування про бонус",
+                triggerDelay: "Затримка (години)",
+                triggerCondition: "Умова спрацьовування",
+                noClick: "Не перейшов у казино",
+                noInstall: "Не встановив PWA",
+                noRegistration: "Не зареєструвався",
+                noDeposit: "Не зробив депозит",
+                notificationText: "Текст сповіщення",
+                notificationTextPlaceholder: "Ви забули забрати свій бонус! Останній шанс сьогодні!",
+                addScenario: "Додати сценарій",
+                pushRequirements: "Вимоги для push-сповіщень",
+                pushRequirementsList: [
+                    "Користувач повинен дати згоду на сповіщення",
+                    "PWA повинно бути встановлено на пристрій",
+                    "Браузер повинен підтримувати Web Push API"
+                ],
+                configuredNotifications: "Налаштовано сповіщень: {{count}}",
+                scenariosHelp: "Сценарії допоможуть повернути до 15-25% користувачів та підвищити конверсію.",
+                addAtLeastOne: "Додайте хоча б один сценарій для ефективного ретаргетингу.",
+                thisStep: "Цей крок:",
+                optional: "Опціонально"
+            },
+            
             // Media Uploader
             mediaUploader: {
                 appIcons: "Іконки додатку",
@@ -1275,12 +1717,28 @@ const resources = {
                 dragDrop: "Перетягніть файли сюди або натисніть для вибору",
                 uploadedFiles: "Завантажені файли:",
                 fileInfo: "Інформація про файл",
-                deleteFile: "Видалити файл"
+                deleteFile: "Видалити файл",
+                uploadingLogo: "Завантажую логотип...",
+                deletingLogo: "Видаляю логотип...",
+                dragFileOrClick: "Перетягніть файл або натисніть для вибору",
+                uploadingStatus: "Завантажується...",
+                deletingStatus: "Видаляється...",
+                upload: "Завантажити",
+                logoFormat: "PNG, JPG до 2MB. Рекомендований розмір: 512x512px",
+                screenshotsTitle: "Скріншоти",
+                deleteAll: "Видалити всі",
+                currentScreenshots: "Поточні скріншоти",
+                dragToReorder: "Перетягніть для зміни порядку",
+                dragFilesOrClick: "Перетягніть файли або натисніть для вибору",
+                maxScreenshotsReached: "Досягнуто максимальну кількість скріншотів",
+                maxReached: "Максимум досягнуто",
+                uploadLogo: "Завантажити логотип",
+                uploadScreenshots: "Завантажити скріншоти"
             },
             
             // Google Play Store
             googlePlay: {
-                games: "Ігри",
+                gamesCategory: "Ігри",
                 apps: "Додатки",
                 books: "Книги",
                 kids: "Дітям",
@@ -1292,9 +1750,9 @@ const resources = {
                 aboutThisGame: "Про цю гру",
                 whatsNew: "Що нового",
                 ratingsAndReviews: "Оцінки та відгуки",
-                reviews: "відгуків",
+                reviewsCount: "відгуків",
                 loading: "Завантаження...",
-                notFound: "PWA не знайдено"
+                pwaNotFound: "PWA не знайдено"
             },
             // Analytics
             analytics: {
@@ -1319,6 +1777,43 @@ const resources = {
                 android: "Android",
                 ios: "iOS",
                 desktop: "Desktop"
+            },
+            
+            // Preview Page
+            previewPage: {
+                title: "Сторінка попереднього перегляду PWA",
+                description: "Тестова сторінка для перевірки роуту /pwa/preview"
+            },
+            
+            // Live Preview
+            livePreview: {
+                description: "Як виглядає ваше казино PWA",
+                defaultName: "Casino PWA",
+                defaultDescription: "Найкращий ігровий досвід",
+                welcomeBonus: "Привітальний бонус!",
+                bonusText: "Отримайте $1000 + 100 безкоштовних спінів",
+                claimNow: "Отримати зараз",
+                slots: "Слоти",
+                poker: "Покер",
+                blackjack: "Блекджек",
+                roulette: "Рулетка",
+                autoRedirectEnabled: "Авторедірект увімкнено",
+                redirectsIn: "Перенаправлення в казино через {{seconds}}с",
+                games: "Ігри",
+                configurationStatus: "Статус конфігурації",
+                casinoUrl: "URL казино",
+                tracking: "Трекінг",
+                pushNotificationsStatus: "Сповіщення"
+            },
+            
+            // PWA Card
+            pwaCard: {
+                logo: "логотип",
+                edit: "Редагувати",
+                pause: "Призупинити",
+                activate: "Активувати",
+                created: "Створено",
+                configure: "Налаштувати"
             },
         },
     },

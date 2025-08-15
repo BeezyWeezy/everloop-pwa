@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 import { 
     Target, 
     Link2, 
@@ -42,6 +43,7 @@ interface CasinoSettingsStepProps {
 }
 
 export default function CasinoSettingsStep({ data, onChange }: CasinoSettingsStepProps) {
+    const { t } = useTranslation();
     const updateAffiliateSettings = (updates: Partial<typeof data.affiliateSettings>) => {
         onChange({
             affiliateSettings: {
@@ -85,10 +87,10 @@ export default function CasinoSettingsStep({ data, onChange }: CasinoSettingsSte
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <Target className="w-5 h-5 text-purple-600" />
-                    Настройки казино и редиректа
+                    {t('casinoSettings.title')}
                 </CardTitle>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Настройте URL казино, параметры трекинга и поведение редиректа
+                    {t('casinoSettings.description')}
                 </p>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -96,17 +98,17 @@ export default function CasinoSettingsStep({ data, onChange }: CasinoSettingsSte
                 <div className="space-y-2">
                     <Label htmlFor="casino-url" className="flex items-center gap-2">
                         <ExternalLink className="w-4 h-4" />
-                        URL казино *
+                        {t('casinoSettings.casinoUrl')} *
                     </Label>
                     <Input
                         id="casino-url"
                         value={data.affiliateSettings.casinoUrl}
                         onChange={(e) => updateAffiliateSettings({ casinoUrl: e.target.value })}
-                        placeholder="https://casino.com/affiliate?ref=YOUR_ID"
+                        placeholder={t('casinoSettings.casinoUrlPlaceholder')}
                         className="text-lg"
                     />
                     <p className="text-xs text-slate-500">
-                        Аффилиат ссылка на казино куда будут перенаправляться пользователи
+                        {t('casinoSettings.casinoUrlHelp')}
                     </p>
                 </div>
 
@@ -114,43 +116,43 @@ export default function CasinoSettingsStep({ data, onChange }: CasinoSettingsSte
                 <div className="space-y-4">
                     <Label className="flex items-center gap-2">
                         <Target className="w-4 h-4" />
-                        Параметры трекинга
+                        {t('casinoSettings.trackingParams')}
                     </Label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <Label htmlFor="source">Source</Label>
+                            <Label htmlFor="source">{t('casinoSettings.source')}</Label>
                             <Input
                                 id="source"
                                 value={data.affiliateSettings.trackingParams.source || ''}
                                 onChange={(e) => updateTrackingParams('source', e.target.value)}
-                                placeholder="facebook, google, instagram"
+                                placeholder={t('casinoSettings.sourcePlaceholder')}
                             />
                         </div>
                         <div>
-                            <Label htmlFor="campaign">Campaign</Label>
+                            <Label htmlFor="campaign">{t('casinoSettings.campaign')}</Label>
                             <Input
                                 id="campaign"
                                 value={data.affiliateSettings.trackingParams.campaign || ''}
                                 onChange={(e) => updateTrackingParams('campaign', e.target.value)}
-                                placeholder="summer2024, bonus100"
+                                placeholder={t('casinoSettings.campaignPlaceholder')}
                             />
                         </div>
                         <div>
-                            <Label htmlFor="sub1">Sub1</Label>
+                            <Label htmlFor="sub1">{t('casinoSettings.sub1')}</Label>
                             <Input
                                 id="sub1"
                                 value={data.affiliateSettings.trackingParams.sub1 || ''}
                                 onChange={(e) => updateTrackingParams('sub1', e.target.value)}
-                                placeholder="placement_id"
+                                placeholder={t('casinoSettings.sub1Placeholder')}
                             />
                         </div>
                         <div>
-                            <Label htmlFor="sub2">Sub2</Label>
+                            <Label htmlFor="sub2">{t('casinoSettings.sub2')}</Label>
                             <Input
                                 id="sub2"
                                 value={data.affiliateSettings.trackingParams.sub2 || ''}
                                 onChange={(e) => updateTrackingParams('sub2', e.target.value)}
-                                placeholder="creative_id"
+                                placeholder={t('casinoSettings.sub2Placeholder')}
                             />
                         </div>
                     </div>
@@ -162,10 +164,10 @@ export default function CasinoSettingsStep({ data, onChange }: CasinoSettingsSte
                         <div>
                             <Label className="flex items-center gap-2">
                                 <Clock className="w-4 h-4" />
-                                Автоматический редирект
+                                {t('casinoSettings.autoRedirect')}
                             </Label>
                             <p className="text-xs text-slate-500 mt-1">
-                                Автоматически перенаправлять пользователей в казино
+                                {t('casinoSettings.autoRedirectDescription')}
                             </p>
                         </div>
                         <Switch
@@ -177,7 +179,7 @@ export default function CasinoSettingsStep({ data, onChange }: CasinoSettingsSte
                     {data.affiliateSettings.autoRedirect.enabled && (
                         <div className="space-y-4 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg">
                             <div>
-                                <Label>Задержка редиректа (секунды)</Label>
+                                <Label>{t('casinoSettings.redirectDelay')}</Label>
                                 <Input
                                     type="number"
                                     value={data.affiliateSettings.autoRedirect.delay}
@@ -189,12 +191,12 @@ export default function CasinoSettingsStep({ data, onChange }: CasinoSettingsSte
                             </div>
 
                             <div>
-                                <Label>Триггер редиректа</Label>
+                                <Label>{t('casinoSettings.redirectTrigger')}</Label>
                                 <div className="flex flex-wrap gap-2 mt-2">
                                     {[
-                                        { value: 'immediate', label: 'Сразу', icon: Timer },
-                                        { value: 'interaction', label: 'По клику', icon: MousePointer },
-                                        { value: 'timer', label: 'По таймеру', icon: Clock }
+                                        { value: 'immediate', label: t('casinoSettings.immediate'), icon: Timer },
+                                        { value: 'interaction', label: t('casinoSettings.onClick'), icon: MousePointer },
+                                        { value: 'timer', label: t('casinoSettings.onTimer'), icon: Clock }
                                     ].map((trigger) => {
                                         const Icon = trigger.icon;
                                         return (
@@ -225,10 +227,10 @@ export default function CasinoSettingsStep({ data, onChange }: CasinoSettingsSte
                         <div>
                             <Label className="flex items-center gap-2">
                                 <Link2 className="w-4 h-4" />
-                                Персонализированные ссылки
+                                {t('casinoSettings.personalizedLinks')}
                             </Label>
                             <p className="text-xs text-slate-500 mt-1">
-                                Генерировать уникальные ссылки для каждого пользователя
+                                {t('casinoSettings.personalizedLinksDescription')}
                             </p>
                         </div>
                         <Switch
@@ -240,19 +242,19 @@ export default function CasinoSettingsStep({ data, onChange }: CasinoSettingsSte
                     {data.affiliateSettings.personalizedLinks.enabled && (
                         <div className="space-y-4 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg">
                             <div>
-                                <Label>Базовый URL</Label>
+                                <Label>{t('casinoSettings.baseUrl')}</Label>
                                 <Input
                                     value={data.affiliateSettings.personalizedLinks.baseUrl}
                                     onChange={(e) => updatePersonalizedLinks({ baseUrl: e.target.value })}
-                                    placeholder="https://mysite.com/casino"
+                                    placeholder={t('casinoSettings.baseUrlPlaceholder')}
                                 />
                             </div>
                             <div>
-                                <Label>Параметр User ID</Label>
+                                <Label>{t('casinoSettings.userIdParam')}</Label>
                                 <Input
                                     value={data.affiliateSettings.personalizedLinks.userIdParam}
                                     onChange={(e) => updatePersonalizedLinks({ userIdParam: e.target.value })}
-                                    placeholder="user_id"
+                                    placeholder={t('casinoSettings.userIdParamPlaceholder')}
                                 />
                             </div>
                         </div>
@@ -262,18 +264,18 @@ export default function CasinoSettingsStep({ data, onChange }: CasinoSettingsSte
                 {/* Validation Status */}
                 <div className="border-t pt-4">
                     <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Готовность к следующему шагу:</span>
+                        <span className="text-sm font-medium">{t('casinoSettings.readiness')}</span>
                         <div className="flex items-center gap-2">
                             {isValid ? (
                                 <>
                                     <CheckCircle className="w-4 h-4 text-green-500" />
-                                    <span className="text-sm text-green-600">Готово</span>
+                                    <span className="text-sm text-green-600">{t('casinoSettings.ready')}</span>
                                 </>
                             ) : (
                                 <>
                                     <AlertCircle className="w-4 h-4 text-amber-500" />
                                     <span className="text-sm text-amber-600">
-                                        Укажите URL казино
+                                        {t('casinoSettings.specifyCasinoUrl')}
                                     </span>
                                 </>
                             )}

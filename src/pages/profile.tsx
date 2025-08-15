@@ -3,6 +3,7 @@ import { ProfileDetails, UserProfile } from "@/components/profile/ProfileDetails
 import { ChangePasswordForm } from "@/components/profile/ChangePasswordForm"
 import { SubscriptionSection } from "@/components/profile/SubscriptionSection"
 import { TwoFactorAuthSetup } from "@/components/profile/TwoFactorAuthSetup"
+import { Loader } from "@/components/ui/loader"
 import { useTranslation } from "react-i18next";
 import { useLogger } from '@/lib/utils/logger';
 
@@ -76,12 +77,12 @@ export default function ProfilePage() {
         if (isLoading) {
             return (
                 <div className="flex items-center justify-center py-20">
-                    <div className="flex flex-col items-center gap-4">
-                        <div className="w-8 h-8 border-3 border-brand-yellow border-t-transparent rounded-full animate-spin"></div>
-                        <p className="text-slate-600 dark:text-slate-400 font-medium">
-                            {t('loading')}...
-                        </p>
-                    </div>
+                    <Loader 
+                        size="lg" 
+                        variant="bars" 
+                        text={t('loading')} 
+                        color="primary"
+                    />
                 </div>
             )
         }

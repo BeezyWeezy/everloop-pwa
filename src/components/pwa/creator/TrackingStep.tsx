@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 import { 
     BarChart, 
     Eye, 
@@ -33,6 +34,8 @@ interface TrackingStepProps {
 }
 
 export default function TrackingStep({ data, onChange }: TrackingStepProps) {
+    const { t } = useTranslation();
+    
     const updateTracking = (updates: Partial<typeof data.tracking>) => {
         onChange({
             tracking: {
@@ -54,36 +57,36 @@ export default function TrackingStep({ data, onChange }: TrackingStepProps) {
     const events = [
         {
             key: 'pageView' as const,
-            label: 'Просмотр страницы',
-            description: 'Отслеживание загрузки PWA',
+            label: t('tracking.pageView'),
+            description: t('tracking.pageViewDescription'),
             icon: Eye,
             recommended: true
         },
         {
             key: 'appInstall' as const,
-            label: 'Установка приложения',
-            description: 'Установка PWA на устройство',
+            label: t('tracking.appInstall'),
+            description: t('tracking.appInstallDescription'),
             icon: Download,
             recommended: true
         },
         {
             key: 'linkClick' as const,
-            label: 'Клик по ссылке',
-            description: 'Переход в казино',
+            label: t('tracking.linkClick'),
+            description: t('tracking.linkClickDescription'),
             icon: Mouse,
             recommended: true
         },
         {
             key: 'registration' as const,
-            label: 'Регистрация',
-            description: 'Регистрация в казино',
+            label: t('tracking.registration'),
+            description: t('tracking.registrationDescription'),
             icon: UserPlus,
             recommended: false
         },
         {
             key: 'deposit' as const,
-            label: 'Депозит',
-            description: 'Пополнение счета в казино',
+            label: t('tracking.deposit'),
+            description: t('tracking.depositDescription'),
             icon: DollarSign,
             recommended: false
         }
@@ -94,10 +97,10 @@ export default function TrackingStep({ data, onChange }: TrackingStepProps) {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <BarChart className="w-5 h-5 text-purple-600" />
-                    Аналитика и трекинг
+                    {t('tracking.title')}
                 </CardTitle>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Настройте отслеживание конверсий и аналитику для оптимизации кампаний
+                    {t('tracking.description')}
                 </p>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -105,16 +108,16 @@ export default function TrackingStep({ data, onChange }: TrackingStepProps) {
                 <div className="space-y-2">
                     <Label htmlFor="facebook-pixel" className="flex items-center gap-2">
                         <Facebook className="w-4 h-4 text-blue-600" />
-                        Facebook Pixel ID
+                        {t('tracking.facebookPixel')}
                     </Label>
                     <Input
                         id="facebook-pixel"
                         value={data.tracking.facebookPixelId || ''}
                         onChange={(e) => updateTracking({ facebookPixelId: e.target.value })}
-                        placeholder="123456789012345"
+                        placeholder={t('tracking.facebookPixelPlaceholder')}
                     />
                     <p className="text-xs text-slate-500">
-                        ID пикселя Facebook для отслеживания конверсий из Facebook Ads
+                        {t('tracking.facebookPixelHelp')}
                     </p>
                 </div>
 
@@ -122,16 +125,16 @@ export default function TrackingStep({ data, onChange }: TrackingStepProps) {
                 <div className="space-y-2">
                     <Label htmlFor="google-analytics" className="flex items-center gap-2">
                         <Chrome className="w-4 h-4 text-orange-600" />
-                        Google Analytics ID
+                        {t('tracking.googleAnalytics')}
                     </Label>
                     <Input
                         id="google-analytics"
                         value={data.tracking.googleAnalyticsId || ''}
                         onChange={(e) => updateTracking({ googleAnalyticsId: e.target.value })}
-                        placeholder="G-XXXXXXXXXX или UA-XXXXXXXX-X"
+                        placeholder={t('tracking.googleAnalyticsPlaceholder')}
                     />
                     <p className="text-xs text-slate-500">
-                        ID Google Analytics для подробной аналитики пользователей
+                        {t('tracking.googleAnalyticsHelp')}
                     </p>
                 </div>
 
@@ -139,7 +142,7 @@ export default function TrackingStep({ data, onChange }: TrackingStepProps) {
                 <div className="space-y-4 border-t pt-6">
                     <div className="flex items-center gap-2 mb-4">
                         <Activity className="w-4 h-4" />
-                        <Label className="text-base">Отслеживаемые события</Label>
+                        <Label className="text-base">{t('tracking.trackedEvents')}</Label>
                     </div>
                     
                     <div className="space-y-4">
@@ -158,7 +161,7 @@ export default function TrackingStep({ data, onChange }: TrackingStepProps) {
                                                 <span className="font-medium">{event.label}</span>
                                                 {event.recommended && (
                                                     <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
-                                                        Рекомендуется
+                                                        {t('tracking.recommended')}
                                                     </Badge>
                                                 )}
                                             </div>
@@ -183,7 +186,7 @@ export default function TrackingStep({ data, onChange }: TrackingStepProps) {
                         <BarChart className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
                         <div>
                             <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">
-                                Настроенные системы аналитики:
+                                {t('tracking.configuredAnalytics')}
                             </h4>
                             <div className="space-y-1 text-sm text-blue-700 dark:text-blue-300">
                                 {data.tracking.facebookPixelId && (
@@ -193,7 +196,10 @@ export default function TrackingStep({ data, onChange }: TrackingStepProps) {
                                     <div>✓ Google Analytics: {data.tracking.googleAnalyticsId}</div>
                                 )}
                                 <div>
-                                    ✓ Активных событий: {Object.values(data.tracking.customEvents).filter(Boolean).length} из {events.length}
+                                    ✓ {t('tracking.activeEvents', { 
+                                        active: Object.values(data.tracking.customEvents).filter(Boolean).length, 
+                                        total: events.length 
+                                    })}
                                 </div>
                             </div>
                         </div>
@@ -206,11 +212,10 @@ export default function TrackingStep({ data, onChange }: TrackingStepProps) {
                         <Activity className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
                         <div>
                             <h4 className="font-medium text-amber-900 dark:text-amber-100 mb-1">
-                                Важно для медиабайеров
+                                {t('tracking.importantForMediaBuyers')}
                             </h4>
                             <p className="text-sm text-amber-700 dark:text-amber-300">
-                                События "Регистрация" и "Депозит" требуют настройки postback-уведомлений 
-                                от казино. Обратитесь к вашему аффилиат менеджеру для получения webhooks.
+                                {t('tracking.importantForMediaBuyersDescription')}
                             </p>
                         </div>
                     </div>
@@ -219,10 +224,10 @@ export default function TrackingStep({ data, onChange }: TrackingStepProps) {
                 {/* Validation Status */}
                 <div className="border-t pt-4">
                     <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Этот шаг:</span>
+                        <span className="text-sm font-medium">{t('tracking.thisStep')}</span>
                         <div className="flex items-center gap-2">
                             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                            <span className="text-sm text-blue-600">Опционально</span>
+                            <span className="text-sm text-blue-600">{t('tracking.optional')}</span>
                         </div>
                     </div>
                 </div>

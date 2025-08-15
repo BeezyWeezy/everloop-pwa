@@ -8,6 +8,7 @@ import { Layout } from "@/components/layout/Layout";
 import { ThemeProvider } from "@/components/theme-provider";
 import { PwaProvider } from "@/context/PwaContext";
 import { NotificationProvider } from "@/context/NotificationContext";
+import { Loader } from "@/components/ui/loader";
 import "@/styles/globals.css";
 import "@/i18n/i18n";
 
@@ -72,8 +73,19 @@ export default function App({ Component, pageProps }: AppProps) {
         };
     }, [isRecoveryFlow, router, setUser]);
 
-    // Если страница ещё загружается, показываем заглушку
-    if (loading) return null;
+    // Если страница ещё загружается, показываем красивый лоадер
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-brand-darker dark:to-brand-dark flex items-center justify-center">
+                <Loader 
+                    size="xl" 
+                    variant="pulse" 
+                    text="Загрузка приложения..." 
+                    color="primary"
+                />
+            </div>
+        );
+    }
 
     // Если это восстановление пароля, ограничиваем доступ только этой страницей
     if (isRecovery) {

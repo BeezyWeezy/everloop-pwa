@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Upload, X, Image, Video, FileImage, Loader2 } from 'lucide-react';
+import { Loader } from '@/components/ui/loader';
+import { Upload, X, Image, Video, FileImage } from 'lucide-react';
 import { supabase } from '@/lib/providers/supabase';
 import { MediaFile, uploadPWAMedia, deletePWAMedia, validateImage, validateVideo } from '@/lib/api/storage';
 import { useLogger } from '@/lib/utils/logger';
@@ -27,29 +28,29 @@ export function MediaUploader({ pwaId, type, currentFiles, onFilesChange, maxFil
     switch (type) {
       case 'icon':
         return {
-          title: 'Иконки приложения',
-          description: 'PNG, ICO, SVG до 2MB. Рекомендуемые размеры: 192x192, 512x512',
+          title: t('mediaUploader.appIcons'),
+          description: t('mediaUploader.appIconsDesc'),
           accept: 'image/png,image/x-icon,image/svg+xml',
           icon: <Image className="w-5 h-5" />,
         };
       case 'screenshot':
         return {
-          title: 'Скриншоты',
-          description: 'PNG, JPG, WebP до 5MB. До 8 скриншотов',
+          title: t('mediaUploader.screenshots'),
+          description: t('mediaUploader.screenshotsDesc'),
           accept: 'image/png,image/jpeg,image/webp',
           icon: <FileImage className="w-5 h-5" />,
         };
       case 'video':
         return {
-          title: 'Видео',
-          description: 'MP4, WebM до 50MB. Максимум 30 секунд',
+          title: t('mediaUploader.videos'),
+          description: t('mediaUploader.videosDesc'),
           accept: 'video/mp4,video/webm',
           icon: <Video className="w-5 h-5" />,
         };
       case 'asset':
         return {
-          title: 'Дополнительные файлы',
-          description: 'Изображения для сплэш-экрана, фона и т.д.',
+          title: t('mediaUploader.additionalFiles'),
+          description: t('mediaUploader.additionalFilesDesc'),
           accept: 'image/png,image/jpeg,image/webp',
           icon: <FileImage className="w-5 h-5" />,
         };
@@ -190,16 +191,16 @@ export function MediaUploader({ pwaId, type, currentFiles, onFilesChange, maxFil
         >
           {uploading ? (
             <div className="flex flex-col items-center gap-2">
-              <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+              <Loader size="md" variant="spinner" color="primary" />
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                Загружаем файлы...
+                {t('mediaUploader.uploading')}
               </p>
             </div>
           ) : (
             <div className="flex flex-col items-center gap-2">
               <Upload className="w-8 h-8 text-slate-400" />
               <p className="text-sm font-medium">
-                Перетащите файлы сюда или нажмите для выбора
+                {t('mediaUploader.dragDrop')}
               </p>
               <p className="text-xs text-slate-500">
                 {config.accept.split(',').join(', ')}
@@ -212,7 +213,7 @@ export function MediaUploader({ pwaId, type, currentFiles, onFilesChange, maxFil
         {currentFiles.length > 0 && (
           <div className="space-y-2">
             <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              Загруженные файлы:
+              {t('mediaUploader.uploadedFiles')}
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {currentFiles.map((file) => (

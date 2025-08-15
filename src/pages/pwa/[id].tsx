@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Loader } from "@/components/ui/loader";
 import { supabase } from "@/lib/providers/supabase";
 import { 
     uploadPwaLogo, 
@@ -486,13 +487,13 @@ export default function EditPwaPage() {
     if (isLoading) {
         return (
             <div className="p-6 max-w-4xl mx-auto">
-                <div className="animate-pulse">
-                    <div className="h-8 bg-slate-200 dark:bg-slate-700 rounded w-1/3 mb-4"></div>
-                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2 mb-8"></div>
-                    <div className="space-y-4">
-                        <div className="h-64 bg-slate-200 dark:bg-slate-700 rounded"></div>
-                        <div className="h-64 bg-slate-200 dark:bg-slate-700 rounded"></div>
-                    </div>
+                <div className="flex items-center justify-center min-h-[400px]">
+                    <Loader 
+                        size="xl" 
+                        variant="pulse" 
+                        text={t('loading')} 
+                        color="primary"
+                    />
                 </div>
             </div>
         );
@@ -684,9 +685,9 @@ export default function EditPwaPage() {
                                                 {isDeletingLogo && (
                                                     <div className="absolute inset-0 bg-white bg-opacity-80 dark:bg-slate-900 dark:bg-opacity-80 rounded-lg flex items-center justify-center z-10">
                                                         <div className="flex flex-col items-center gap-3">
-                                                            <Loader2 className="w-8 h-8 text-red-600 animate-spin" />
+                                                            <Loader size="md" variant="spinner" color="error" />
                                                             <span className="text-sm font-medium text-red-600">
-                                                                Удаляю логотип...
+                                                                {t('mediaUploader.deletingLogo')}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -712,7 +713,7 @@ export default function EditPwaPage() {
                                                         className="text-red-600 hover:text-red-700"
                                                     >
                                                         {isDeletingLogo ? (
-                                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                                            <Loader size="sm" variant="spinner" color="error" />
                                                         ) : (
                                                             <Trash2 className="w-4 h-4" />
                                                         )}
@@ -722,7 +723,7 @@ export default function EditPwaPage() {
                                         )}
                                         
                                         <div>
-                                            <Label>Загрузить логотип</Label>
+                                            <Label>{t('mediaUploader.uploadLogo')}</Label>
                                             <div 
                                                 className={`mt-2 border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200 relative ${
                                                     isUploadingLogo || isDeletingLogo
@@ -737,9 +738,9 @@ export default function EditPwaPage() {
                                                 {isUploadingLogo && (
                                                     <div className="absolute inset-0 bg-white bg-opacity-80 dark:bg-slate-900 dark:bg-opacity-80 rounded-lg flex items-center justify-center z-10">
                                                         <div className="flex flex-col items-center gap-3">
-                                                            <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+                                                            <Loader size="md" variant="spinner" color="primary" />
                                                             <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                                                                Загружаю логотип...
+                                                                {t('mediaUploader.uploadingLogo')}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -754,10 +755,10 @@ export default function EditPwaPage() {
                                                     isUploadingLogo || isDeletingLogo ? 'opacity-50' : ''
                                                 }`}>
                                                     {isUploadingLogo
-                                                        ? 'Загружаю логотип...'
+                                                        ? t('mediaUploader.uploadingLogo')
                                                         : isDeletingLogo
-                                                            ? 'Удаляю логотип...'
-                                                            : 'Перетащите файл или нажмите для выбора'
+                                                            ? t('mediaUploader.deletingLogo')
+                                                            : t('mediaUploader.dragFileOrClick')
                                                     }
                                                 </p>
                                                 <Button 
@@ -769,22 +770,22 @@ export default function EditPwaPage() {
                                                 >
                                                     {isUploadingLogo ? (
                                                         <>
-                                                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                            Загружается...
+                                                            <Loader size="sm" variant="spinner" color="primary" />
+                                                            <span className="ml-2">{t('mediaUploader.uploadingStatus')}</span>
                                                         </>
                                                     ) : isDeletingLogo ? (
                                                         <>
-                                                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                            Удаляется...
+                                                            <Loader size="sm" variant="spinner" color="error" />
+                                                            <span className="ml-2">{t('mediaUploader.deletingStatus')}</span>
                                                         </>
                                                     ) : (
-                                                        'Загрузить'
+                                                        t('mediaUploader.upload')
                                                     )}
                                                 </Button>
                                                 <p className={`text-xs text-slate-500 dark:text-slate-500 mt-2 ${
                                                     isUploadingLogo || isDeletingLogo ? 'opacity-50' : ''
                                                 }`}>
-                                                    PNG, JPG до 2MB. Рекомендуемый размер: 512x512px
+                                                    {t('mediaUploader.logoFormat')}
                                                 </p>
                                             </div>
                                             <input
@@ -801,7 +802,7 @@ export default function EditPwaPage() {
                                 <Card>
                                     <CardHeader>
                                         <div className="flex items-center justify-between">
-                                            <CardTitle>Скриншоты</CardTitle>
+                                            <CardTitle>{t('mediaUploader.screenshotsTitle')}</CardTitle>
                                             {screenshotPreviews.length > 0 && (
                                                 <Button
                                                     variant="outline"
@@ -812,13 +813,13 @@ export default function EditPwaPage() {
                                                 >
                                                     {isDeletingAllScreenshots ? (
                                                         <>
-                                                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                            Удаляю...
+                                                            <Loader size="sm" variant="spinner" color="error" />
+                                                            <span className="ml-2">{t('mediaUploader.deletingStatus')}</span>
                                                         </>
                                                     ) : (
                                                         <>
                                                             <Trash2 className="w-4 h-4 mr-2" />
-                                                            Удалить все
+                                                            {t('mediaUploader.deleteAll')}
                                                         </>
                                                     )}
                                                 </Button>
@@ -831,10 +832,10 @@ export default function EditPwaPage() {
                                             <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4">
                                                 <div className="flex items-center justify-between mb-3">
                                                     <p className="font-medium text-sm text-slate-700 dark:text-slate-300">
-                                                        Текущие скриншоты ({screenshotPreviews.length}/6)
+                                                        {t('mediaUploader.currentScreenshots')} ({screenshotPreviews.length}/6)
                                                     </p>
                                                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                                                        Перетащите для изменения порядка
+                                                        {t('mediaUploader.dragToReorder')}
                                                     </p>
                                                 </div>
                                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -869,7 +870,7 @@ export default function EditPwaPage() {
                                                             {(isDeletingScreenshot === screenshot || isDeletingAllScreenshots) && (
                                                                 <div className="absolute inset-0 bg-black bg-opacity-30 rounded-lg flex items-center justify-center">
                                                                     <div className="bg-white dark:bg-slate-800 rounded-full p-2 shadow-lg">
-                                                                        <Loader2 className="w-6 h-6 text-red-600 animate-spin" />
+                                                                        <Loader size="sm" variant="spinner" color="error" />
                                                                     </div>
                                                                 </div>
                                                             )}
@@ -878,7 +879,7 @@ export default function EditPwaPage() {
                                                             {isReorderingScreenshots && (
                                                                 <div className="absolute inset-0 bg-black bg-opacity-20 rounded-lg flex items-center justify-center">
                                                                     <div className="bg-white dark:bg-slate-800 rounded-full p-2 shadow-lg">
-                                                                        <Loader2 className="w-4 h-4 text-blue-600 animate-spin" />
+                                                                        <Loader size="sm" variant="spinner" color="primary" />
                                                                     </div>
                                                                 </div>
                                                             )}
@@ -911,7 +912,7 @@ export default function EditPwaPage() {
                                         )}
                                         
                                         <div>
-                                            <Label>Загрузить скриншоты</Label>
+                                            <Label>{t('mediaUploader.uploadScreenshots')}</Label>
                                             <div 
                                                 className={`mt-2 border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200 relative ${
                                                     screenshotPreviews.length >= 6 
@@ -928,7 +929,7 @@ export default function EditPwaPage() {
                                                 {isUploadingScreenshots && (
                                                     <div className="absolute inset-0 bg-white bg-opacity-80 dark:bg-slate-900 dark:bg-opacity-80 rounded-lg flex items-center justify-center z-10">
                                                         <div className="flex flex-col items-center gap-3">
-                                                            <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+                                                            <Loader size="md" variant="spinner" color="primary" />
                                                             <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
                                                                 Загружаю скриншоты...
                                                             </span>
@@ -941,10 +942,10 @@ export default function EditPwaPage() {
                                                 </div>
                                                 <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
                                                     {screenshotPreviews.length >= 6 
-                                                        ? 'Достигнуто максимальное количество скриншотов'
+                                                        ? t('mediaUploader.maxScreenshotsReached')
                                                         : isUploadingScreenshots
-                                                            ? 'Загружаю файлы...'
-                                                            : 'Перетащите файлы или нажмите для выбора'
+                                                            ? t('mediaUploader.uploadingStatus')
+                                                            : t('mediaUploader.dragFilesOrClick')
                                                     }
                                                 </p>
                                                 <Button 
@@ -956,13 +957,13 @@ export default function EditPwaPage() {
                                                     {isUploadingScreenshots 
                                                         ? (
                                                             <>
-                                                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                                Загружается...
+                                                                <Loader size="sm" variant="spinner" color="primary" />
+                                                                <span className="ml-2">{t('mediaUploader.uploadingStatus')}</span>
                                                             </>
                                                         )
                                                         : screenshotPreviews.length >= 6 
-                                                            ? 'Максимум достигнут' 
-                                                            : 'Загрузить'
+                                                            ? t('mediaUploader.maxReached') 
+                                                            : t('mediaUploader.upload')
                                                     }
                                                 </Button>
                                                 <p className="text-xs text-slate-500 dark:text-slate-500 mt-2">
@@ -987,7 +988,7 @@ export default function EditPwaPage() {
                         {activeTab === 'analytics' && (
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Статистика использования</CardTitle>
+                                    <CardTitle>{t('ui.usageStatistics')}</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="grid grid-cols-2 gap-4 mb-6">
@@ -995,18 +996,18 @@ export default function EditPwaPage() {
                                             <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                                                 {pwa.installs?.toLocaleString() || '0'}
                                             </div>
-                                            <div className="text-sm text-slate-600 dark:text-slate-400">Установок</div>
+                                            <div className="text-sm text-slate-600 dark:text-slate-400">{t('ui.installsCount')}</div>
                                         </div>
                                         <div className="text-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
                                             <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                                                 {Math.floor((pwa.installs || 0) * 0.7).toLocaleString()}
                                             </div>
-                                            <div className="text-sm text-slate-600 dark:text-slate-400">Активных</div>
+                                            <div className="text-sm text-slate-600 dark:text-slate-400">{t('ui.activeCount')}</div>
                                         </div>
                                     </div>
                                     <div className="space-y-3">
                                         <div className="flex justify-between items-center">
-                                            <span className="text-sm">Android</span>
+                                            <span className="text-sm">{t('analytics.android')}</span>
                                             <div className="flex items-center gap-2">
                                                 <div className="w-32 bg-slate-200 dark:bg-slate-700 rounded-full h-2">
                                                     <div className="bg-green-500 h-2 rounded-full" style={{width: '65%'}}></div>
@@ -1044,7 +1045,7 @@ export default function EditPwaPage() {
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <Monitor className="w-5 h-5" />
-                                    Предпросмотр
+                                    {t('ui.previewTitle')}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
@@ -1061,7 +1062,7 @@ export default function EditPwaPage() {
                                         {pwa.description}
                                     </p>
                                     <Button size="sm" className="mt-3 w-full bg-brand-yellow text-black hover:bg-yellow-400">
-                                        Установить
+                                        {t('ui.installButton')}
                                     </Button>
                                 </div>
                             </CardContent>
@@ -1070,13 +1071,13 @@ export default function EditPwaPage() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="text-red-600 dark:text-red-400">
-                                    Опасная зона
+                                    {t('ui.dangerZone')}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-3">
                                 <Button variant="outline" className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950">
                                     <Trash2 className="w-4 h-4 mr-2" />
-                                    Удалить PWA
+                                    {t('ui.deletePwa')}
                                 </Button>
                             </CardContent>
                         </Card>

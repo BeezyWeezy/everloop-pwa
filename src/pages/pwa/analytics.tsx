@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Loader } from "@/components/ui/loader";
 import { 
     ArrowLeft, 
     TrendingUp, 
@@ -40,6 +41,7 @@ export default function PwaAnalyticsPage() {
     const { t } = useTranslation();
     const logger = useLogger('pwa');
     const [pwas, setPwas] = useState<PWA[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         loadPwas();
@@ -64,6 +66,8 @@ export default function PwaAnalyticsPage() {
             }
         } catch (error) {
             logger.error(t('notifications.pwa.loadListError'), t('notifications.pwa.loadListError'))
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -126,6 +130,20 @@ export default function PwaAnalyticsPage() {
         setSelectedPwas([]);
         setTimeRange("30d");
     };
+
+    // Показываем лоадер пока данные загружаются
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <Loader 
+                    size="lg" 
+                    variant="bars" 
+                    text={t('loading')} 
+                    color="primary"
+                />
+            </div>
+        );
+    }
 
     return (
         <>

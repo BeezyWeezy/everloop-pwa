@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Globe, CreditCard, AlertCircle } from 'lucide-react';
+import { Loader } from '@/components/ui/loader';
+import { Globe, CreditCard, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface DomainConfirmModalProps {
@@ -124,8 +125,8 @@ export default function DomainConfirmModal({
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  {t('domain.purchaseLoading')}
+                                              <Loader size="sm" variant="spinner" color="primary" />
+                            <span className="ml-2">{t('domain.purchaseLoading')}</span>
                 </>
               ) : (
                 <>

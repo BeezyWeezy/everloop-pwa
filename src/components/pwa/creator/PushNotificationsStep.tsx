@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 import { 
     Bell, 
     Plus, 
@@ -34,6 +35,7 @@ interface PushNotificationsStepProps {
 }
 
 export default function PushNotificationsStep({ data, onChange }: PushNotificationsStepProps) {
+    const { t } = useTranslation();
     const [newScenario, setNewScenario] = useState({
         name: '',
         message: '',
@@ -77,10 +79,10 @@ export default function PushNotificationsStep({ data, onChange }: PushNotificati
     };
 
     const conditions = [
-        { value: 'no_click', label: 'Не перешел в казино', color: 'bg-red-100 text-red-700' },
-        { value: 'no_install', label: 'Не установил PWA', color: 'bg-orange-100 text-orange-700' },
-        { value: 'no_registration', label: 'Не зарегистрировался', color: 'bg-yellow-100 text-yellow-700' },
-        { value: 'no_deposit', label: 'Не сделал депозит', color: 'bg-blue-100 text-blue-700' }
+        { value: 'no_click', label: t('pushNotifications.noClick'), color: 'bg-red-100 text-red-700' },
+        { value: 'no_install', label: t('pushNotifications.noInstall'), color: 'bg-orange-100 text-orange-700' },
+        { value: 'no_registration', label: t('pushNotifications.noRegistration'), color: 'bg-yellow-100 text-yellow-700' },
+        { value: 'no_deposit', label: t('pushNotifications.noDeposit'), color: 'bg-blue-100 text-blue-700' }
     ];
 
     return (
@@ -88,10 +90,10 @@ export default function PushNotificationsStep({ data, onChange }: PushNotificati
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <Bell className="w-5 h-5 text-purple-600" />
-                    Push-уведомления для ретаргетинга
+                    {t('pushNotifications.title')}
                 </CardTitle>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Настройте автоматические уведомления для возврата пользователей
+                    {t('pushNotifications.description')}
                 </p>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -100,10 +102,10 @@ export default function PushNotificationsStep({ data, onChange }: PushNotificati
                     <div>
                         <Label className="flex items-center gap-2">
                             <Bell className="w-4 h-4" />
-                            Включить push-уведомления
+                            {t('pushNotifications.enablePushNotifications')}
                         </Label>
                         <p className="text-xs text-slate-500 mt-1">
-                            Автоматические уведомления для повышения конверсии
+                            {t('pushNotifications.enablePushNotificationsDescription')}
                         </p>
                     </div>
                     <Switch
@@ -118,16 +120,16 @@ export default function PushNotificationsStep({ data, onChange }: PushNotificati
                         <div className="space-y-2">
                             <Label htmlFor="welcome-message" className="flex items-center gap-2">
                                 <MessageSquare className="w-4 h-4" />
-                                Приветственное сообщение
+                                {t('pushNotifications.welcomeMessage')}
                             </Label>
                             <Input
                                 id="welcome-message"
                                 value={data.pushNotifications.welcomeMessage}
                                 onChange={(e) => updatePushNotifications({ welcomeMessage: e.target.value })}
-                                placeholder="Добро пожаловать! Не упустите свой бонус!"
+                                placeholder={t('pushNotifications.welcomeMessagePlaceholder')}
                             />
                             <p className="text-xs text-slate-500">
-                                Показывается сразу после установки PWA
+                                {t('pushNotifications.welcomeMessageHelp')}
                             </p>
                         </div>
 
@@ -135,7 +137,7 @@ export default function PushNotificationsStep({ data, onChange }: PushNotificati
                         <div className="space-y-4">
                             <Label className="flex items-center gap-2">
                                 <Target className="w-4 h-4" />
-                                Сценарии ретаргетинга ({data.pushNotifications.scenarios.length})
+                                {t('pushNotifications.retargetingScenarios', { count: data.pushNotifications.scenarios.length })}
                             </Label>
                             
                             {data.pushNotifications.scenarios.map((scenario) => {
@@ -177,22 +179,22 @@ export default function PushNotificationsStep({ data, onChange }: PushNotificati
                         <div className="space-y-4 border-t pt-6">
                             <Label className="flex items-center gap-2">
                                 <Plus className="w-4 h-4" />
-                                Добавить новый сценарий
+                                {t('pushNotifications.addNewScenario')}
                             </Label>
                             
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <Label htmlFor="scenario-name">Название сценария</Label>
+                                    <Label htmlFor="scenario-name">{t('pushNotifications.scenarioName')}</Label>
                                     <Input
                                         id="scenario-name"
                                         value={newScenario.name}
                                         onChange={(e) => setNewScenario({...newScenario, name: e.target.value})}
-                                        placeholder="Напоминание о бонусе"
+                                        placeholder={t('pushNotifications.scenarioNamePlaceholder')}
                                     />
                                 </div>
                                 
                                 <div>
-                                    <Label htmlFor="trigger-delay">Задержка (часы)</Label>
+                                    <Label htmlFor="trigger-delay">{t('pushNotifications.triggerDelay')}</Label>
                                     <Input
                                         id="trigger-delay"
                                         type="number"
@@ -205,7 +207,7 @@ export default function PushNotificationsStep({ data, onChange }: PushNotificati
                             </div>
                             
                             <div>
-                                <Label>Условие срабатывания</Label>
+                                <Label>{t('pushNotifications.triggerCondition')}</Label>
                                 <div className="flex flex-wrap gap-2 mt-2">
                                     {conditions.map((condition) => (
                                         <Badge
@@ -225,12 +227,12 @@ export default function PushNotificationsStep({ data, onChange }: PushNotificati
                             </div>
                             
                             <div>
-                                <Label htmlFor="scenario-message">Текст уведомления</Label>
+                                <Label htmlFor="scenario-message">{t('pushNotifications.notificationText')}</Label>
                                 <Input
                                     id="scenario-message"
                                     value={newScenario.message}
                                     onChange={(e) => setNewScenario({...newScenario, message: e.target.value})}
-                                    placeholder="Вы забыли забрать свой бонус! Последний шанс сегодня!"
+                                    placeholder={t('pushNotifications.notificationTextPlaceholder')}
                                 />
                             </div>
                             
@@ -240,7 +242,7 @@ export default function PushNotificationsStep({ data, onChange }: PushNotificati
                                 className="w-full"
                             >
                                 <Plus className="w-4 h-4 mr-2" />
-                                Добавить сценарий
+                                {t('pushNotifications.addScenario')}
                             </Button>
                         </div>
 
@@ -250,12 +252,12 @@ export default function PushNotificationsStep({ data, onChange }: PushNotificati
                                 <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
                                 <div>
                                     <h4 className="font-medium text-amber-900 dark:text-amber-100 mb-1">
-                                        Требования для push-уведомлений
+                                        {t('pushNotifications.pushRequirements')}
                                     </h4>
                                     <ul className="text-sm text-amber-700 dark:text-amber-300 space-y-1">
-                                        <li>• Пользователь должен дать согласие на уведомления</li>
-                                        <li>• PWA должно быть установлено на устройство</li>
-                                        <li>• Браузер должен поддерживать Web Push API</li>
+                                        {t('pushNotifications.pushRequirementsList', { returnObjects: true }).map((requirement: string, index: number) => (
+                                            <li key={index}>• {requirement}</li>
+                                        ))}
                                     </ul>
                                 </div>
                             </div>
@@ -270,16 +272,16 @@ export default function PushNotificationsStep({ data, onChange }: PushNotificati
                             <Users className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
                             <div>
                                 <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">
-                                    Настроено уведомлений: {data.pushNotifications.scenarios.length}
+                                    {t('pushNotifications.configuredNotifications', { count: data.pushNotifications.scenarios.length })}
                                 </h4>
                                 <div className="text-sm text-blue-700 dark:text-blue-300">
                                     {data.pushNotifications.scenarios.length > 0 ? (
                                         <div>
-                                            Сценарии помогут вернуть до 15-25% пользователей и повысить конверсию.
+                                            {t('pushNotifications.scenariosHelp')}
                                         </div>
                                     ) : (
                                         <div>
-                                            Добавьте хотя бы один сценарий для эффективного ретаргетинга.
+                                            {t('pushNotifications.addAtLeastOne')}
                                         </div>
                                     )}
                                 </div>
@@ -291,10 +293,10 @@ export default function PushNotificationsStep({ data, onChange }: PushNotificati
                 {/* Validation Status */}
                 <div className="border-t pt-4">
                     <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Этот шаг:</span>
+                        <span className="text-sm font-medium">{t('pushNotifications.thisStep')}</span>
                         <div className="flex items-center gap-2">
                             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                            <span className="text-sm text-blue-600">Опционально</span>
+                            <span className="text-sm text-blue-600">{t('pushNotifications.optional')}</span>
                         </div>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ import { supabase } from "@/lib/providers/supabase";
 import { useUserStore } from "@/store/useUserStore";
 import { useLogger } from '@/lib/utils/logger';
 import { useTranslation } from 'react-i18next';
+import { Loader } from "@/components/ui/loader";
 
 export default function AuthCallbackPage() {
     const router = useRouter();
@@ -16,16 +17,16 @@ export default function AuthCallbackPage() {
         const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
             try {
                 if (event === 'SIGNED_IN') {
-                    logger.user.success('OAuth авторизация', t('notifications.auth.oauthSuccess'))
+                    logger.user.success(t('auth.oauthAuthorization'), t('notifications.auth.oauthSuccess'))
                     setUser(session?.user ?? null);
-                    setIsLoading(false); // Скрываем лоадер
+                    setIsLoading(false); // Hide loader
                     await router.push('/');
                 } else {
-                    logger.user.error('OAuth авторизация', t('notifications.auth.oauthError'))
+                    logger.user.error(t('auth.oauthAuthorization'), t('notifications.auth.oauthError'))
                     await router.push('/signin');
                 }
             } catch (error) {
-                logger.user.error('OAuth авторизация', t('notifications.auth.oauthGeneralError'))
+                logger.user.error(t('auth.oauthAuthorization'), t('notifications.auth.oauthGeneralError'))
             }
         });
 
@@ -38,8 +39,7 @@ export default function AuthCallbackPage() {
         <div className="flex min-h-screen items-center justify-center bg-gray-50">
             {isLoading && (
                 <div className="flex flex-col items-center">
-                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 mb-4"></div>
-                    <p className="text-muted-foreground">Выполняется вход...</p>
+                    <Loader size="xl" variant="pulse" text={t('auth.signingIn')} color="primary" />
                 </div>
             )}
         </div>

@@ -6,7 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Info, Settings, Globe, FileText, Star, Users, Search, Loader2, Check, X } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
+import { Info, Settings, Globe, FileText, Star, Users, Search, Check, X } from "lucide-react";
 import DomainConfirmModal from "./DomainConfirmModal";
 import { useLogger } from "@/lib/utils/logger";
 
@@ -210,7 +211,7 @@ export default function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
                             className="px-4"
                         >
                             {isSearching ? (
-                                <Loader2 className="w-4 h-4 animate-spin" />
+                                                                    <Loader size="sm" variant="spinner" color="primary" />
                             ) : (
                                 <Search className="w-4 h-4" />
                             )}

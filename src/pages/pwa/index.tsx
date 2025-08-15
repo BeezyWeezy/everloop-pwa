@@ -4,7 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus, BarChart3, Settings, Globe, TrendingUp, Users, Search, Filter, SortAsc, SortDesc, X, Loader2 } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
+import { Plus, BarChart3, Settings, Globe, TrendingUp, Users, Search, Filter, SortAsc, SortDesc, X } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import Head from "next/head";
@@ -215,8 +216,12 @@ export default function PwaIndexPage() {
                     {/* Loading State */}
                     {loading ? (
                         <div className="flex justify-center items-center py-12">
-                            <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
-                            <span className="ml-2 text-slate-600 dark:text-slate-400">{t('loadingPwa')}</span>
+                            <Loader 
+                                size="lg" 
+                                variant="dots" 
+                                text={t('loadingPwa')} 
+                                color="primary"
+                            />
                         </div>
                     ) : error ? (
                         <Card className="text-center py-12 border-red-200 dark:border-red-800">
@@ -441,7 +446,7 @@ export default function PwaIndexPage() {
                             disabled={loading === 'paused'}
                         >
                             {loading === 'paused' ? (
-                                <Loader2 className="w-4 h-4 animate-spin" />
+                                <Loader size="sm" variant="spinner" color="primary" />
                             ) : (
                                 '⏸️'
                             )}
@@ -454,7 +459,7 @@ export default function PwaIndexPage() {
                             disabled={loading === 'deployed'}
                         >
                             {loading === 'deployed' ? (
-                                <Loader2 className="w-4 h-4 animate-spin" />
+                                <Loader size="sm" variant="spinner" color="primary" />
                             ) : (
                                 '▶️'
                             )}
@@ -470,7 +475,7 @@ export default function PwaIndexPage() {
                         className="text-red-600 hover:text-red-700 hover:border-red-300"
                     >
                         {loading === 'delete' ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <Loader size="sm" variant="spinner" color="error" />
                         ) : (
                             '🗑️'
                         )}

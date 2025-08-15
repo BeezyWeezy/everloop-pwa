@@ -14,6 +14,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
+import { Loader } from '@/components/ui/loader'
 
 import { GoogleIcon } from '@/components/icons'
 import { ThemeToggle } from '@/components/ui/themetoggle'
@@ -263,9 +264,16 @@ export function AuthForm({ className, mode, ...props }: AuthFormProps) {
                             <Button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full h-11 sm:h-12 bg-brand-yellow text-black hover:bg-yellow-400 transition font-medium text-sm sm:text-base"
+                                className="w-full h-11 sm:h-12 bg-brand-yellow text-black hover:bg-yellow-400 transition font-medium text-sm sm:text-base flex items-center justify-center gap-2"
                             >
-                                {loading ? t('loading') : isRegister ? t('signUp') : t('signIn')}
+                                {loading ? (
+                                    <>
+                                        <Loader size="sm" variant="spinner" color="default" />
+                                        {t('loading')}
+                                    </>
+                                ) : (
+                                    isRegister ? t('signUp') : t('signIn')
+                                )}
                             </Button>
                             <div className="mt-4 text-center text-xs sm:text-sm text-muted-foreground">
                                 {isRegister ? (

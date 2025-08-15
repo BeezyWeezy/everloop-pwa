@@ -57,7 +57,7 @@ export function PwaCard({ pwa }: { pwa: PWA }) {
                             {pwa.logo_url ? (
                                 <img 
                                     src={pwa.logo_url} 
-                                    alt={`${pwa.name} логотип`}
+                                    alt={`${pwa.name} ${t('pwaCard.logo')}`}
                                     className="w-full h-full object-cover"
                                 />
                             ) : (
@@ -83,19 +83,19 @@ export function PwaCard({ pwa }: { pwa: PWA }) {
                             <Link href={`/pwa/${pwa.id}`}>
                                 <DropdownMenuItem>
                                     <Edit className="w-4 h-4 mr-2" />
-                                    Редактировать
+                                    {t('pwaCard.edit')}
                                 </DropdownMenuItem>
                             </Link>
                             <DropdownMenuItem>
                                 {pwa.status === 'active' ? (
                                     <>
                                         <Pause className="w-4 h-4 mr-2" />
-                                        Приостановить
+                                        {t('pwaCard.pause')}
                                     </>
                                 ) : (
                                     <>
                                         <Play className="w-4 h-4 mr-2" />
-                                        Активировать
+                                        {t('pwaCard.activate')}
                                     </>
                                 )}
                             </DropdownMenuItem>
@@ -133,7 +133,7 @@ export function PwaCard({ pwa }: { pwa: PWA }) {
                 <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-500">
                     <Calendar className="w-3 h-3" />
                     <span>
-                        Создано {new Date(pwa.created_at).toLocaleDateString()}
+                        {t('pwaCard.created')} {new Date(pwa.created_at).toLocaleDateString()}
                     </span>
                 </div>
 
@@ -142,7 +142,7 @@ export function PwaCard({ pwa }: { pwa: PWA }) {
                         {t("open")}
                     </Button>
                     <Button variant="default" size="sm" className="flex-1 text-xs">
-                        Настроить
+                        {t('pwaCard.configure')}
                     </Button>
                 </div>
             </CardContent>
