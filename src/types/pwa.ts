@@ -4,7 +4,7 @@ export interface PWAListItem {
   name: string;
   title: string;
   domain: string;
-  status: 'draft' | 'building' | 'ready' | 'deployed' | 'paused' | 'error' | 'archived';
+  status: 'active' | 'paused' | 'draft';
   language: string;
   installs: number;
   rating?: number;
@@ -48,7 +48,7 @@ export interface PWAProject {
   traffic_url?: string; // URL для запуска трафика с сабами
   
   // Статус проекта
-  status: 'draft' | 'building' | 'ready' | 'deployed' | 'paused' | 'error' | 'archived';
+  status: 'active' | 'paused' | 'draft';
   
   // Дополнительные настройки
   icon_url?: string;   // URL основной иконки

@@ -47,7 +47,7 @@ export default function ResetPasswordPage() {
             setSuccess(true);
             setTimeout(() => router.push("/signin"), 2000); // Редирект на страницу входа
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Произошла ошибка при сбросе пароля';
+            const errorMessage = err instanceof Error ? err.message : t('notifications.auth.passwordResetError');
             logger.user.error(t('passwordReset'), t('notifications.auth.passwordResetError'))
             setError(t('notifications.auth.passwordResetError'));
         } finally {

@@ -154,7 +154,7 @@ export default function PushNotificationsStep({ data, onChange }: PushNotificati
                                                     </Badge>
                                                     <Badge variant="outline" className="flex items-center gap-1">
                                                         <Clock className="w-3 h-3" />
-                                                        {scenario.triggerDelay}ч
+                                                        {scenario.triggerDelay}{t('ui.hours')}
                                                     </Badge>
                                                 </div>
                                                 <p className="text-sm text-slate-600 dark:text-slate-400">
@@ -255,7 +255,7 @@ export default function PushNotificationsStep({ data, onChange }: PushNotificati
                                         {t('pushNotifications.pushRequirements')}
                                     </h4>
                                     <ul className="text-sm text-amber-700 dark:text-amber-300 space-y-1">
-                                        {t('pushNotifications.pushRequirementsList', { returnObjects: true }).map((requirement: string, index: number) => (
+                                        {(t('pushNotifications.pushRequirementsList', { returnObjects: true }) as string[]).map((requirement: string, index: number) => (
                                             <li key={index}>• {requirement}</li>
                                         ))}
                                     </ul>

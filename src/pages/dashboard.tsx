@@ -40,7 +40,7 @@ export default function DashboardPage() {
             logger.info('Supabase response', JSON.stringify({ data, error }));
             
             if (error) {
-                logger.error('Ошибка загрузки PWA', t('notifications.pwa.loadListError'))
+                logger.error(t('notifications.pwa.loadListError'), t('notifications.pwa.loadListError'))
             } else {
                 logger.info('Loaded PWAs count', `Found ${data?.length || 0} PWAs`);
                 setPwas(data || [])
@@ -74,7 +74,7 @@ export default function DashboardPage() {
     return (
         <>
             <Head>
-                <title>Dashboard</title>
+                <title>{t('dashboard')}</title>
             </Head>
             <div className="grid gap-4 sm:gap-6 p-4 sm:p-6">
                 {/* Статистика */}

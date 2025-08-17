@@ -162,7 +162,10 @@ const resources = {
                     tooManyAttempts: "Too many login attempts. Please try later",
                     passwordMinLength: "Password must contain at least 6 characters",
                     invalidEmail: "Check email address format",
-                    generalError: "An error occurred. Please try again"
+                    generalError: "An error occurred. Please try again",
+                    twofaEnabled: "Two-factor authentication successfully enabled!",
+                    invalid2faCode: "Invalid code. Please try again.",
+                    passwordChangeInitiated: "Password change initiated"
                 },
                 
                 // PWA notifications
@@ -203,7 +206,19 @@ const resources = {
                     error: "An error occurred",
                     success: "Operation completed successfully",
                     warning: "Warning",
-                    info: "Information"
+                    info: "Information",
+                    unknownError: "An unknown error occurred"
+                },
+                
+                // Profile notifications
+                profile: {
+                    editInitiated: "Profile editing initiated",
+                    notFound: "Profile data not found."
+                },
+                
+                // Subscription notifications
+                subscription: {
+                    upgradeInitiated: "Subscription upgrade initiated"
                 }
             },
             
@@ -299,7 +314,33 @@ const resources = {
                 activeCount: "Active",
                 previewTitle: "Preview",
                 installButton: "Install",
-                dangerZone: "Danger Zone"
+                dangerZone: "Danger Zone",
+                backToLogin: "Back to Login",
+                selectSection: "Select section",
+                user: "User",
+                hours: "h",
+                daysAgo: "{{count}} days ago",
+                weekAgo: "week ago",
+                moreDetails: "More Details",
+                basic: "Basic",
+                design: "Design",
+                backToPwa: "Back to PWA",
+                preview: "Preview",
+                open: "Open",
+                                installs: "installs",
+                unknown: "Unknown",
+                all: "All",
+                searchPwa: "Search PWA...",
+                sortByDate: "Sort by date",
+                sortByName: "Sort by name",
+                sortByStatus: "Sort by status",
+                gridView: "Grid view",
+                listView: "List view"
+            },
+            
+            // Settings
+            settings: {
+                analyticsDescription: "Weekly analytics reports"
             },
             
             // Domain related
@@ -366,6 +407,7 @@ const resources = {
             // PWA Creator
             pwaCreator: {
                 title: "Create PWA for casino affiliate marketing with automatic redirect and tracking",
+                description: "Create a new Casino PWA for affiliate marketing",
                 basicInfo: "Basic Information",
                 basicInfoDesc: "PWA name, domain and basic settings",
                 casinoSettings: "Casino Settings",
@@ -535,7 +577,14 @@ const resources = {
                 ratingsAndReviews: "Ratings and reviews",
                 reviews: "reviews",
                 loading: "Loading...",
-                notFound: "PWA not found"
+                notFound: "PWA not found",
+                appNotAvailableForDevice: "This app is not available for your device.",
+                sampleReviews: {
+                    sample1: "Excellent game! Graphics are top-notch, bonuses are good. I recommend to all casino lovers.",
+                    sample2: "I've been playing for a month, I like the variety of games. Payouts are fast."
+                },
+                dependsOnDevice: "Depends on device",
+                dataSafetyDescription: "The developer indicated that the app does not collect or share personal data with third parties."
             },
             // Analytics
             analytics: {
@@ -761,7 +810,10 @@ const resources = {
                     tooManyAttempts: "Слишком много попыток входа. Попробуйте позже",
                     passwordMinLength: "Пароль должен содержать минимум 6 символов",
                     invalidEmail: "Проверьте правильность email адреса",
-                    generalError: "Произошла ошибка. Попробуйте еще раз"
+                    generalError: "Произошла ошибка. Попробуйте еще раз",
+                    twofaEnabled: "Двухфакторная аутентификация успешно включена!",
+                    invalid2faCode: "Неверный код. Попробуйте еще раз.",
+                    passwordChangeInitiated: "Смена пароля инициирована"
                 },
                 
                 // PWA notifications
@@ -802,7 +854,19 @@ const resources = {
                     error: "Произошла ошибка",
                     success: "Операция выполнена успешно",
                     warning: "Предупреждение",
-                    info: "Информация"
+                    info: "Информация",
+                    unknownError: "Произошла неизвестная ошибка"
+                },
+                
+                // Profile notifications
+                profile: {
+                    editInitiated: "Редактирование профиля инициировано",
+                    notFound: "Данные профиля не найдены."
+                },
+                
+                // Subscription notifications
+                subscription: {
+                    upgradeInitiated: "Обновление подписки инициировано"
                 }
             },
             
@@ -898,7 +962,33 @@ const resources = {
                 activeCount: "Активных",
                 previewTitle: "Предпросмотр",
                 installButton: "Установить",
-                dangerZone: "Опасная зона"
+                dangerZone: "Опасная зона",
+                backToLogin: "← Вернуться к входу",
+                selectSection: "Выберите раздел",
+                user: "Пользователь",
+                hours: "ч",
+                daysAgo: "{{count}} дня назад",
+                weekAgo: "неделю назад",
+                moreDetails: "Подробнее",
+                basic: "Основные",
+                design: "Дизайн",
+                backToPwa: "Назад к PWA",
+                preview: "Предпросмотр",
+                open: "Открыть",
+                installs: "установок",
+                unknown: "Неизвестно",
+                all: "Все",
+                searchPwa: "Поиск PWA...",
+                sortByDate: "Сортировать по дате",
+                sortByName: "Сортировать по названию",
+                sortByStatus: "Сортировать по статусу",
+                gridView: "Вид карточками",
+                listView: "Вид списком"
+            },
+            
+            // Settings
+            settings: {
+                analyticsDescription: "Еженедельные отчеты по аналитике"
             },
             
             // Analytics
@@ -1027,6 +1117,7 @@ const resources = {
             // PWA Creator
             pwaCreator: {
                 title: "Создайте PWA для казино-аффилиат маркетинга с автоматическим редиректом и трекингом",
+                description: "Создайте новое Casino PWA для аффилиат маркетинга",
                 basicInfo: "Основная информация",
                 basicInfoDesc: "Название PWA, домен и базовые настройки",
                 casinoSettings: "Настройки казино",
@@ -1196,7 +1287,14 @@ const resources = {
                 ratingsAndReviews: "Оценки и отзывы",
                 reviews: "отзывов",
                 loading: "Завантаження...",
-                notFound: "PWA не знайдено"
+                notFound: "PWA не знайдено",
+                appNotAvailableForDevice: "Это приложение недоступно для вашего устройства.",
+                sampleReviews: {
+                    sample1: "Отличная игра! Графика на высоте, бонусы хорошие. Рекомендую всем любителям казино.",
+                    sample2: "Играю уже месяц, нравится разнообразие игр. Выплаты быстрые."
+                },
+                dependsOnDevice: "Зависит от устройства",
+                dataSafetyDescription: "Разработчик указал, что приложение не собирает и не передает персональные данные третьим лицам."
             },
         },
     },
@@ -1379,7 +1477,10 @@ const resources = {
                     tooManyAttempts: "Занадто багато спроб входу. Спробуйте пізніше",
                     passwordMinLength: "Пароль повинен містити мінімум 6 символів",
                     invalidEmail: "Перевірте правильність email адреси",
-                    generalError: "Сталася помилка. Спробуйте ще раз"
+                    generalError: "Сталася помилка. Спробуйте ще раз",
+                    twofaEnabled: "Двофакторна аутентифікація успішно увімкнена!",
+                    invalid2faCode: "Невірний код. Спробуйте ще раз.",
+                    passwordChangeInitiated: "Зміна пароля ініційована"
                 },
                 
                 // PWA notifications
@@ -1420,7 +1521,19 @@ const resources = {
                     error: "Сталася помилка",
                     success: "Операція виконана успішно",
                     warning: "Попередження",
-                    info: "Інформація"
+                    info: "Інформація",
+                    unknownError: "Сталася невідома помилка"
+                },
+                
+                // Profile notifications
+                profile: {
+                    editInitiated: "Редагування профілю ініційовано",
+                    notFound: "Дані профілю не знайдено."
+                },
+                
+                // Subscription notifications
+                subscription: {
+                    upgradeInitiated: "Оновлення підписки ініційовано"
                 }
             },
             
@@ -1483,8 +1596,6 @@ const resources = {
                 pending: "В очікуванні",
                 completed: "Завершено",
                 failed: "Помилка",
-                ready: "Готово",
-                building: "Збірка",
                 paused: "Призупинено",
                 
                 // PWA specific
@@ -1516,7 +1627,33 @@ const resources = {
                 activeCount: "Активних",
                 previewTitle: "Попередній перегляд",
                 installButton: "Встановити",
-                dangerZone: "Небезпечна зона"
+                dangerZone: "Небезпечна зона",
+                backToLogin: "← Повернутися до входу",
+                selectSection: "Виберіть розділ",
+                user: "Користувач",
+                hours: "год",
+                daysAgo: "{{count}} дні тому",
+                weekAgo: "тиждень тому",
+                moreDetails: "Детальніше",
+                basic: "Основні",
+                design: "Дизайн",
+                backToPwa: "Назад до PWA",
+                preview: "Попередній перегляд",
+                open: "Відкрити",
+                installs: "встановлень",
+                unknown: "Невідомо",
+                all: "Всі",
+                searchPwa: "Пошук PWA...",
+                sortByDate: "Сортувати за датою",
+                sortByName: "Сортувати за назвою",
+                sortByStatus: "Сортувати за статусом",
+                gridView: "Вид картками",
+                listView: "Вид списком"
+            },
+            
+            // Settings
+            settings: {
+                analyticsDescription: "Щотижневі звіти з аналітики"
             },
             
             // Domain related
@@ -1583,6 +1720,7 @@ const resources = {
             // PWA Creator
             pwaCreator: {
                 title: "Створіть PWA для казино-афіліат маркетингу з автоматичним редиректом та трекінгом",
+                description: "Створіть нове Casino PWA для афіліат маркетингу",
                 basicInfo: "Основна інформація",
                 basicInfoDesc: "Назва PWA, домен та базові налаштування",
                 casinoSettings: "Налаштування казино",
@@ -1752,7 +1890,14 @@ const resources = {
                 ratingsAndReviews: "Оцінки та відгуки",
                 reviewsCount: "відгуків",
                 loading: "Завантаження...",
-                pwaNotFound: "PWA не знайдено"
+                pwaNotFound: "PWA не знайдено",
+                appNotAvailableForDevice: "Цей додаток недоступний для вашого пристрою.",
+                sampleReviews: {
+                    sample1: "Відмінна гра! Графіка на висоті, бонуси хороші. Рекомендую всім любителям казино.",
+                    sample2: "Граю вже місяць, подобається різноманітність ігор. Виплати швидкі."
+                },
+                dependsOnDevice: "Залежить від пристрою",
+                dataSafetyDescription: "Розробник вказав, що додаток не збирає та не передає персональні дані третім особам."
             },
             // Analytics
             analytics: {
@@ -1814,9 +1959,9 @@ const resources = {
                 activate: "Активувати",
                 created: "Створено",
                 configure: "Налаштувати"
-            },
-        },
-    },
+            }
+        }
+    }
 }
 
 i18n

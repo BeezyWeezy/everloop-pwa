@@ -222,7 +222,7 @@ export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) 
 
             {/* Ratings and reviews */}
             <div className="info-section">
-              <h2 className="text-xl font-medium mb-6">Оценки и отзывы</h2>
+              <h2 className="text-xl font-medium mb-6">{t('ratingsAndReviews')}</h2>
               <div className="flex items-start gap-8 mb-8">
                 <div className="text-center">
                   <div className="text-6xl font-light text-gray-900 mb-2">{data.rating}</div>
@@ -230,7 +230,7 @@ export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) 
                     {renderStars(data.rating)}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {data.reviewsCount.toLocaleString()} отзывов
+                    {data.reviewsCount.toLocaleString()} {t('reviews')}
                   </div>
                 </div>
                 
@@ -264,12 +264,12 @@ export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) 
                         <div className="stars-container">
                           {renderStars(5)}
                         </div>
-                        <span className="text-xs text-gray-500">2 дня назад</span>
+                        <span className="text-xs text-gray-500">{t('ui.daysAgo', { count: 2 })}</span>
                       </div>
                     </div>
                   </div>
                   <p className="text-sm text-gray-700">
-                    Отличная игра! Графика на высоте, бонусы хорошие. Рекомендую всем любителям казино.
+                    {t('googlePlay.sampleReviews.sample1')}
                   </p>
                 </div>
 
@@ -284,12 +284,12 @@ export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) 
                         <div className="stars-container">
                           {renderStars(4)}
                         </div>
-                        <span className="text-xs text-gray-500">неделю назад</span>
+                        <span className="text-xs text-gray-500">{t('ui.weekAgo')}</span>
                       </div>
                     </div>
                   </div>
                   <p className="text-sm text-gray-700">
-                    Играю уже месяц, нравится разнообразие игр. Выплаты быстрые.
+                    {t('googlePlay.sampleReviews.sample2')}
                   </p>
                 </div>
               </div>
@@ -305,41 +305,41 @@ export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) 
                 className="w-full install-button mb-4 py-3 text-base font-medium"
               >
                 <Download className="w-5 h-5 mr-2" />
-                Установить
+                {t('install')}
               </Button>
               
               <div className="text-xs text-gray-500 text-center mb-4">
-                Это приложение недоступно для вашего устройства.
+                {t('appNotAvailableForDevice')}
               </div>
 
               <div className="space-y-2 text-sm">
                 <div className="info-row">
-                  <span className="info-label">Версия</span>
+                  <span className="info-label">{t('version')}</span>
                   <span className="info-value">{data.version}</span>
                 </div>
                 <div className="info-row">
-                  <span className="info-label">Обновлено</span>
-                  <span className="info-value">{new Date(data.lastUpdated).toLocaleDateString('ru-RU')}</span>
+                  <span className="info-label">{t('updated')}</span>
+                  <span className="info-value">{new Date(data.lastUpdated).toLocaleDateString()}</span>
                 </div>
                 <div className="info-row">
-                  <span className="info-label">Размер</span>
-                  <span className="info-value">{data.size || 'Зависит от устройства'}</span>
+                  <span className="info-label">{t('size')}</span>
+                  <span className="info-value">{data.size || t('googlePlay.dependsOnDevice')}</span>
                 </div>
                 <div className="info-row">
-                  <span className="info-label">Количество установок</span>
+                  <span className="info-label">{t('downloadsCount')}</span>
                   <span className="info-value">{data.downloadsCount}</span>
                 </div>
                 <div className="info-row">
-                  <span className="info-label">Возрастные ограничения</span>
+                  <span className="info-label">{t('ageRating')}</span>
                   <span className="info-value">{data.ageRating}</span>
                 </div>
                 <div className="info-row">
-                  <span className="info-label">Разработчик</span>
+                  <span className="info-label">{t('developer')}</span>
                   <a href="#" className="info-value developer-link">{data.developer}</a>
                 </div>
                 <div className="info-row">
-                  <span className="info-label">Разрешения</span>
-                  <a href="#" className="info-value developer-link">Подробнее</a>
+                  <span className="info-label">{t('permissions')}</span>
+                  <a href="#" className="info-value developer-link">{t('ui.moreDetails')}</a>
                 </div>
               </div>
             </div>
@@ -348,27 +348,27 @@ export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) 
             <div className="sidebar-section">
               <h3 className="font-medium mb-3 flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-green-600" />
-                Безопасность данных
+                {t('dataSafety')}
               </h3>
               <p className="text-sm text-gray-600 mb-3">
-                {data.dataAndPrivacy || "Разработчик указал, что приложение не собирает и не передает персональные данные третьим лицам."}
+                {data.dataAndPrivacy || t('googlePlay.dataSafetyDescription')}
               </p>
-              <a href="#" className="text-sm developer-link">Подробнее</a>
+              <a href="#" className="text-sm developer-link">{t('ui.moreDetails')}</a>
             </div>
 
             {/* Developer info */}
             <div className="sidebar-section">
-              <h3 className="font-medium mb-3">О разработчике</h3>
+              <h3 className="font-medium mb-3">{t('aboutDeveloper')}</h3>
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-medium">
                   {data.developer.charAt(0)}
                 </div>
                 <div>
                   <a href="#" className="developer-link font-medium">{data.developer}</a>
-                  <div className="text-xs text-gray-500">Разработчик</div>
+                  <div className="text-xs text-gray-500">{t('developer')}</div>
                 </div>
               </div>
-              <a href="#" className="text-sm developer-link">Связаться с разработчиком</a>
+              <a href="#" className="text-sm developer-link">{t('contactDeveloper')}</a>
             </div>
           </div>
         </div>

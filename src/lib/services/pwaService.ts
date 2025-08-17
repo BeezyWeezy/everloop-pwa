@@ -148,7 +148,7 @@ export class PWAService {
   }
 
   // Изменить статус PWA
-  static async updatePWAStatus(id: string, status: 'deployed' | 'paused' | 'draft'): Promise<{ data: PWAProject | null, error: any }> {
+  static async updatePWAStatus(id: string, status: 'active' | 'paused' | 'draft'): Promise<{ data: PWAProject | null, error: any }> {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
@@ -159,7 +159,7 @@ export class PWAService {
       const updateData: any = { status };
       
       // Если активируем, устанавливаем дату деплоя
-      if (status === 'deployed') {
+      if (status === 'active') {
         updateData.deployed_at = new Date().toISOString();
       }
 

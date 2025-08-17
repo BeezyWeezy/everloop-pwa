@@ -19,8 +19,8 @@ export default function ProfilePage() {
     ]
 
     const [activeTab, setActiveTab] = useState("details")
-    const [user, setUser] = useState<UserProfile | null>(null) // Данные пользователя
-    const [isLoading, setIsLoading] = useState(true) // Состояние загрузки
+    const [user, setUser] = useState<UserProfile | null>(null)
+    const [isLoading, setIsLoading] = useState(true)
 
     // Имитация загрузки данных пользователя
     useEffect(() => {
@@ -39,7 +39,7 @@ export default function ProfilePage() {
 
     // Данные для подписки
     const subscriptionData = {
-        subscriptionType: "Премиум",
+        subscriptionType: t('subscription.premium'),
         expiresAt: "2024-01-01T00:00:00.000Z",
     }
 
@@ -53,9 +53,9 @@ export default function ProfilePage() {
         set2FAError(null)
         // Пример проверки кода
         if (code === "123456") {
-            logger.success("Двухфакторная аутентификация", "Успешно включена!")
+            logger.success(t('twofa'), t('notifications.auth.2faEnabled'))
         } else {
-            set2FAError("Неверный код. Попробуйте ещё раз.")
+            set2FAError(t('notifications.auth.invalid2faCode'))
         }
         set2FALoading(false)
     }
@@ -65,12 +65,12 @@ export default function ProfilePage() {
         newPassword: string
         confirmPassword: string
     }) => {
-        logger.info('Смена пароля', 'Password change initiated')
-        logger.success("Пароль обновлен", "Пароль успешно обновлён")
+        logger.info(t('changePassword'), t('notifications.auth.passwordChangeInitiated'))
+        logger.success(t('changePassword'), t('notifications.auth.passwordChangeSuccess'))
     }
 
     const handleUpgradeSubscription = () => {
-        logger.info("Обновление подписки", "Обновление подписки...")
+        logger.info(t('subscription'), t('notifications.subscription.upgradeInitiated'))
     }
 
     const renderActiveComponent = () => {
@@ -92,10 +92,10 @@ export default function ProfilePage() {
                 return user ? (
                     <ProfileDetails
                         user={user}
-                        onEdit={() => logger.info("Редактирование профиля", "Редактирование профиля")}
+                        onEdit={() => logger.info(t('profileInfo'), t('notifications.profile.editInitiated'))}
                     />
                 ) : (
-                    <p>Данные профиля не найдены.</p>
+                    <p>{t('notifications.profile.notFound')}</p>
                 )
             case "password":
                 return <ChangePasswordForm onSubmit={handlePasswordChange} isLoading={false} error={null} />
@@ -117,7 +117,7 @@ export default function ProfilePage() {
                     />
                 )
             default:
-                return <p>Выберите раздел</p>
+                return <p>{t('ui.selectSection')}</p>
         }
     }
 
@@ -136,7 +136,7 @@ export default function ProfilePage() {
                                 </div>
                                 <div>
                                     <h2 className="font-semibold text-slate-900 dark:text-slate-100">
-                                        {user?.name || 'Пользователь'}
+                                        {user?.name || t('ui.user')}
                                     </h2>
                                     <p className="text-sm text-slate-600 dark:text-slate-400">
                                         {t('profile')}

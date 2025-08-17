@@ -80,7 +80,7 @@ export async function deletePWA(id: string): Promise<{ error: any }> {
  * @param status - новый статус
  * @returns обновленный PWA проект
  */
-export async function updatePWAStatus(id: string, status: 'deployed' | 'paused' | 'draft'): Promise<{ data: PWAProject | null, error: any }> {
+export async function updatePWAStatus(id: string, status: 'active' | 'paused' | 'draft'): Promise<{ data: PWAProject | null, error: any }> {
   try {
     return await PWAService.updatePWAStatus(id, status);
   } catch (error) {

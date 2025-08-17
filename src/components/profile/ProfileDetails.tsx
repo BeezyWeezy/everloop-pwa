@@ -104,12 +104,12 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user, onEdit }) 
                                 
                                 <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 sm:p-4">
                                     <dt className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
-                                        Последний вход
+                                        {t("lastLogin")}
                                     </dt>
                                     <dd className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100">
                                         {user.lastLoginAt 
                                             ? new Date(user.lastLoginAt).toLocaleDateString()
-                                            : 'Нет данных'
+                                            : t('ui.noData')
                                         }
                                     </dd>
                                 </div>

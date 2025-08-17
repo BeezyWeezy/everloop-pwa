@@ -201,9 +201,9 @@ export default function PwaSettingsPage() {
 
                             <div className="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-lg">
                                 <div>
-                                    <h3 className="font-medium">Аналитика</h3>
+                                    <h3 className="font-medium">{t('analytics')}</h3>
                                     <p className="text-sm text-slate-600 dark:text-slate-400">
-                                        Еженедельные отчеты по аналитике
+                                        {t('settings.analyticsDescription')}
                                     </p>
                                 </div>
                                 <input

@@ -89,13 +89,13 @@ export default function EditPwaPage() {
 
     const getStatusText = (status: string) => {
         switch(status) {
-            case 'deployed': return 'Активно';
-            case 'ready': return 'Готово';
-            case 'building': return 'Сборка';
+            case 'deployed': return t('ui.active');
+            case 'ready': return t('ui.ready');
+            case 'building': return t('ui.building');
             case 'draft': return t('ui.draft');
-            case 'paused': return 'Приостановлено';
+            case 'paused': return t('ui.paused');
             case 'error': return t('ui.failed');
-            default: return 'Неизвестно';
+            default: return t('ui.unknown');
         }
     };
 
@@ -528,15 +528,15 @@ export default function EditPwaPage() {
     };
 
     const tabs = [
-        { id: 'basic', label: 'Основные', icon: Settings },
-        { id: 'design', label: 'Дизайн', icon: Palette },
-        { id: 'analytics', label: 'Аналитика', icon: Globe },
+        { id: 'basic', label: t('ui.basic'), icon: Settings },
+        { id: 'design', label: t('ui.design'), icon: Palette },
+        { id: 'analytics', label: t('analytics'), icon: Globe },
     ];
 
     return (
         <>
             <Head>
-                <title>Редактировать {pwa.name} - Everloop</title>
+                <title>{t('ui.edit')} {pwa.name} - Everloop</title>
             </Head>
             <div className="p-3 sm:p-6 max-w-6xl mx-auto">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
@@ -544,7 +544,7 @@ export default function EditPwaPage() {
                         <Link href="/pwa">
                             <Button variant="ghost" size="sm">
                                 <ArrowLeft className="w-4 h-4 mr-2" />
-                                Назад к PWA
+                                {t('ui.backToPwa')}
                             </Button>
                         </Link>
                         <div>
@@ -553,11 +553,11 @@ export default function EditPwaPage() {
                             </h1>
                             <div className="flex items-center gap-2 mt-1">
                                 <Badge variant={pwa.status === 'deployed' ? 'default' : 'secondary'}>
-                                    {pwa.status === 'deployed' ? 'Активно' : getStatusText(pwa.status)}
+                                    {pwa.status === 'deployed' ? t('ui.active') : getStatusText(pwa.status)}
                                 </Badge>
                                 <div className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-400">
                                     <Download className="w-3 h-3" />
-                                    {pwa.installs?.toLocaleString() || '0'} установок
+                                    {pwa.installs?.toLocaleString() || '0'} {t('ui.installs')}
                                 </div>
                                 <div className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-400">
                                     <Star className="w-3 h-3" />
@@ -569,15 +569,15 @@ export default function EditPwaPage() {
                     <div className="flex gap-2">
                         <Button variant="outline" size="sm">
                             <Eye className="w-4 h-4 mr-2" />
-                            Предпросмотр
+                            {t('ui.preview')}
                         </Button>
                         <Button variant="outline" size="sm">
                             <ExternalLink className="w-4 h-4 mr-2" />
-                            Открыть
+                            {t('ui.open')}
                         </Button>
                         <Button className="bg-brand-yellow text-black hover:bg-yellow-400">
                             <Save className="w-4 h-4 mr-2" />
-                            Сохранить
+                            {t('ui.save')}
                         </Button>
                     </div>
                 </div>

@@ -37,7 +37,7 @@ export default function ForgotPasswordPage() {
                 setSuccess(t('notifications.auth.passwordResetSuccess'));
             }
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : "Произошла неизвестная ошибка.";
+            const errorMessage = err instanceof Error ? err.message : t('notifications.general.unknownError');
             logger.user.error(t('passwordReset'), t('notifications.auth.passwordResetError'))
             setError(t('notifications.auth.passwordResetError'));
         } finally {
@@ -66,7 +66,7 @@ export default function ForgotPasswordPage() {
                 {t('passwordReset')}
             </h1>
             <p className="text-center text-slate-600 dark:text-slate-400 mb-6 max-w-md text-sm sm:text-base px-4">
-                Введите ваш email, чтобы восстановить доступ к аккаунту.
+                {t('enterNewPasswordForRecover')}
             </p>
             <form
                 onSubmit={handlePasswordReset}
@@ -100,7 +100,7 @@ export default function ForgotPasswordPage() {
                         href="/signin"
                         className="text-slate-600 dark:text-slate-400 hover:text-brand-yellow text-xs sm:text-sm smooth-transition"
                     >
-                        ← Вернуться к входу
+                        ← {t('ui.backToLogin')}
                     </Link>
                 </div>
             </form>
