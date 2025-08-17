@@ -498,7 +498,7 @@ export default function PwaAnalyticsPage() {
                                                 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                                                 : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
                                         }>
-                                            {pwa.status === 'deployed' ? t('ui.active') : t('ui.inactive')}
+                                            {pwa.status === 'deployed' ? t('active') : t('inactive')}
                                         </Badge>
                                     </div>
                                 </div>

@@ -7,6 +7,9 @@ export interface PWAListItem {
   status: 'active' | 'paused' | 'draft';
   language: string;
   installs: number;
+  ftds?: number;        // First Time Deposits
+  cr?: number;          // Conversion Rate
+  favorite?: boolean;   // Избранное PWA
   rating?: number;
   logo_url?: string;   // URL логотипа для превью
   created_at: string;
@@ -29,6 +32,7 @@ export interface PWAProject {
   rating?: number;     // Рейтинг (0-5.0)
   comments: any[];     // Комментарии (JSONB массив)
   installs: number;    // Количество установок
+  favorite?: boolean;  // Избранное PWA
   
   // Изображения
   logo_url?: string;   // URL логотипа

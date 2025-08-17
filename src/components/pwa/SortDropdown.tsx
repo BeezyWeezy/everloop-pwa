@@ -19,9 +19,11 @@ const SortDropdown: React.FC<SortDropdownProps> = ({ className = '' }) => {
   const { filters, setSortBy, setSortOrder } = usePWAStore();
 
   const sortOptions = [
-    { value: 'created_at', label: t('ui.sortByDate') },
-    { value: 'name', label: t('ui.sortByName') },
-    { value: 'status', label: t('ui.sortByStatus') },
+    { value: 'created_at', label: t('sortByDate') },
+    { value: 'status', label: t('sortByStatus') },
+    { value: 'installs', label: t('sortByInstalls') },
+    { value: 'ftds', label: t('sortByFtds') },
+    { value: 'cr', label: t('sortByCr') },
   ];
 
   const getSortIcon = () => {
@@ -33,7 +35,7 @@ const SortDropdown: React.FC<SortDropdownProps> = ({ className = '' }) => {
 
   const getCurrentSortLabel = () => {
     const option = sortOptions.find(opt => opt.value === filters.sortBy);
-    return option ? option.label : t('ui.sortByDate');
+    return option ? option.label : t('sortByDate');
   };
 
   const handleSortChange = (sortBy: string) => {

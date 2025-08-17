@@ -7,7 +7,7 @@ import { useLogger } from '@/lib/utils/logger';
 
 const languages = [
     { code: "en", label: "English", flag: "🇺🇸" },
-    { code: "ua", label: "Українська", flag: "🇺🇦" },
+    { code: "uk", label: "Українська", flag: "🇺🇦" },
     { code: "ru", label: "Русский", flag: "🇷🇺" },
 ]
 
@@ -15,6 +15,16 @@ export const LanguageSwitcher: React.FC = () => {
     const { i18n } = useTranslation()
     const logger = useLogger('i18n');
     const currentLanguage = i18n.language || 'en'
+    
+    // Обработка для старого кода "ua" -> "uk"
+    const normalizedLanguage = currentLanguage === 'ua' ? 'uk' : currentLanguage
+
+    // Автоматическая миграция старого кода языка
+    React.useEffect(() => {
+        if (currentLanguage === 'ua') {
+            changeLanguage('uk')
+        }
+    }, [currentLanguage])
 
     const changeLanguage = async (lang: string) => {
         try {
@@ -26,7 +36,7 @@ export const LanguageSwitcher: React.FC = () => {
         }
     }
 
-    const currentLang = languages.find((lang) => lang.code === currentLanguage) || languages[0]
+    const currentLang = languages.find((lang) => lang.code === normalizedLanguage) || languages[0]
 
     return (
         <DropdownMenu.Root>
@@ -58,7 +68,7 @@ export const LanguageSwitcher: React.FC = () => {
                                 <span className="text-base">{language.flag}</span>
                                 <span className="font-medium">{language.label}</span>
                             </div>
-                            {currentLanguage === language.code && (
+                            {normalizedLanguage === language.code && (
                                 <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                             )}
                         </DropdownMenu.Item>

@@ -39,7 +39,7 @@ export default function ProfilePage() {
 
     // Данные для подписки
     const subscriptionData = {
-        subscriptionType: t('subscription.premium'),
+        subscriptionType: t('premium'),
         expiresAt: "2024-01-01T00:00:00.000Z",
     }
 
@@ -117,7 +117,7 @@ export default function ProfilePage() {
                     />
                 )
             default:
-                return <p>{t('ui.selectSection')}</p>
+                return <p>{t('selectSection')}</p>
         }
     }
 
@@ -136,7 +136,7 @@ export default function ProfilePage() {
                                 </div>
                                 <div>
                                     <h2 className="font-semibold text-slate-900 dark:text-slate-100">
-                                        {user?.name || t('ui.user')}
+                                        {user?.name || t('user')}
                                     </h2>
                                     <p className="text-sm text-slate-600 dark:text-slate-400">
                                         {t('profile')}

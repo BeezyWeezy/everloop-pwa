@@ -81,7 +81,7 @@ export default function AppSidebar({ collapsed }: { collapsed: boolean }) {
                             </DropdownMenuItem>
                         </Link>
                         <DropdownMenuItem><CreditCard className="w-4 h-4 mr-2" /> {t("billing")}</DropdownMenuItem>
-                        <DropdownMenuItem><Bell className="w-4 h-4 mr-2" /> {t("ui.notifications")}</DropdownMenuItem>
+                        <DropdownMenuItem><Bell className="w-4 h-4 mr-2" /> {t("notificationsLabel")}</DropdownMenuItem>
                         <DropdownMenuItem onClick={handleLogout}>
                             <LogOut className="w-4 h-4 mr-2" /> {t("logout")}
                         </DropdownMenuItem>

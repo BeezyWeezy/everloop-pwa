@@ -35,7 +35,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
                 case 'spy': label = t('spyCreo'); break;
                 case 'linked': label = t('bundles'); break;
                 case 'profile': label = t('profile'); break;
-                case 'analytics': label = t('ui.analytics'); break;
+                case 'analytics': label = t('analyticsLabel'); break;
                 case 'settings': label = t('settings'); break;
                 case '[id]': 
                     // Если это динамический сегмент [id] и есть название PWA, используем его

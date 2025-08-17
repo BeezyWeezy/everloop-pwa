@@ -67,7 +67,7 @@ export function AuthForm({ className, mode, ...props }: AuthFormProps) {
         try {
             if (isRegister) {
                 if (password !== confirmPassword) {
-                    logger.validation.error(t('ui.password'), t('notifications.auth.passwordMismatch'))
+                    logger.validation.error(t('password'), t('notifications.auth.passwordMismatch'))
                     setError(t('notifications.auth.passwordMismatch'))
                     return
                 }

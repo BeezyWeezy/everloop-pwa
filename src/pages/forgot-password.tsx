@@ -100,7 +100,7 @@ export default function ForgotPasswordPage() {
                         href="/signin"
                         className="text-slate-600 dark:text-slate-400 hover:text-brand-yellow text-xs sm:text-sm smooth-transition"
                     >
-                        ← {t('ui.backToLogin')}
+                        ← {t('backToLogin')}
                     </Link>
                 </div>
             </form>

@@ -9,6 +9,8 @@ import Link from 'next/link';
 import { PWAListItem } from '@/types/pwa';
 import { usePWAStore } from '@/store/usePWAStore';
 import { useLogger } from '@/lib/utils/logger';
+import { ConfirmationPopover } from '@/components/ui/confirmation-popover';
+import FavoriteButton from '@/components/pwa/FavoriteButton';
 
 interface PwaGridViewProps {
   pwas: PWAListItem[];
@@ -29,11 +31,11 @@ const PwaGridView: React.FC<PwaGridViewProps> = ({ pwas }) => {
     }
   };
 
-  const getStatusText = (status: PWAListItem['status']) => {
+  const getStatusText = (status: string) => {
     switch (status) {
-      case 'active': return t('ui.active');
-      case 'paused': return t('ui.paused');
-      case 'draft': return t('ui.draft');
+      case 'active': return t('active');
+      case 'paused': return t('paused');
+      case 'draft': return t('draft');
       default: return status;
     }
   };
@@ -60,10 +62,6 @@ const PwaGridView: React.FC<PwaGridViewProps> = ({ pwas }) => {
   };
 
   const handleDelete = async (pwaId: string) => {
-    if (!confirm(t('confirmDeletePwa'))) {
-      return;
-    }
-
     setLoadingStates(prev => ({ ...prev, [pwaId]: 'delete' }));
     try {
       const { deletePWA } = await import('@/lib/api/pwa');
@@ -87,18 +85,21 @@ const PwaGridView: React.FC<PwaGridViewProps> = ({ pwas }) => {
       {pwas.map((pwa) => {
         const isLoading = loadingStates[pwa.id];
         
-        // Моковые данные метрик (в реальности будут приходить с сервера)
+        // Метрики (используем реальные данные из PWA, если есть)
         const metrics = {
           clicks: 0,
           click2inst: 0,
           installs: pwa.installs || 0,
-          ftds: 0,
-          cr: 0,
+          ftds: pwa.ftds || 0,
+          cr: pwa.cr || 0,
           last_updated: new Date().toISOString()
         };
 
         return (
-          <Card key={pwa.id} className="hover:shadow-lg transition-shadow group">
+          <Card key={pwa.id} className={`
+            hover:shadow-lg transition-shadow group
+            ${pwa.favorite ? 'ring-2 ring-yellow-400 dark:ring-yellow-500 bg-yellow-50/50 dark:bg-yellow-900/10' : ''}
+          `}>
             <CardContent className="p-4">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
@@ -119,9 +120,16 @@ const PwaGridView: React.FC<PwaGridViewProps> = ({ pwas }) => {
                     </h3>
                   </div>
                 </div>
-                <Badge className={getStatusColor(pwa.status)}>
-                  {getStatusText(pwa.status)}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <FavoriteButton 
+                    pwaId={pwa.id} 
+                    isFavorite={pwa.favorite || false}
+                    className="hover:scale-110 transition-transform"
+                  />
+                  <Badge className={getStatusColor(pwa.status)}>
+                    {getStatusText(pwa.status)}
+                  </Badge>
+                </div>
               </div>
               
               {/* Метрики производительности */}
@@ -160,7 +168,7 @@ const PwaGridView: React.FC<PwaGridViewProps> = ({ pwas }) => {
                 <Link href={`/pwa/${pwa.id}`} className="flex-1">
                   <Button variant="outline" size="sm" className="w-full">
                     <Settings className="w-4 h-4 mr-2" />
-                    {t('ui.settings')}
+                    {t('settings')}
                   </Button>
                 </Link>
                 
@@ -194,19 +202,26 @@ const PwaGridView: React.FC<PwaGridViewProps> = ({ pwas }) => {
                 ) : null}
                 
                 {/* Удалить */}
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => handleDelete(pwa.id)}
+                <ConfirmationPopover
+                  title={t('confirmDelete')}
+                  description={t('confirmDeleteDescription')}
+                  onConfirm={() => handleDelete(pwa.id)}
+                  variant="destructive"
                   disabled={!!isLoading}
-                  className="text-red-600 hover:text-red-700 hover:border-red-300"
                 >
-                  {isLoading === 'delete' ? (
-                    <Loader size="sm" variant="spinner" color="error" />
-                  ) : (
-                    <Trash2 className="w-4 h-4" />
-                  )}
-                </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    disabled={!!isLoading}
+                    className="text-red-600 hover:text-red-700 hover:border-red-300"
+                  >
+                    {isLoading === 'delete' ? (
+                      <Loader size="sm" variant="spinner" color="error" />
+                    ) : (
+                      <Trash2 className="w-4 h-4" />
+                    )}
+                  </Button>
+                </ConfirmationPopover>
                 
                 {/* Просмотр (если развернуто) */}
                 {pwa.status === 'active' && pwa.domain && (

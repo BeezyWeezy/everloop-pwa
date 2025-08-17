@@ -19,7 +19,7 @@ const ViewToggle: React.FC<ViewToggleProps> = ({ className = '' }) => {
         size="sm"
         onClick={() => setViewMode('grid')}
         className="flex items-center gap-2"
-        title={t('ui.gridView')}
+        title={t('gridView')}
       >
         <Grid3X3 className="h-4 w-4" />
       </Button>
@@ -29,7 +29,7 @@ const ViewToggle: React.FC<ViewToggleProps> = ({ className = '' }) => {
         size="sm"
         onClick={() => setViewMode('list')}
         className="flex items-center gap-2"
-        title={t('ui.listView')}
+        title={t('listView')}
       >
         <List className="h-4 w-4" />
       </Button>

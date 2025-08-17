@@ -16,7 +16,7 @@ export interface UserProfile {
 // Пропсы компонента
 interface ProfileDetailsProps {
     user: UserProfile
-    onEdit?: () => void // Callback для кнопки t('ui.edit')
+    onEdit?: () => void // Callback для кнопки t('edit')
 }
 
 export const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user, onEdit }) => {
@@ -109,7 +109,7 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user, onEdit }) 
                                     <dd className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100">
                                         {user.lastLoginAt 
                                             ? new Date(user.lastLoginAt).toLocaleDateString()
-                                            : t('ui.noData')
+                                            : t('noData')
                                         }
                                     </dd>
                                 </div>

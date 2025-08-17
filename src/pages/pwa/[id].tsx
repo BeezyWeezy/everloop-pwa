@@ -21,7 +21,8 @@ import {
     addPWAScreenshot, 
     removePWAScreenshot, 
     removePWALogo,
-    updatePWAScreenshotsOrder
+    updatePWAScreenshotsOrder,
+    deletePWA
 } from "@/lib/api/pwa";
 import { 
     ArrowLeft, 
@@ -43,6 +44,7 @@ import {
 import Link from "next/link";
 import Head from "next/head";
 import { useLogger } from '@/lib/utils/logger';
+import { ConfirmationPopover } from "@/components/ui/confirmation-popover";
 
 interface PWA {
     id: string;
@@ -89,13 +91,13 @@ export default function EditPwaPage() {
 
     const getStatusText = (status: string) => {
         switch(status) {
-            case 'deployed': return t('ui.active');
-            case 'ready': return t('ui.ready');
-            case 'building': return t('ui.building');
-            case 'draft': return t('ui.draft');
-            case 'paused': return t('ui.paused');
-            case 'error': return t('ui.failed');
-            default: return t('ui.unknown');
+            case 'deployed': return t('active');
+            case 'ready': return t('ready');
+            case 'building': return t('building');
+            case 'draft': return t('draft');
+            case 'paused': return t('paused');
+            case 'error': return t('failed');
+            default: return t('unknown');
         }
     };
 
@@ -309,10 +311,6 @@ export default function EditPwaPage() {
     const handleRemoveAllScreenshots = async () => {
         if (!pwa?.screenshots?.length) return;
 
-        if (!confirm(`Вы уверены, что хотите удалить все ${pwa.screenshots.length} скриншотов? Это действие нельзя отменить.`)) {
-            return;
-        }
-
         setIsDeletingAllScreenshots(true);
 
         try {
@@ -435,6 +433,21 @@ export default function EditPwaPage() {
         }
     };
 
+    const handleDeletePWA = async () => {
+        try {
+            const { error } = await deletePWA(pwa.id);
+            if (error) {
+                logger.error('Failed to delete PWA', error);
+                return;
+            }
+            
+            // Перенаправляем на страницу PWA после удаления
+            router.push('/pwa');
+        } catch (error) {
+            logger.error('Error deleting PWA', error);
+        }
+    };
+
     useEffect(() => {
         if (id) {
             loadPwa(id as string);
@@ -527,16 +540,15 @@ export default function EditPwaPage() {
         }
     };
 
-    const tabs = [
-        { id: 'basic', label: t('ui.basic'), icon: Settings },
-        { id: 'design', label: t('ui.design'), icon: Palette },
-        { id: 'analytics', label: t('analytics'), icon: Globe },
+    const sections = [
+        { id: 'basic', label: t('basic'), icon: Settings },
+        { id: 'design', label: t('design'), icon: Palette },
     ];
 
     return (
         <>
             <Head>
-                <title>{t('ui.edit')} {pwa.name} - Everloop</title>
+                <title>{t('edit')} {pwa.name} - Everloop</title>
             </Head>
             <div className="p-3 sm:p-6 max-w-6xl mx-auto">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
@@ -544,7 +556,7 @@ export default function EditPwaPage() {
                         <Link href="/pwa">
                             <Button variant="ghost" size="sm">
                                 <ArrowLeft className="w-4 h-4 mr-2" />
-                                {t('ui.backToPwa')}
+                                {t('backToPwa')}
                             </Button>
                         </Link>
                         <div>
@@ -553,11 +565,11 @@ export default function EditPwaPage() {
                             </h1>
                             <div className="flex items-center gap-2 mt-1">
                                 <Badge variant={pwa.status === 'deployed' ? 'default' : 'secondary'}>
-                                    {pwa.status === 'deployed' ? t('ui.active') : getStatusText(pwa.status)}
+                                    {pwa.status === 'deployed' ? t('active') : getStatusText(pwa.status)}
                                 </Badge>
                                 <div className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-400">
                                     <Download className="w-3 h-3" />
-                                    {pwa.installs?.toLocaleString() || '0'} {t('ui.installs')}
+                                    {pwa.installs?.toLocaleString() || '0'} {t('installs')}
                                 </div>
                                 <div className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-400">
                                     <Star className="w-3 h-3" />
@@ -569,33 +581,33 @@ export default function EditPwaPage() {
                     <div className="flex gap-2">
                         <Button variant="outline" size="sm">
                             <Eye className="w-4 h-4 mr-2" />
-                            {t('ui.preview')}
+                            {t('preview')}
                         </Button>
                         <Button variant="outline" size="sm">
                             <ExternalLink className="w-4 h-4 mr-2" />
-                            {t('ui.open')}
+                            {t('open')}
                         </Button>
                         <Button className="bg-brand-yellow text-black hover:bg-yellow-400">
                             <Save className="w-4 h-4 mr-2" />
-                            {t('ui.save')}
+                            {t('save')}
                         </Button>
                     </div>
                 </div>
 
                 {/* Tabs */}
                 <div className="flex gap-1 mb-6 overflow-x-auto pb-1">
-                    {tabs.map((tab) => {
-                        const Icon = tab.icon;
+                    {sections.map((section) => {
+                        const Icon = section.icon;
                         return (
                             <Button
-                                key={tab.id}
-                                variant={activeTab === tab.id ? "default" : "ghost"}
+                                key={section.id}
+                                variant={activeTab === section.id ? "default" : "ghost"}
                                 size="sm"
-                                onClick={() => setActiveTab(tab.id)}
+                                onClick={() => setActiveTab(section.id)}
                                 className="whitespace-nowrap"
                             >
                                 <Icon className="w-4 h-4 mr-2" />
-                                {tab.label}
+                                {section.label}
                             </Button>
                         );
                     })}
@@ -804,25 +816,32 @@ export default function EditPwaPage() {
                                         <div className="flex items-center justify-between">
                                             <CardTitle>{t('mediaUploader.screenshotsTitle')}</CardTitle>
                                             {screenshotPreviews.length > 0 && (
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={handleRemoveAllScreenshots}
+                                                <ConfirmationPopover
+                                                    title={t('confirmDeleteAllScreenshots')}
+                                                    description={t('confirmDeleteAllScreenshotsDescription', { count: screenshotPreviews.length })}
+                                                    onConfirm={handleRemoveAllScreenshots}
+                                                    variant="destructive"
                                                     disabled={isUploadingScreenshots || isDeletingAllScreenshots}
-                                                    className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950 border-red-200 hover:border-red-300"
                                                 >
-                                                    {isDeletingAllScreenshots ? (
-                                                        <>
-                                                            <Loader size="sm" variant="spinner" color="error" />
-                                                            <span className="ml-2">{t('mediaUploader.deletingStatus')}</span>
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <Trash2 className="w-4 h-4 mr-2" />
-                                                            {t('mediaUploader.deleteAll')}
-                                                        </>
-                                                    )}
-                                                </Button>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        disabled={isUploadingScreenshots || isDeletingAllScreenshots}
+                                                        className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950 border-red-200 hover:border-red-300"
+                                                    >
+                                                        {isDeletingAllScreenshots ? (
+                                                            <>
+                                                                <Loader size="sm" variant="spinner" color="error" />
+                                                                <span className="ml-2">{t('mediaUploader.deletingStatus')}</span>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <Trash2 className="w-4 h-4 mr-2" />
+                                                                {t('mediaUploader.deleteAll')}
+                                                            </>
+                                                        )}
+                                                    </Button>
+                                                </ConfirmationPopover>
                                             )}
                                         </div>
                                     </CardHeader>
@@ -988,7 +1007,7 @@ export default function EditPwaPage() {
                         {activeTab === 'analytics' && (
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>{t('ui.usageStatistics')}</CardTitle>
+                                    <CardTitle>{t('usageStatistics')}</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="grid grid-cols-2 gap-4 mb-6">
@@ -996,13 +1015,13 @@ export default function EditPwaPage() {
                                             <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                                                 {pwa.installs?.toLocaleString() || '0'}
                                             </div>
-                                            <div className="text-sm text-slate-600 dark:text-slate-400">{t('ui.installsCount')}</div>
+                                            <div className="text-sm text-slate-600 dark:text-slate-400">{t('installsCount')}</div>
                                         </div>
                                         <div className="text-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
                                             <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                                                 {Math.floor((pwa.installs || 0) * 0.7).toLocaleString()}
                                             </div>
-                                            <div className="text-sm text-slate-600 dark:text-slate-400">{t('ui.activeCount')}</div>
+                                            <div className="text-sm text-slate-600 dark:text-slate-400">{t('activeCount')}</div>
                                         </div>
                                     </div>
                                     <div className="space-y-3">
@@ -1045,7 +1064,7 @@ export default function EditPwaPage() {
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <Monitor className="w-5 h-5" />
-                                    {t('ui.previewTitle')}
+                                    {t('previewTitle')}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
@@ -1062,7 +1081,7 @@ export default function EditPwaPage() {
                                         {pwa.description}
                                     </p>
                                     <Button size="sm" className="mt-3 w-full bg-brand-yellow text-black hover:bg-yellow-400">
-                                        {t('ui.installButton')}
+                                        {t('installButton')}
                                     </Button>
                                 </div>
                             </CardContent>
@@ -1071,14 +1090,21 @@ export default function EditPwaPage() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="text-red-600 dark:text-red-400">
-                                    {t('ui.dangerZone')}
+                                    {t('dangerZone')}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-3">
-                                <Button variant="outline" className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950">
-                                    <Trash2 className="w-4 h-4 mr-2" />
-                                    {t('ui.deletePwa')}
-                                </Button>
+                                <ConfirmationPopover
+                                    title={t('confirmDelete')}
+                                    description={t('confirmDeleteDescription')}
+                                    onConfirm={handleDeletePWA}
+                                    variant="destructive"
+                                >
+                                    <Button variant="outline" className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950">
+                                        <Trash2 className="w-4 h-4 mr-2" />
+                                        {t('delete')}
+                                    </Button>
+                                </ConfirmationPopover>
                             </CardContent>
                         </Card>
                     </div>

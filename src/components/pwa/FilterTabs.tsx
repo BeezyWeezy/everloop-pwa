@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePWAStore } from '@/store/usePWAStore';
 import { Badge } from '@/components/ui/badge';
+import { Star } from 'lucide-react';
 
 interface FilterTabsProps {
   className?: string;
@@ -14,14 +15,16 @@ const FilterTabs: React.FC<FilterTabsProps> = ({ className = '' }) => {
   // Подсчет количества PWA по статусам
   const getStatusCount = (status: string) => {
     if (status === 'all') return pwas.length;
+    if (status === 'favorites') return pwas.filter(pwa => pwa.favorite).length;
     return pwas.filter(pwa => pwa.status === status).length;
   };
 
   const filterOptions = [
-    { value: 'all', label: t('ui.all'), color: 'default' },
-    { value: 'active', label: t('ui.active'), color: 'success' },
-    { value: 'paused', label: t('ui.paused'), color: 'destructive' },
-    { value: 'draft', label: t('ui.draft'), color: 'outline' },
+    { value: 'favorites', label: t('favorites'), color: 'warning' },
+    { value: 'all', label: t('all'), color: 'default' },
+    { value: 'active', label: t('active'), color: 'success' },
+    { value: 'paused', label: t('paused'), color: 'destructive' },
+    { value: 'draft', label: t('draft'), color: 'outline' },
   ];
 
   return (
@@ -35,17 +38,34 @@ const FilterTabs: React.FC<FilterTabsProps> = ({ className = '' }) => {
             key={option.value}
             onClick={() => setStatusFilter(option.value)}
             className={`
-              inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all
+              group relative inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium 
+              transition-all duration-200 ease-out transform hover:scale-105 active:scale-95
               ${isActive 
-                ? 'bg-primary text-primary-foreground shadow-sm' 
-                : 'bg-background border border-border hover:bg-accent hover:text-accent-foreground'
+                ? option.value === 'favorites'
+                  ? 'bg-yellow-500 text-black shadow-sm hover:!bg-yellow-600' 
+                  : 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-sm hover:!bg-brand-yellow hover:!text-black' 
+                : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:!bg-brand-yellow hover:!text-black hover:!border-brand-yellow/50'
               }
             `}
           >
-            <span>{option.label}</span>
+            <span className="transition-all duration-200 flex items-center">
+              {option.value === 'favorites' && (
+                <Star className="w-4 h-4 mr-1" />
+              )}
+              {option.label}
+            </span>
             <Badge 
               variant={isActive ? 'secondary' : 'outline'} 
-              className="text-xs"
+              className={`
+                text-xs px-2 py-0.5 min-w-[20px] h-5 flex items-center justify-center
+                transition-all duration-200
+                ${isActive 
+                  ? option.value === 'favorites'
+                    ? 'bg-black/20 text-black border-black/30' 
+                    : 'bg-white/20 text-white border-white/30 group-hover:!bg-black/20 group-hover:!text-black group-hover:!border-black/30'
+                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-600 group-hover:!bg-black/20 group-hover:!text-black group-hover:!border-black/30'
+                }
+              `}
             >
               {count}
             </Badge>

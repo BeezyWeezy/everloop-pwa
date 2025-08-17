@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Loader } from "@/components/ui/loader";
-import { Plus, BarChart3, Settings, Search, X, Globe } from "lucide-react";
+import { Plus, BarChart3, Settings, Search, X, Globe, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import Head from "next/head";
 import { getUserPWAs } from "@/lib/api/pwa";
@@ -74,36 +74,45 @@ export default function PwaIndexPage() {
                     </div>
                     <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                         <Link href="/pwa/create" className="w-full sm:w-auto">
-                            <Button className="w-full sm:w-auto bg-brand-yellow text-black hover:bg-yellow-400 font-medium">
+                            <Button className="w-full sm:w-auto bg-brand-yellow text-black hover:!bg-yellow-400 font-medium">
                                 <Plus className="w-4 h-4 mr-2" />
                                 {t('createPwa')}
                             </Button>
                         </Link>
                         <Link href="/pwa/analytics" className="w-full sm:w-auto">
-                            <Button variant="outline" className="w-full sm:w-auto">
+                            <Button variant="outline" className="w-full sm:w-auto hover:!bg-brand-yellow hover:!text-black hover:!border-brand-yellow/50">
                                 <BarChart3 className="w-4 h-4 mr-2" />
-                                {t('ui.analytics')}
+                                {t('analyticsLabel')}
                             </Button>
                         </Link>
                     </div>
                 </div>
 
-
-
                 {/* Filters Section */}
                 {pwas.length > 0 && (
                     <div className="space-y-4">
-                        {/* Search, Sort and View Toggle */}
+                        {/* Search, Sort, View Toggle and Refresh */}
                         <div className="flex flex-col sm:flex-row gap-4">
                             <SearchBar className="flex-1" />
                             <div className="flex items-center gap-2">
                                 <SortDropdown />
                                 <ViewToggle />
+                                <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={loadUserPWAs}
+                                    disabled={loading}
+                                    className="hover:!bg-brand-yellow hover:!text-black hover:!border-brand-yellow/50"
+                                    title={t('refresh')}
+                                >
+                                    <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                                </Button>
                             </div>
                         </div>
                         
                         {/* Filter Tabs */}
                         <FilterTabs />
+                        
                     </div>
                 )}
 
@@ -152,12 +161,23 @@ export default function PwaIndexPage() {
                                 <p className="text-slate-600 dark:text-slate-400 mb-6">
                                     {t('createFirstPwa')}
                                 </p>
-                                <Link href="/pwa/create">
-                                    <Button className="bg-brand-yellow text-black hover:bg-yellow-400">
-                                        <Plus className="w-4 h-4 mr-2" />
-                                        {t('createFirstPwaButton')}
+                                <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                                    <Link href="/pwa/create">
+                                        <Button className="bg-brand-yellow text-black hover:!bg-yellow-400">
+                                            <Plus className="w-4 h-4 mr-2" />
+                                            {t('createFirstPwaButton')}
+                                        </Button>
+                                    </Link>
+                                    <Button 
+                                        variant="outline" 
+                                        onClick={loadUserPWAs}
+                                        disabled={loading}
+                                        className="hover:!bg-brand-yellow hover:!text-black hover:!border-brand-yellow/50"
+                                    >
+                                        <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                                        {t('refresh')}
                                     </Button>
-                                </Link>
+                                </div>
                             </CardContent>
                         </Card>
                     ) : (
@@ -170,10 +190,21 @@ export default function PwaIndexPage() {
                                 <p className="text-slate-600 dark:text-slate-400 mb-6">
                                     {t('tryDifferentSearch')}
                                 </p>
-                                <Button variant="outline" onClick={clearFilters}>
-                                    <X className="w-4 h-4 mr-2" />
-                                    {t('resetFilters')}
-                                </Button>
+                                <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                                    <Button variant="outline" onClick={clearFilters}>
+                                        <X className="w-4 h-4 mr-2" />
+                                        {t('resetFilters')}
+                                    </Button>
+                                    <Button 
+                                        variant="outline" 
+                                        onClick={loadUserPWAs}
+                                        disabled={loading}
+                                        className="hover:!bg-brand-yellow hover:!text-black hover:!border-brand-yellow/50"
+                                    >
+                                        <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                                        {t('refresh')}
+                                    </Button>
+                                </div>
                             </CardContent>
                         </Card>
                     )}

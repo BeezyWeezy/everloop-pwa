@@ -9,6 +9,8 @@ import Link from 'next/link';
 import { PWAListItem } from '@/types/pwa';
 import { usePWAStore } from '@/store/usePWAStore';
 import { useLogger } from '@/lib/utils/logger';
+import { ConfirmationPopover } from '@/components/ui/confirmation-popover';
+import FavoriteButton from '@/components/pwa/FavoriteButton';
 
 interface PwaListViewProps {
   pwas: PWAListItem[];
@@ -29,11 +31,11 @@ const PwaListView: React.FC<PwaListViewProps> = ({ pwas }) => {
     }
   };
 
-  const getStatusText = (status: PWAListItem['status']) => {
+  const getStatusText = (status: string) => {
     switch (status) {
-      case 'active': return t('ui.active');
-      case 'paused': return t('ui.paused');
-      case 'draft': return t('ui.draft');
+      case 'active': return t('active');
+      case 'paused': return t('paused');
+      case 'draft': return t('draft');
       default: return status;
     }
   };
@@ -60,10 +62,6 @@ const PwaListView: React.FC<PwaListViewProps> = ({ pwas }) => {
   };
 
   const handleDelete = async (pwaId: string) => {
-    if (!confirm(t('confirmDeletePwa'))) {
-      return;
-    }
-
     setLoadingStates(prev => ({ ...prev, [pwaId]: 'delete' }));
     try {
       const { deletePWA } = await import('@/lib/api/pwa');
@@ -88,7 +86,10 @@ const PwaListView: React.FC<PwaListViewProps> = ({ pwas }) => {
         const isLoading = loadingStates[pwa.id];
         
         return (
-          <Card key={pwa.id} className="hover:shadow-md transition-shadow">
+          <Card key={pwa.id} className={`
+            hover:shadow-md transition-shadow
+            ${pwa.favorite ? 'ring-2 ring-yellow-400 dark:ring-yellow-500 bg-yellow-50/50 dark:bg-yellow-900/10' : ''}
+          `}>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 {/* Основная информация */}
@@ -130,13 +131,37 @@ const PwaListView: React.FC<PwaListViewProps> = ({ pwas }) => {
                   <div className="hidden md:flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400 flex-shrink-0">
                     <div className="text-center">
                       <p className="font-semibold">{pwa.installs?.toLocaleString() || 0}</p>
-                      <p className="text-xs">{t('ui.installs')}</p>
+                      <p className="text-xs">{t('installs')}</p>
                     </div>
+                    <div className="text-center">
+                      <p className="font-semibold">{pwa.ftds?.toLocaleString() || 0}</p>
+                      <p className="text-xs">{t('ftds')}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="font-semibold">{pwa.cr ? `${pwa.cr}%` : '0%'}</p>
+                      <p className="text-xs">{t('cr')}</p>
+                    </div>
+                  </div>
+
+                  {/* Мобильные метрики */}
+                  <div className="md:hidden flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 flex-shrink-0">
+                    <span>{pwa.installs?.toLocaleString() || 0} {t('installs')}</span>
+                    <span>•</span>
+                    <span>{pwa.ftds?.toLocaleString() || 0} {t('ftds')}</span>
+                    <span>•</span>
+                    <span>{pwa.cr ? `${pwa.cr}%` : '0%'} {t('cr')}</span>
                   </div>
                 </div>
 
                 {/* Действия */}
                 <div className="flex items-center gap-2 flex-shrink-0">
+                  {/* Избранное */}
+                  <FavoriteButton 
+                    pwaId={pwa.id} 
+                    isFavorite={pwa.favorite || false}
+                    className="hover:scale-110 transition-transform"
+                  />
+
                   {/* Настройки */}
                   <Link href={`/pwa/${pwa.id}`}>
                     <Button variant="outline" size="sm">
@@ -183,19 +208,26 @@ const PwaListView: React.FC<PwaListViewProps> = ({ pwas }) => {
                   )}
 
                   {/* Удалить */}
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => handleDelete(pwa.id)}
+                  <ConfirmationPopover
+                    title={t('confirmDelete')}
+                    description={t('confirmDeleteDescription')}
+                    onConfirm={() => handleDelete(pwa.id)}
+                    variant="destructive"
                     disabled={!!isLoading}
-                    className="text-red-600 hover:text-red-700 hover:border-red-300"
                   >
-                    {isLoading === 'delete' ? (
-                      <Loader size="sm" variant="spinner" color="error" />
-                    ) : (
-                      <Trash2 className="w-4 h-4" />
-                    )}
-                  </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      disabled={!!isLoading}
+                      className="text-red-600 hover:text-red-700 hover:border-red-300"
+                    >
+                      {isLoading === 'delete' ? (
+                        <Loader size="sm" variant="spinner" color="error" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
+                    </Button>
+                  </ConfirmationPopover>
                 </div>
               </div>
             </CardContent>

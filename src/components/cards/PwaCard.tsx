@@ -2,7 +2,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
-import { Globe, Download, Star, Calendar, MoreVertical, Play, Pause, Edit } from "lucide-react";
+import { Globe, Download, Star, Calendar, MoreVertical, Play, Pause, Edit, Trash2 } from "lucide-react";
 import Link from "next/link";
 import {
     DropdownMenu,
@@ -10,6 +10,9 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ConfirmationPopover } from "@/components/ui/confirmation-popover";
+import { updatePWAStatus, deletePWA } from "@/lib/api/pwa";
+import { usePWAStore } from "@/store/usePWAStore";
 
 interface PWA {
     id: string;
@@ -29,6 +32,7 @@ interface PWA {
 
 export function PwaCard({ pwa }: { pwa: PWA }) {
     const { t } = useTranslation();
+    const { refreshPWAs } = usePWAStore();
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -45,6 +49,42 @@ export function PwaCard({ pwa }: { pwa: PWA }) {
             case 'draft': return t('draft');
             case 'paused': return t('paused');
             default: return status;
+        }
+    };
+
+    const handleStatusChange = async (newStatus: 'active' | 'paused') => {
+        try {
+            const { error } = await updatePWAStatus(pwa.id, newStatus);
+            if (error) {
+                console.error('Failed to update PWA status:', error);
+                return;
+            }
+            // Обновляем список PWA
+            refreshPWAs();
+        } catch (error) {
+            console.error('Error updating PWA status:', error);
+        }
+    };
+
+    const handlePause = () => {
+        handleStatusChange('paused');
+    };
+
+    const handleActivate = () => {
+        handleStatusChange('active');
+    };
+
+    const handleDelete = async () => {
+        try {
+            const { error } = await deletePWA(pwa.id);
+            if (error) {
+                console.error('Failed to delete PWA:', error);
+                return;
+            }
+            // Обновляем список PWA
+            refreshPWAs();
+        } catch (error) {
+            console.error('Error deleting PWA:', error);
         }
     };
 
@@ -83,22 +123,45 @@ export function PwaCard({ pwa }: { pwa: PWA }) {
                             <Link href={`/pwa/${pwa.id}`}>
                                 <DropdownMenuItem>
                                     <Edit className="w-4 h-4 mr-2" />
-                                    {t('pwaCard.edit')}
+                                    {t('edit')}
                                 </DropdownMenuItem>
                             </Link>
-                            <DropdownMenuItem>
-                                {pwa.status === 'active' ? (
-                                    <>
+                            {pwa.status === 'active' ? (
+                                <ConfirmationPopover
+                                    title={t('confirmPause')}
+                                    description={t('confirmPauseDescription')}
+                                    onConfirm={handlePause}
+                                    variant="default"
+                                >
+                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                                         <Pause className="w-4 h-4 mr-2" />
-                                        {t('pwaCard.pause')}
-                                    </>
-                                ) : (
-                                    <>
+                                        {t('pause')}
+                                    </DropdownMenuItem>
+                                </ConfirmationPopover>
+                            ) : (
+                                <ConfirmationPopover
+                                    title={t('confirmActivate')}
+                                    description={t('confirmActivateDescription')}
+                                    onConfirm={handleActivate}
+                                    variant="default"
+                                >
+                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                                         <Play className="w-4 h-4 mr-2" />
-                                        {t('pwaCard.activate')}
-                                    </>
-                                )}
-                            </DropdownMenuItem>
+                                        {t('activate')}
+                                    </DropdownMenuItem>
+                                </ConfirmationPopover>
+                            )}
+                            <ConfirmationPopover
+                                title={t('confirmDelete')}
+                                description={t('confirmDeleteDescription')}
+                                onConfirm={handleDelete}
+                                variant="destructive"
+                            >
+                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                    <Trash2 className="w-4 h-4 mr-2" />
+                                    {t('delete')}
+                                </DropdownMenuItem>
+                            </ConfirmationPopover>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>

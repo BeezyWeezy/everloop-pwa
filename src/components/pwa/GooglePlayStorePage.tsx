@@ -264,7 +264,7 @@ export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) 
                         <div className="stars-container">
                           {renderStars(5)}
                         </div>
-                        <span className="text-xs text-gray-500">{t('ui.daysAgo', { count: 2 })}</span>
+                        <span className="text-xs text-gray-500">{t('daysAgo', { count: 2 })}</span>
                       </div>
                     </div>
                   </div>
@@ -284,7 +284,7 @@ export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) 
                         <div className="stars-container">
                           {renderStars(4)}
                         </div>
-                        <span className="text-xs text-gray-500">{t('ui.weekAgo')}</span>
+                        <span className="text-xs text-gray-500">{t('weekAgo')}</span>
                       </div>
                     </div>
                   </div>
@@ -339,7 +339,7 @@ export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) 
                 </div>
                 <div className="info-row">
                   <span className="info-label">{t('permissions')}</span>
-                  <a href="#" className="info-value developer-link">{t('ui.moreDetails')}</a>
+                  <a href="#" className="info-value developer-link">{t('moreDetails')}</a>
                 </div>
               </div>
             </div>
@@ -353,7 +353,7 @@ export default function GooglePlayStorePage({ data }: GooglePlayStorePageProps) 
               <p className="text-sm text-gray-600 mb-3">
                 {data.dataAndPrivacy || t('googlePlay.dataSafetyDescription')}
               </p>
-              <a href="#" className="text-sm developer-link">{t('ui.moreDetails')}</a>
+              <a href="#" className="text-sm developer-link">{t('moreDetails')}</a>
             </div>
 
             {/* Developer info */}

@@ -268,7 +268,7 @@ export default function PwaCreator() {
 
     const handleCreatePwa = async () => {
         if (!canCreate()) {
-            logger.validation.error(t('ui.name'), t('notifications.pwa.requiredFields'));
+            logger.validation.error(t('name'), t('notifications.pwa.requiredFields'));
             return;
         }
 
@@ -403,7 +403,7 @@ export default function PwaCreator() {
                             className="flex items-center gap-2"
                         >
                             <ArrowLeft className="w-4 h-4" />
-                            {t('ui.back')}
+                            {t('back')}
                         </Button>
                         
                         <div className="flex items-center gap-3">
@@ -413,7 +413,7 @@ export default function PwaCreator() {
                                     disabled={!canProceedToNextStep()}
                                     className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
                                 >
-                                    {t('ui.next')}
+                                    {t('next')}
                                     <ArrowRight className="w-4 h-4" />
                                 </Button>
                             ) : (

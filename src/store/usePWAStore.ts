@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { PWAProject, PWAListItem } from '@/types/pwa';
+import { getUserPWAs } from '@/lib/api/pwa';
 
 interface PWAStore {
   // Состояние
@@ -25,9 +26,11 @@ interface PWAStore {
   addPWA: (pwa: PWAListItem) => void;
   updatePWAInStore: (id: string, updates: Partial<PWAListItem>) => void;
   removePWA: (id: string) => void;
+  toggleFavorite: (id: string) => void; // Новое действие для избранного
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   clearError: () => void;
+  refreshPWAs: () => Promise<void>;
   
   // Действия для фильтров
   setStatusFilter: (status: string) => void;
@@ -53,7 +56,7 @@ export const usePWAStore = create<PWAStore>((set, get) => ({
     status: 'all',
     search: '',
     sortBy: 'created_at',
-    sortOrder: 'desc'
+    sortOrder: 'desc',
   },
   viewMode: 'grid',
 
@@ -79,12 +82,38 @@ export const usePWAStore = create<PWAStore>((set, get) => ({
     pwas: state.pwas.filter(pwa => pwa.id !== id),
     currentPWA: state.currentPWA?.id === id ? null : state.currentPWA
   })),
-  
+
+  toggleFavorite: (id) => set((state) => ({
+    pwas: state.pwas.map(pwa => 
+      pwa.id === id ? { ...pwa, favorite: !pwa.favorite } : pwa
+    ),
+    currentPWA: state.currentPWA?.id === id 
+      ? { ...state.currentPWA, favorite: !state.currentPWA.favorite } 
+      : state.currentPWA
+  })),
+
   setLoading: (loading) => set({ loading }),
   
   setError: (error) => set({ error }),
   
   clearError: () => set({ error: null }),
+
+  refreshPWAs: async () => {
+    try {
+      set({ loading: true, error: null });
+      const { data, error } = await getUserPWAs();
+      
+      if (error) {
+        set({ error: error.message || 'Failed to refresh PWAs' });
+      } else {
+        set({ pwas: data || [] });
+      }
+    } catch (error) {
+      set({ error: 'Failed to refresh PWAs' });
+    } finally {
+      set({ loading: false });
+    }
+  },
 
   // Действия для фильтров
   setStatusFilter: (status) => set((state) => ({
@@ -108,7 +137,7 @@ export const usePWAStore = create<PWAStore>((set, get) => ({
       status: 'all',
       search: '',
       sortBy: 'created_at',
-      sortOrder: 'desc'
+      sortOrder: 'desc',
     }
   })),
 
@@ -122,7 +151,11 @@ export const usePWAStore = create<PWAStore>((set, get) => ({
 
     // Фильтр по статусу
     if (filters.status !== 'all') {
-      filtered = filtered.filter(pwa => pwa.status === filters.status);
+      if (filters.status === 'favorites') {
+        filtered = filtered.filter(pwa => pwa.favorite);
+      } else {
+        filtered = filtered.filter(pwa => pwa.status === filters.status);
+      }
     }
 
     // Фильтр по поиску
@@ -137,16 +170,28 @@ export const usePWAStore = create<PWAStore>((set, get) => ({
 
     // Сортировка
     filtered.sort((a, b) => {
+      // Избранные PWA всегда первыми
+      if (a.favorite && !b.favorite) return -1;
+      if (!a.favorite && b.favorite) return 1;
+      
       let aValue: any, bValue: any;
 
       switch (filters.sortBy) {
-        case 'name':
-          aValue = a.name.toLowerCase();
-          bValue = b.name.toLowerCase();
-          break;
         case 'status':
           aValue = a.status;
           bValue = b.status;
+          break;
+        case 'installs':
+          aValue = a.installs || 0;
+          bValue = b.installs || 0;
+          break;
+        case 'ftds':
+          aValue = a.ftds || 0;
+          bValue = b.ftds || 0;
+          break;
+        case 'cr':
+          aValue = a.cr || 0;
+          bValue = b.cr || 0;
           break;
         case 'created_at':
         default:

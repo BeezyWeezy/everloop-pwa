@@ -154,7 +154,7 @@ export default function PushNotificationsStep({ data, onChange }: PushNotificati
                                                     </Badge>
                                                     <Badge variant="outline" className="flex items-center gap-1">
                                                         <Clock className="w-3 h-3" />
-                                                        {scenario.triggerDelay}{t('ui.hours')}
+                                                        {scenario.triggerDelay}{t('hours')}
                                                     </Badge>
                                                 </div>
                                                 <p className="text-sm text-slate-600 dark:text-slate-400">
